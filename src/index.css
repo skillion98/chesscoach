@@ -1533,10 +1533,21 @@ button.link {
 }
 
 .persona-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
-  padding: 4px 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 8px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scroll-snap-type: x proximity;
+}
+
+.persona-row::-webkit-scrollbar {
+  display: none;
 }
 
 .persona-row::-webkit-scrollbar {
@@ -1544,8 +1555,9 @@ button.link {
 }
 
 .persona-card {
-  width: auto;
-  min-width: 0;
+  flex: 0 0 auto;
+  width: 92px;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
