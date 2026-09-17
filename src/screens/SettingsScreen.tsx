@@ -77,6 +77,27 @@ export default function SettingsScreen({ profile, onReload }: Props) {
         <button type="button" className="danger" onClick={() => void doReset()}>Reset everything</button>
       </section>
       {msg && <p className="muted">{msg}</p>}
+      <section className="card">
+        <h3>App version</h3>
+        <p className="muted small">Build {__BUILD__}</p>
+        <button
+          type="button"
+          onClick={async () => {
+            setMsg('Fetching the latest version…')
+            try {
+              const regs = await navigator.serviceWorker?.getRegistrations()
+              for (const r of regs ?? []) await r.unregister()
+              const keys = await caches.keys()
+              for (const k of keys) await caches.delete(k)
+            } catch {
+              /* ignore */
+            }
+            window.location.reload()
+          }}
+        >
+          Reload latest version
+        </button>
+      </section>
       <p className="muted small">
         Engine: Stockfish 19 (lite, single-thread) under GPLv3. Board: chessground. Rules: chess.js.
       </p>

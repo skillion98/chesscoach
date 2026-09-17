@@ -39,10 +39,12 @@ body {
   flex-direction: column;
   width: 100%;
   max-width: 100%;
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
 main {
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
@@ -87,6 +89,7 @@ main {
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
@@ -1857,3 +1860,12 @@ button.link {
   color: var(--accent);
   box-shadow: inset 0 0 0 2px var(--accent);
 }
+
+/* chessground draws the file letters 24px wider than the board; keep them inside */
+.cg-wrap coords.files {
+  left: 0;
+  width: 100%;
+  padding-left: 24px;
+  box-sizing: border-box;
+}
+
