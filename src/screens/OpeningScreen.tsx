@@ -49,7 +49,7 @@ export default function OpeningScreen({ slug }: Props) {
   return (
     <div className="screen opening">
       <a className="op-hero" href={videoUrl(course.video)} target="_blank" rel="noopener noreferrer">
-        <img src={thumbnail(course.video)} alt="" />
+        <img src={thumbnail(course.slug)} alt="" />
         <span className="op-hero-shade" />
         <span className="op-hero-play">
           <Icon name="play" size={34} />

@@ -8,7 +8,7 @@ function Tile({ course, mastery }: { course: Course; mastery?: CourseMastery }) 
   const pct = mastery ? Math.round(mastery.score * 100) : 0
   return (
     <button type="button" className="op-tile" onClick={() => navigate(`/openings/${course.slug}`)}>
-      <img className="op-thumb" src={thumbnail(course.video)} alt="" loading="lazy" />
+      <img className="op-thumb" src={thumbnail(course.slug)} alt="" loading="lazy" />
       <span className="op-shade" />
       <span className={'op-side ' + (course.side === 'w' ? 'white' : 'black')} aria-label={course.side === 'w' ? 'as White' : 'as Black'}>
         {course.side === 'w' ? '♔' : '♚'}

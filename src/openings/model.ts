@@ -58,8 +58,9 @@ export function statKey(slug: string, chapter: number, ply: number): string {
   return `${slug}|${chapter}|${ply}`
 }
 
-export function thumbnail(video: string): string {
-  return `https://i.ytimg.com/vi/${video}/mqdefault.jpg`
+/** The video's title card, bundled with the app so it works offline. */
+export function thumbnail(slug: string): string {
+  return `${import.meta.env.BASE_URL}thumbs/${slug}.jpg`
 }
 
 export function videoUrl(video: string): string {

@@ -16,6 +16,7 @@ import { updateRating } from '../game/rating'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
 import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
+import { describeMove } from '../game/commentary'
 import { navigate } from '../lib/router'
 
 type Phase = 'setup' | 'playing' | 'over'
@@ -72,10 +73,32 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [hinting, setHinting] = useState(false)
   const [hintUsed, setHintUsed] = useState(false)
   const [suggestion, setSuggestion] = useState<OpponentSuggestion | null>(null)
+  const [commentaryOn, setCommentaryOn] = useState(false)
+  const commentaryRef = useRef(false)
+  const [comments, setComments] = useState<string[]>([])
+  const [openingName, setOpeningName] = useState<string | null>(null)
 
   useEffect(() => {
     if (phase === 'setup') suggestOpponent(profile.rating).then(setSuggestion).catch(() => undefined)
   }, [phase, profile.rating])
+
+  useEffect(() => {
+    getSetting<boolean>('commentary', false).then((v) => {
+      setCommentaryOn(v)
+      commentaryRef.current = v
+    })
+  }, [])
+
+  /** Called with the position before a move and the move just made, for both sides. */
+  const narrate = useCallback((before: Chess, m: import('chess.js').Move, history: string[]) => {
+    if (commentaryRef.current) {
+      const text = describeMove(before, m)
+      setComments((prev) => [text, ...prev].slice(0, 3))
+    }
+    identifyOpening(history)
+      .then((op) => setOpeningName(op ? op.name : null))
+      .catch(() => undefined)
+  }, [])
 
   useEffect(() => {
     getEngine()
@@ -163,16 +186,19 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     if (elapsed < MIN_THINK_MS) await new Promise((r) => setTimeout(r, MIN_THINK_MS - elapsed))
     if (token !== tokenRef.current) return
     setThinking(false)
+    const before = new Chess(c.fen())
+    let made: import('chess.js').Move | null = null
     try {
-      c.move(uciToMove(uci))
+      made = c.move(uciToMove(uci))
     } catch {
       const fallback = legalUci(c)[0]
-      if (fallback) c.move(uciToMove(fallback))
+      if (fallback) made = c.move(uciToMove(fallback))
     }
     sync()
+    if (made) narrate(before, made, c.history())
     const stt = gameStatus(c)
     if (stt.over) void finish(stt)
-  }, [sync, finish])
+  }, [sync, finish, narrate])
 
   const startGame = useCallback(async () => {
     const p = mode === 'personality' ? (personalityById(personalityId) ?? null) : null
@@ -192,6 +218,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     setFlipped(false)
     setOutcome(null)
     setPromo(null)
+    setComments([])
+    setOpeningName(null)
     sync()
     setPhase('playing')
     void setSetting('lastElo', elo)
@@ -207,8 +235,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const playerMove = useCallback(
     (from: Key, to: Key, promotion?: string) => {
       const c = chessRef.current
+      const before = new Chess(c.fen())
+      let made: import('chess.js').Move
       try {
-        c.move({ from, to, promotion })
+        made = c.move({ from, to, promotion })
       } catch {
         sync()
         return
@@ -216,6 +246,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       setPromo(null)
       setHint(null)
       sync()
+      narrate(before, made, c.history())
       const st = gameStatus(c)
       if (st.over) {
         void finish(st)
@@ -223,7 +254,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       }
       void engineTurn()
     },
-    [sync, finish, engineTurn],
+    [sync, finish, engineTurn, narrate],
   )
 
   const onBoardMove = useCallback(
@@ -492,6 +523,27 @@ export default function PlayScreen({ profile, onProfile }: Props) {
 
       <MoveList moves={moves} />
 
+      {(
+        <div className="opening-line">
+          <Icon name="book" size={16} />
+          <span>{openingName ?? (moves.length === 0 ? 'Opening will be named as you play' : 'Out of the book')}</span>
+        </div>
+      )}
+
+      {commentaryOn && phase === 'playing' && (
+        <div className="commentary" aria-live="polite">
+          {comments.length === 0 ? (
+            <div className="muted">Commentary is on. Make a move.</div>
+          ) : (
+            comments.map((t, i) => (
+              <div key={comments.length - i} className={i === 0 ? 'latest' : 'older'}>
+                {t}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
       {hint && phase === 'playing' && (
         <div className="hint-card">
           <div className="hint-head">
@@ -509,6 +561,19 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         <div className="btn-row">
           <button type="button" className="with-icon" onClick={() => void askHint()} disabled={!canMove || hinting}>
             <Icon name="bulb" size={18} /> Hint
+          </button>
+          <button
+            type="button"
+            className={'icon-only' + (commentaryOn ? ' active' : '')}
+            aria-label={commentaryOn ? 'Turn commentary off' : 'Turn commentary on'}
+            onClick={() => {
+              const v = !commentaryOn
+              setCommentaryOn(v)
+              commentaryRef.current = v
+              void setSetting('commentary', v)
+            }}
+          >
+            <Icon name="comment" size={20} />
           </button>
           <button type="button" onClick={() => setFlipped((f) => !f)}>Flip</button>
           <button type="button" className="with-icon" onClick={resign} disabled={moves.length === 0}>

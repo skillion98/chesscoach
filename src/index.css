@@ -20,6 +20,7 @@
 html,
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -328,10 +329,12 @@ button.link {
 /* Move list */
 .movelist {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 10px 16px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  max-height: 66px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 16px;
   scrollbar-width: none;
   font-variant-numeric: tabular-nums;
 }
@@ -1054,7 +1057,7 @@ button.link {
 
 .op-tile {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   padding: 0;
   overflow: hidden;
   border-radius: var(--radius);
@@ -1068,7 +1071,6 @@ button.link {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.85;
 }
 
 .op-shade {
@@ -1155,9 +1157,9 @@ button.link {
   position: absolute;
   left: 10px;
   right: 10px;
-  bottom: 14px;
+  bottom: 12px;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.2;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
@@ -1439,10 +1441,9 @@ button.link {
 /* Puzzles */
 .theme-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  overflow-x: auto;
   padding: 4px 16px 8px;
-  scrollbar-width: none;
 }
 
 .theme-row::-webkit-scrollbar {
@@ -1512,11 +1513,10 @@ button.link {
 }
 
 .persona-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  overflow-x: auto;
-  padding: 4px 2px 8px;
-  scrollbar-width: none;
+  padding: 4px 0 8px;
 }
 
 .persona-row::-webkit-scrollbar {
@@ -1524,8 +1524,8 @@ button.link {
 }
 
 .persona-card {
-  flex: 0 0 auto;
-  width: 92px;
+  width: auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1808,4 +1808,38 @@ button.link {
 .style-pending .style-knob {
   border-color: var(--muted);
   opacity: 0.6;
+}
+
+/* Opening name and commentary under the board */
+.opening-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 16px 6px;
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.commentary {
+  margin: 0 16px 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  line-height: 1.4;
+  font-size: 15px;
+}
+
+.commentary .latest {
+  color: var(--text);
+}
+
+.commentary .older {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.icon-only.active {
+  color: var(--accent);
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
