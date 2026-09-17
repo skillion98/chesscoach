@@ -11,6 +11,7 @@ import OpeningsScreen from './screens/OpeningsScreen'
 import OpeningScreen from './screens/OpeningScreen'
 import LessonScreen from './screens/LessonScreen'
 import WeakLinesScreen from './screens/WeakLinesScreen'
+import PuzzleScreen from './screens/PuzzleScreen'
 import { courseBySlug } from './openings/model'
 
 export default function App() {
@@ -45,6 +46,9 @@ export default function App() {
   } else if (route === '/settings') {
     title = 'Settings'
     body = <SettingsScreen profile={profile} onReload={reload} />
+  } else if (route === '/puzzles') {
+    title = 'Puzzles'
+    body = <PuzzleScreen />
   } else if (route === '/openings') {
     title = 'Openings'
     body = <OpeningsScreen />

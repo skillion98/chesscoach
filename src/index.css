@@ -1435,3 +1435,66 @@ button.link {
 .card.center {
   text-align: center;
 }
+
+/* Puzzles */
+.theme-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 16px 8px;
+  scrollbar-width: none;
+}
+
+.theme-row::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-btn {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+}
+
+.chip-btn.selected {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.board-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: rgba(27, 27, 31, 0.6);
+}
+
+.side-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.side-dot.white {
+  background: #ecebe6;
+}
+
+.side-dot.black {
+  background: #111;
+  border: 1px solid #666;
+}
+
+.result.ok {
+  border-top: 3px solid var(--win);
+}
+
+.result.bad {
+  border-top: 3px solid var(--loss);
+}

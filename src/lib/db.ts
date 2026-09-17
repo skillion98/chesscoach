@@ -69,11 +69,25 @@ export interface Deviation {
   played: string
 }
 
+export interface PuzzleResult {
+  id?: number
+  puzzleId: string
+  at: number
+  solved: boolean
+  hintUsed: boolean
+  puzzleRating: number
+  themes: string[]
+  themeKey: string
+  ratingBefore: number
+  ratingAfter: number
+}
+
 export const db = new Dexie('chesscoach') as Dexie & {
   games: EntityTable<GameRecord, 'id'>
   settings: EntityTable<Setting, 'key'>
   lineStats: EntityTable<LineStat, 'key'>
   deviations: EntityTable<Deviation, 'id'>
+  puzzleResults: EntityTable<PuzzleResult, 'id'>
 }
 
 db.version(1).stores({
@@ -103,6 +117,14 @@ db.version(3).stores({
   deviations: '++id, slug, gameId',
 })
 
+db.version(4).stores({
+  games: '++id, playedAt, opponentElo, result',
+  settings: 'key',
+  lineStats: 'key, slug, due',
+  deviations: '++id, slug, gameId',
+  puzzleResults: '++id, puzzleId, at',
+})
+
 const DEFAULT_PROFILE: Profile = { rating: STARTING_RATING, gamesPlayed: 0, peakRating: STARTING_RATING }
 
 export async function getProfile(): Promise<Profile> {
@@ -129,17 +151,19 @@ interface Backup {
   settings?: Setting[]
   lineStats?: LineStat[]
   deviations?: Deviation[]
+  puzzleResults?: PuzzleResult[]
 }
 
 export async function exportBackup(): Promise<string> {
-  const [games, settings, lineStats, deviations] = await Promise.all([
+  const [games, settings, lineStats, deviations, puzzleResults] = await Promise.all([
     db.games.toArray(),
     db.settings.toArray(),
     db.lineStats.toArray(),
     db.deviations.toArray(),
+    db.puzzleResults.toArray(),
   ])
   return JSON.stringify(
-    { app: 'chesscoach', version: 3, exportedAt: Date.now(), games, settings, lineStats, deviations },
+    { app: 'chesscoach', version: 4, exportedAt: Date.now(), games, settings, lineStats, deviations, puzzleResults },
     null,
     2,
   )
@@ -153,24 +177,27 @@ export async function importBackup(json: string): Promise<{ games: number }> {
     opponentElo: g.opponentElo ?? LEGACY_LEVEL_ELO[g.levelId ?? 5] ?? 1400,
     rated: g.rated ?? true,
   }))
-  await db.transaction('rw', db.games, db.settings, db.lineStats, db.deviations, async () => {
+  await db.transaction('rw', db.games, db.settings, db.lineStats, db.deviations, db.puzzleResults, async () => {
     await db.games.clear()
     await db.settings.clear()
     await db.lineStats.clear()
     await db.deviations.clear()
+    await db.puzzleResults.clear()
     await db.games.bulkAdd(games)
     await db.settings.bulkPut(data.settings ?? [])
     await db.lineStats.bulkPut(data.lineStats ?? [])
     await db.deviations.bulkAdd(data.deviations ?? [])
+    await db.puzzleResults.bulkAdd(data.puzzleResults ?? [])
   })
   return { games: games.length }
 }
 
 export async function resetAll(): Promise<void> {
-  await db.transaction('rw', db.games, db.settings, db.lineStats, db.deviations, async () => {
+  await db.transaction('rw', db.games, db.settings, db.lineStats, db.deviations, db.puzzleResults, async () => {
     await db.games.clear()
     await db.settings.clear()
     await db.lineStats.clear()
     await db.deviations.clear()
+    await db.puzzleResults.clear()
   })
 }
