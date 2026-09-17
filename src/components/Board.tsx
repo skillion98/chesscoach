@@ -56,7 +56,24 @@ export default function Board(props: BoardProps) {
   useEffect(() => {
     if (!el.current) return
     api.current = Chessground(el.current, buildConfig())
+    // chessground caches its pixel bounds at creation; recompute whenever the host resizes
+    // (PWA launch, rotation, font loading) so pieces never land outside the board
+    let last = el.current.getBoundingClientRect().width
+    let timer: number | undefined
+    const ro = new ResizeObserver(() => {
+      const w = el.current?.getBoundingClientRect().width ?? 0
+      if (Math.abs(w - last) < 1) return
+      last = w
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => api.current?.redrawAll(), 60)
+    })
+    ro.observe(el.current)
+    const onOrient = () => window.setTimeout(() => api.current?.redrawAll(), 120)
+    window.addEventListener('orientationchange', onOrient)
     return () => {
+      ro.disconnect()
+      window.clearTimeout(timer)
+      window.removeEventListener('orientationchange', onOrient)
       api.current?.destroy()
       api.current = null
     }
