@@ -169,16 +169,19 @@ export async function weakLines(limit = 20, slug?: string): Promise<WeakLine[]> 
   return out.slice(0, limit)
 }
 
-/**
- * After a game: find the course chapter the game followed longest (for the player's
- * side), credit matched player moves, and record the first deviation if any.
- */
-export async function recordGameAdherence(
-  gameId: number,
-  playedAt: number,
-  moves: string[],
-  playerColor: 'w' | 'b',
-): Promise<{ slug: string; chapter: number; matched: number } | null> {
+export interface CourseMatch {
+  slug: string
+  title: string
+  chapter: number
+  chapterName: string
+  /** plies that followed the line */
+  matched: number
+  /** the player's first departure from the line, if the line continued */
+  deviation?: { ply: number; expected: string; played: string }
+}
+
+/** Which course chapter (for the player's side) did the game follow longest? */
+export function matchCourse(moves: string[], playerColor: 'w' | 'b'): CourseMatch | null {
   const c = new Chess()
   const gameUcis: string[] = []
   for (const san of moves) {
@@ -195,6 +198,29 @@ export async function recordGameAdherence(
     }
   }
   if (!best) return null
+  const ch = allChapters(best.course)[best.chapter]
+  const out: CourseMatch = { slug: best.course.slug, title: best.course.title, chapter: best.chapter, chapterName: ch.name, matched: best.matched }
+  const divPly = best.matched + 1
+  if (divPly <= ch.sans.length && divPly <= moves.length && (divPly % 2 === 1 ? 'w' : 'b') === playerColor) {
+    out.deviation = { ply: divPly, expected: ch.sans[divPly - 1], played: moves[divPly - 1] }
+  }
+  return out
+}
+
+/**
+ * After a game: find the course chapter the game followed longest (for the player's
+ * side), credit matched player moves, and record the first deviation if any.
+ */
+export async function recordGameAdherence(
+  gameId: number,
+  playedAt: number,
+  moves: string[],
+  playerColor: 'w' | 'b',
+): Promise<{ slug: string; chapter: number; matched: number } | null> {
+  const mc = matchCourse(moves, playerColor)
+  if (!mc) return null
+  const course = COURSES.find((x) => x.slug === mc.slug)!
+  const best = { course, chapter: mc.chapter, matched: mc.matched }
   const ch = allChapters(best.course)[best.chapter]
   // credit every player move that followed the line
   for (const p of ch.playerPlies) {

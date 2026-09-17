@@ -18,11 +18,12 @@ import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
 import { describeMove } from '../game/commentary'
 import MoveBadge from '../components/MoveBadge'
+import Celebration from '../components/Celebration'
 import { baseJudgment, refineJudgment, winChance, type Judgment } from '../analysis/judge'
 import { findMove, isGoodCapture } from '../game/explain'
 import { moveFeatures } from '../game/features'
 import { isBookPrefix } from '../openings/stats'
-import { playJudgment, playMove } from '../lib/sounds'
+import { playFanfare, playJudgment, playMove } from '../lib/sounds'
 import type { PvLine } from '../engine/stockfish'
 import { navigate } from '../lib/router'
 
@@ -85,6 +86,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [comments, setComments] = useState<string[]>([])
   const [openingName, setOpeningName] = useState<string | null>(null)
   const [badge, setBadge] = useState<{ square: string; judgment: Judgment; nonce: number } | null>(null)
+  const [celebrate, setCelebrate] = useState(false)
   const feedbackRef = useRef(true)
   const soundsRef = useRef(true)
   const preRef = useRef<{ fen: string; lines: PvLine[] } | null>(null)
@@ -236,6 +238,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       setHint(null)
       setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, gameId })
       setPhase('over')
+      if (score === 1) {
+        setCelebrate(true)
+        if (soundsRef.current) playFanfare()
+      }
     },
     [onProfile],
   )
@@ -296,6 +302,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     setComments([])
     setOpeningName(null)
     setBadge(null)
+    setCelebrate(false)
     preRef.current = null
     lastPlayerRef.current = null
     sync()
@@ -583,6 +590,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
 
   return (
     <div className="screen play">
+      {celebrate && <Celebration onDone={() => setCelebrate(false)} />}
       <div className="play-bar">
         <div className="bar-left">
           {opponent ? <Avatar hue={opponent.hue} glyph={opponent.glyph} size={36} /> : <span className="opp-mini">{strength.glyph}</span>}

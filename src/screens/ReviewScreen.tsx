@@ -23,6 +23,9 @@ import { getEngine } from '../engine/stockfish'
 import { cgColor } from '../game/chessUtil'
 import { db, type GameRecord } from '../lib/db'
 import { opponentLabel } from './GamesScreen'
+import { buildRecap, type Recap } from '../analysis/recap'
+import { matchCourse } from '../openings/stats'
+import { speak, speechAvailable, stopSpeech } from '../lib/speech'
 
 interface Props {
   id: number
@@ -47,6 +50,8 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null)
   const [progress, setProgress] = useState<number | null>(null)
   const [showBest, setShowBest] = useState(false)
+  const [recap, setRecap] = useState<Recap | null>(null)
+  const [speaking, setSpeaking] = useState(false)
   const cancelRef = useRef(false)
   const startedRef = useRef(false)
 
@@ -85,10 +90,23 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
     }
   }, [autoAnalyze, game, runAnalysis])
 
+  useEffect(() => {
+    if (!game || !analysis) {
+      setRecap(null)
+      return
+    }
+    try {
+      setRecap(buildRecap(game, analysis, matchCourse(game.moves, game.playerColor)))
+    } catch {
+      setRecap(null)
+    }
+  }, [game, analysis])
+
   useEffect(
     () => () => {
       cancelRef.current = true
       getEngine().stop()
+      stopSpeech()
     },
     [],
   )
@@ -280,6 +298,35 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
 
       {analysis && mine && theirs && (
         <section className="summary">
+          {recap && (
+            <div className="card recap">
+              <div className="recap-head">
+                <Icon name="coach" size={20} />
+                <span>Coach's recap</span>
+                {speechAvailable() && (
+                  <button
+                    type="button"
+                    className="icon-only small-btn"
+                    aria-label={speaking ? 'Stop' : 'Listen'}
+                    onClick={async () => {
+                      if (speaking) {
+                        stopSpeech()
+                        setSpeaking(false)
+                        return
+                      }
+                      setSpeaking(true)
+                      await speak(recap.wentWell + ' ' + recap.improve)
+                      setSpeaking(false)
+                    }}
+                  >
+                    <Icon name={speaking ? 'pause' : 'sound'} size={18} />
+                  </button>
+                )}
+              </div>
+              <p>{recap.wentWell}</p>
+              <p>{recap.improve}</p>
+            </div>
+          )}
           <div className="acc-row">
             <div className="acc me">
               <div className="acc-num">{mine.accuracy}%</div>

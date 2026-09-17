@@ -14,13 +14,17 @@ interface Props {
   marks?: Record<number, MoveMark>
 }
 
+/** One horizontal, swipeable line of moves. Scrolls itself, never the page. */
 export default function MoveList({ moves, ply, onSelect, marks }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const current = ply ?? moves.length
 
   useEffect(() => {
-    const active = ref.current?.querySelector('.move.active')
-    active?.scrollIntoView({ block: 'nearest', inline: 'center' })
+    const box = ref.current
+    const active = box?.querySelector<HTMLElement>('.move.active') ?? box?.querySelector<HTMLElement>('.move-row:last-child')
+    if (!box || !active) return
+    const target = active.offsetLeft - box.clientWidth / 2 + active.offsetWidth / 2
+    box.scrollTo({ left: Math.max(0, target), behavior: 'smooth' })
   }, [current, moves.length])
 
   const rows: { n: number; w?: string; b?: string; wi: number; bi: number }[] = []

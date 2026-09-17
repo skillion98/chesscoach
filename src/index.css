@@ -346,13 +346,16 @@ button.link {
 /* Move list */
 .movelist {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  max-height: 66px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 8px 16px;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: 10px 16px;
   scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   font-variant-numeric: tabular-nums;
 }
 
@@ -2001,4 +2004,38 @@ body {
   height: 24px;
   accent-color: var(--accent);
   flex: 0 0 auto;
+}
+
+/* Celebration overlay */
+.celebration {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+/* Coach's recap */
+.recap {
+  border-left: 4px solid var(--accent);
+}
+
+.recap-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.recap-head .icon-only {
+  margin-left: auto;
+  padding: 6px 8px;
+}
+
+.recap p {
+  margin: 8px 0 0;
+  line-height: 1.5;
 }

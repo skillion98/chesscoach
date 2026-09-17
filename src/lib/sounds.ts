@@ -60,6 +60,12 @@ export function playJudgment(j: Judgment): void {
   }
 }
 
+export function playFanfare(): void {
+  const notes = [523, 659, 784, 1047, 784, 1047, 1319]
+  notes.forEach((f, i) => tone(f, i * 0.13, i === notes.length - 1 ? 0.6 : 0.16, 'triangle', 0.14))
+  tone(262, 0, 0.9, 'sine', 0.06)
+}
+
 export function playMove(capture: boolean): void {
   if (capture) tone(180, 0, 0.08, 'square', 0.06)
   else tone(420, 0, 0.05, 'triangle', 0.05)
