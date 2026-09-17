@@ -289,6 +289,34 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     }
   }, [])
 
+  const undo = useCallback(() => {
+    const c = chessRef.current
+    if (c.history().length === 0) return
+    if (!hintUsedRef.current) {
+      if (!window.confirm('Taking back a move makes this game unrated. Continue?')) return
+      hintUsedRef.current = true
+      setHintUsed(true)
+    }
+    // cancel any engine move in progress
+    tokenRef.current++
+    getEngine().stop()
+    setThinking(false)
+    setHinting(false)
+    setHint(null)
+    setPromo(null)
+    // take back the engine reply (if it has been made) and the player's move
+    let taken = 0
+    if (c.turn() === playerColorRef.current) {
+      if (c.undo()) taken++
+    }
+    if (c.undo()) taken++
+    setComments((prev) => prev.slice(taken))
+    sync()
+    identifyOpening(c.history())
+      .then((op) => setOpeningName(op ? op.name : null))
+      .catch(() => undefined)
+  }, [sync])
+
   const resign = useCallback(() => {
     if (!window.confirm('Resign this game?')) return
     tokenRef.current++
@@ -559,6 +587,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
 
       {phase === 'playing' && (
         <div className="btn-row">
+          <button type="button" className="with-icon" onClick={undo} disabled={moves.length === 0}>
+            <Icon name="undo" size={18} /> Undo
+          </button>
           <button type="button" className="with-icon" onClick={() => void askHint()} disabled={!canMove || hinting}>
             <Icon name="bulb" size={18} /> Hint
           </button>
@@ -599,7 +630,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
               </span>
             </p>
           ) : (
-            <p className="muted">Unrated game (a hint was used). Rating stays at {outcome.ratingBefore}.</p>
+            <p className="muted">Unrated game (a hint or undo was used). Rating stays at {outcome.ratingBefore}.</p>
           )}
           <div className="btn-row">
             <button type="button" className="primary" onClick={() => void startGame()}>Rematch</button>
