@@ -12,6 +12,8 @@ export interface GameRecord {
   playerColor: Color
   /** opponent strength on the sliding scale */
   opponentElo: number
+  /** personality id when the opponent was a named character */
+  opponentId?: string
   /** false when a hint was used; the game then does not affect the rating */
   rated: boolean
   result: Result

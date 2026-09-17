@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { db, type GameRecord } from '../lib/db'
 import { bandFor } from '../game/levels'
+import { personalityById } from '../game/personalities'
 import { navigate } from '../lib/router'
 
 function outcomeLabel(g: GameRecord): { text: string; cls: string } {
@@ -10,6 +11,8 @@ function outcomeLabel(g: GameRecord): { text: string; cls: string } {
 }
 
 export function opponentLabel(g: GameRecord): string {
+  const p = personalityById(g.opponentId)
+  if (p) return `${p.name} (${p.elo})`
   return `${bandFor(g.opponentElo).glyph} ${g.opponentElo}`
 }
 
