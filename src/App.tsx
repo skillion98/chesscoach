@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import Icon from './components/Icons'
 import { getProfile, type Profile } from './lib/db'
 import { navigate, useRoute } from './lib/router'
 import HomeScreen from './screens/HomeScreen'
@@ -51,7 +52,13 @@ export default function App() {
           <span className="back-spacer" />
         )}
         <span className="topbar-title">{title}</span>
-        <span className="back-spacer" />
+        {isHome ? (
+          <button type="button" className="icon-btn" onClick={() => navigate('/settings')} aria-label="Settings">
+            <Icon name="gear" size={22} />
+          </button>
+        ) : (
+          <span className="back-spacer" />
+        )}
       </header>
       <main>{body}</main>
     </div>

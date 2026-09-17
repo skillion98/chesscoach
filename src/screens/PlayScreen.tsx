@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
+import type { DrawShape } from 'chessground/draw'
 import type { Key } from 'chessground/types'
 import Board from '../components/Board'
+import Icon from '../components/Icons'
 import MoveList from '../components/MoveList'
 import { getEngine } from '../engine/stockfish'
-import { LEVELS, getLevel, type Level } from '../game/levels'
+import { ELO_STEP, MAX_ELO, MIN_ELO, bandFor, clampElo, strengthFor, type Strength } from '../game/levels'
 import { chooseMove } from '../game/choose'
+import { computeHint, type Hint } from '../game/explain'
 import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, type Status } from '../game/chessUtil'
 import { updateRating } from '../game/rating'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
@@ -21,6 +24,7 @@ interface Props {
 
 interface Outcome {
   status: Status
+  rated: boolean
   ratingBefore: number
   ratingAfter: number
   gameId: number
@@ -30,18 +34,19 @@ const MIN_THINK_MS = 450
 
 export default function PlayScreen({ profile, onProfile }: Props) {
   const [phase, setPhase] = useState<Phase>('setup')
-  const [levelId, setLevelId] = useState(5)
+  const [elo, setElo] = useState(() => clampElo(profile.rating))
   const [colorChoice, setColorChoice] = useState<ColorChoice>('w')
 
   const chessRef = useRef(new Chess())
   const tokenRef = useRef(0)
-  const levelRef = useRef<Level>(getLevel(5))
+  const strengthRef = useRef<Strength>(strengthFor(elo))
   const playerColorRef = useRef<Color>('w')
   const profileRef = useRef(profile)
   profileRef.current = profile
+  const hintUsedRef = useRef(false)
 
   const [playerColor, setPlayerColor] = useState<Color>('w')
-  const [level, setLevel] = useState<Level>(getLevel(5))
+  const [strength, setStrength] = useState<Strength>(strengthRef.current)
   const [fen, setFen] = useState(chessRef.current.fen())
   const [moves, setMoves] = useState<string[]>([])
   const [lastMove, setLastMove] = useState<Key[] | undefined>()
@@ -50,12 +55,17 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const [flipped, setFlipped] = useState(false)
   const [engineReady, setEngineReady] = useState(false)
+  const [hint, setHint] = useState<Hint | null>(null)
+  const [hinting, setHinting] = useState(false)
+  const [hintUsed, setHintUsed] = useState(false)
 
   useEffect(() => {
     getEngine()
       .whenReady()
       .then(() => setEngineReady(true))
-    getSetting<number>('lastLevel', 5).then(setLevelId)
+    getSetting<number | null>('lastElo', null).then((v) => {
+      if (v !== null) setElo(clampElo(v))
+    })
     getSetting<ColorChoice>('lastColor', 'w').then(setColorChoice)
   }, [])
 
@@ -71,16 +81,18 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const finish = useCallback(
     async (status: Status) => {
       const pc = playerColorRef.current
-      const lv = levelRef.current
+      const st = strengthRef.current
       const prof = profileRef.current
+      const rated = !hintUsedRef.current
       const score: 0 | 0.5 | 1 =
         status.result === '1/2-1/2' ? 0.5 : (status.result === '1-0') === (pc === 'w') ? 1 : 0
       const before = prof.rating
-      const after = updateRating(before, lv.elo, score, prof.gamesPlayed)
+      const after = rated ? updateRating(before, st.elo, score, prof.gamesPlayed) : before
       const rec: GameRecord = {
         playedAt: Date.now(),
         playerColor: pc,
-        levelId: lv.id,
+        opponentElo: st.elo,
+        rated,
         result: status.result,
         termination: status.termination,
         moves: chessRef.current.history(),
@@ -89,15 +101,18 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         ratingAfter: after,
       }
       const gameId = (await db.games.add(rec)) as number
-      const next: Profile = {
-        rating: after,
-        gamesPlayed: prof.gamesPlayed + 1,
-        peakRating: Math.max(prof.peakRating, after),
+      if (rated) {
+        const next: Profile = {
+          rating: after,
+          gamesPlayed: prof.gamesPlayed + 1,
+          peakRating: Math.max(prof.peakRating, after),
+        }
+        await saveProfile(next)
+        onProfile(next)
       }
-      await saveProfile(next)
-      onProfile(next)
       setThinking(false)
-      setOutcome({ status, ratingBefore: before, ratingAfter: after, gameId })
+      setHint(null)
+      setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, gameId })
       setPhase('over')
     },
     [onProfile],
@@ -106,13 +121,13 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const engineTurn = useCallback(async () => {
     const token = tokenRef.current
     const c = chessRef.current
-    const lv = levelRef.current
+    const st = strengthRef.current
     setThinking(true)
     const started = performance.now()
     let uci = ''
     try {
-      const res = await getEngine().search(c.fen(), { movetime: lv.movetime, multipv: lv.multipv })
-      uci = chooseMove(res.lines, res.bestMove, legalUci(c), lv)
+      const res = await getEngine().search(c.fen(), { movetime: st.movetime, multipv: st.multipv })
+      uci = chooseMove(res.lines, res.bestMove, legalUci(c), st)
     } catch {
       uci = legalUci(c)[0] ?? ''
     }
@@ -127,31 +142,34 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       if (fallback) c.move(uciToMove(fallback))
     }
     sync()
-    const st = gameStatus(c)
-    if (st.over) void finish(st)
+    const stt = gameStatus(c)
+    if (stt.over) void finish(stt)
   }, [sync, finish])
 
   const startGame = useCallback(async () => {
-    const lv = getLevel(levelId)
+    const st = strengthFor(elo)
     const pc: Color = colorChoice === 'random' ? (Math.random() < 0.5 ? 'w' : 'b') : colorChoice
     tokenRef.current++
     chessRef.current = new Chess()
-    levelRef.current = lv
+    strengthRef.current = st
     playerColorRef.current = pc
-    setLevel(lv)
+    hintUsedRef.current = false
+    setHintUsed(false)
+    setHint(null)
+    setStrength(st)
     setPlayerColor(pc)
     setFlipped(false)
     setOutcome(null)
     setPromo(null)
     sync()
     setPhase('playing')
-    void setSetting('lastLevel', levelId)
+    void setSetting('lastElo', st.elo)
     void setSetting('lastColor', colorChoice)
     const eng = getEngine()
     await eng.newGame()
-    await eng.setOptions({ 'Skill Level': lv.skill })
+    await eng.setOptions({ 'Skill Level': st.skill })
     if (pc === 'b') void engineTurn()
-  }, [levelId, colorChoice, sync, engineTurn])
+  }, [elo, colorChoice, sync, engineTurn])
 
   const playerMove = useCallback(
     (from: Key, to: Key, promotion?: string) => {
@@ -163,6 +181,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         return
       }
       setPromo(null)
+      setHint(null)
       sync()
       const st = gameStatus(c)
       if (st.over) {
@@ -185,6 +204,27 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     [playerMove],
   )
 
+  const askHint = useCallback(async () => {
+    if (!hintUsedRef.current) {
+      if (!window.confirm('Using a hint makes this game unrated. Continue?')) return
+      hintUsedRef.current = true
+      setHintUsed(true)
+    }
+    const token = tokenRef.current
+    setHinting(true)
+    const eng = getEngine()
+    try {
+      await eng.setOptions({ 'Skill Level': 20 })
+      const h = await computeHint(chessRef.current, eng)
+      if (token === tokenRef.current) setHint(h)
+    } catch {
+      /* ignore */
+    } finally {
+      await eng.setOptions({ 'Skill Level': strengthRef.current.skill })
+      if (token === tokenRef.current) setHinting(false)
+    }
+  }, [])
+
   const resign = useCallback(() => {
     if (!window.confirm('Resign this game?')) return
     tokenRef.current++
@@ -197,6 +237,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     if (phase === 'playing' && moves.length > 0 && !window.confirm('Leave this game? It will not be saved.')) return
     tokenRef.current++
     getEngine().stop()
+    setHint(null)
     setPhase('setup')
     setOutcome(null)
   }, [phase, moves.length])
@@ -206,50 +247,63 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const inCheck = chessRef.current.inCheck()
   const orientation = cgColor(flipped ? (playerColor === 'w' ? 'b' : 'w') : playerColor)
   const canMove = phase === 'playing' && !thinking && turn === playerColor && !promo
+  const shapes = useMemo<DrawShape[]>(
+    () => (hint ? [{ orig: hint.from as Key, dest: hint.to as Key, brush: 'green' }] : []),
+    [hint],
+  )
 
   if (phase === 'setup') {
+    const band = bandFor(elo)
+    const pct = ((elo - MIN_ELO) / (MAX_ELO - MIN_ELO)) * 100
     return (
-      <div className="screen">
-        <h2>New game</h2>
-        <section className="card">
-          <h3>Opponent</h3>
-          <div className="level-list">
-            {LEVELS.map((l) => (
-              <button
-                type="button"
-                key={l.id}
-                className={'level' + (l.id === levelId ? ' selected' : '')}
-                onClick={() => setLevelId(l.id)}
-              >
-                <span className="level-name">
-                  {l.id}. {l.name}
-                </span>
-                <span className="level-elo">~{l.elo}</span>
-                <span className="level-blurb">{l.blurb}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-        <section className="card">
-          <h3>Your color</h3>
-          <div className="seg">
-            {(['w', 'random', 'b'] as ColorChoice[]).map((c) => (
-              <button
-                type="button"
-                key={c}
-                className={'seg-btn' + (colorChoice === c ? ' selected' : '')}
-                onClick={() => setColorChoice(c)}
-              >
-                {c === 'w' ? 'White' : c === 'b' ? 'Black' : 'Random'}
-              </button>
-            ))}
-          </div>
-        </section>
+      <div className="screen setup">
+        <div className="opp-visual">
+          <span className="opp-glyph" aria-hidden="true">
+            {band.glyph}
+          </span>
+          <div className="opp-elo">{elo}</div>
+          <div className="opp-band">{band.name}</div>
+          <div className="muted small">{band.blurb}</div>
+        </div>
+        <input
+          className="slider"
+          type="range"
+          min={MIN_ELO}
+          max={MAX_ELO}
+          step={ELO_STEP}
+          value={elo}
+          style={{ ['--pct' as string]: `${pct}%` }}
+          onChange={(e) => setElo(Number(e.target.value))}
+          aria-label="Opponent strength"
+        />
+        <div className="slider-labels muted small">
+          <span>{MIN_ELO}</span>
+          <button type="button" className="link small" onClick={() => setElo(clampElo(profile.rating))}>
+            match my rating ({clampElo(profile.rating)})
+          </button>
+          <span>{MAX_ELO}</span>
+        </div>
+
+        <div className="color-pick">
+          {(['w', 'random', 'b'] as ColorChoice[]).map((c) => (
+            <button
+              type="button"
+              key={c}
+              className={'color-btn' + (colorChoice === c ? ' selected' : '') + (c === 'b' ? ' black' : '')}
+              onClick={() => setColorChoice(c)}
+              aria-label={c === 'w' ? 'Play White' : c === 'b' ? 'Play Black' : 'Random color'}
+            >
+              <span className="color-glyph">{c === 'w' ? '♔' : c === 'b' ? '♚' : '♔♚'}</span>
+              <span className="color-label">{c === 'w' ? 'White' : c === 'b' ? 'Black' : 'Random'}</span>
+            </button>
+          ))}
+        </div>
+
         <button type="button" className="primary big" onClick={() => void startGame()} disabled={!engineReady}>
           {engineReady ? 'Start game' : 'Loading engine…'}
         </button>
-        <p className="muted small">
-          Your rating: <strong>{profile.rating}</strong> · {profile.gamesPlayed} games
+        <p className="muted small center">
+          <Icon name="bulb" size={14} /> Hints are available during play. Using one makes the game unrated.
         </p>
       </div>
     )
@@ -270,7 +324,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           { p: 'n', glyph: '♞' },
         ]
 
-  const youWon = outcome && ((outcome.status.result === '1-0') === (playerColor === 'w')) && outcome.status.result !== '1/2-1/2'
+  const youWon =
+    outcome && outcome.status.result !== '1/2-1/2' && (outcome.status.result === '1-0') === (playerColor === 'w')
   const delta = outcome ? outcome.ratingAfter - outcome.ratingBefore : 0
 
   return (
@@ -278,12 +333,14 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       <div className="play-bar">
         <div>
           <div className="bar-title">
-            {level.name} <span className="muted">~{level.elo}</span>
+            <span aria-hidden="true">{strength.glyph}</span> {strength.band} <span className="muted">{strength.elo}</span>
           </div>
-          <div className="muted small">{thinking ? 'Thinking…' : phase === 'over' ? 'Game over' : 'Your move'}</div>
+          <div className="muted small">
+            {thinking ? 'Thinking…' : phase === 'over' ? 'Game over' : hinting ? 'Finding a hint…' : 'Your move'}
+          </div>
         </div>
         <div className="bar-right">
-          <div className="bar-title">{profile.rating}</div>
+          <div className="bar-title">{hintUsed ? <span className="tag">Unrated</span> : profile.rating}</div>
           <div className="muted small">you ({playerColor === 'w' ? 'White' : 'Black'})</div>
         </div>
       </div>
@@ -298,6 +355,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           lastMove={lastMove}
           check={inCheck}
           viewOnly={phase !== 'playing'}
+          shapes={shapes}
           onMove={onBoardMove}
         />
         {promo && (
@@ -307,7 +365,14 @@ export default function PlayScreen({ profile, onProfile }: Props) {
                 {pp.glyph}
               </button>
             ))}
-            <button type="button" className="cancel" onClick={() => { setPromo(null); sync() }}>
+            <button
+              type="button"
+              className="cancel"
+              onClick={() => {
+                setPromo(null)
+                sync()
+              }}
+            >
               ✕
             </button>
           </div>
@@ -316,10 +381,28 @@ export default function PlayScreen({ profile, onProfile }: Props) {
 
       <MoveList moves={moves} />
 
+      {hint && phase === 'playing' && (
+        <div className="hint-card">
+          <div className="hint-head">
+            <Icon name="bulb" size={18} />
+            <span className="hint-move">{hint.san}</span>
+            <button type="button" className="hint-close" onClick={() => setHint(null)} aria-label="Dismiss hint">
+              ✕
+            </button>
+          </div>
+          <p>{hint.idea}</p>
+        </div>
+      )}
+
       {phase === 'playing' && (
         <div className="btn-row">
+          <button type="button" className="with-icon" onClick={() => void askHint()} disabled={!canMove || hinting}>
+            <Icon name="bulb" size={18} /> Hint
+          </button>
           <button type="button" onClick={() => setFlipped((f) => !f)}>Flip</button>
-          <button type="button" onClick={resign} disabled={moves.length === 0}>Resign</button>
+          <button type="button" className="with-icon" onClick={resign} disabled={moves.length === 0}>
+            <Icon name="flag" size={18} /> Resign
+          </button>
           <button type="button" onClick={abandon}>Quit</button>
         </div>
       )}
@@ -328,13 +411,20 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         <div className="card result">
           <h3>{outcome.status.result === '1/2-1/2' ? 'Draw' : youWon ? 'You won' : 'You lost'}</h3>
           <p className="muted">{outcome.status.termination}</p>
-          <p>
-            Rating {outcome.ratingBefore} → <strong>{outcome.ratingAfter}</strong>{' '}
-            <span className={delta >= 0 ? 'up' : 'down'}>({delta >= 0 ? '+' : ''}{delta})</span>
-          </p>
+          {outcome.rated ? (
+            <p>
+              Rating {outcome.ratingBefore} → <strong>{outcome.ratingAfter}</strong>{' '}
+              <span className={delta >= 0 ? 'up' : 'down'}>
+                ({delta >= 0 ? '+' : ''}
+                {delta})
+              </span>
+            </p>
+          ) : (
+            <p className="muted">Unrated game (a hint was used). Rating stays at {outcome.ratingBefore}.</p>
+          )}
           <div className="btn-row">
             <button type="button" className="primary" onClick={() => void startGame()}>Rematch</button>
-            <button type="button" onClick={() => setPhase('setup')}>Change level</button>
+            <button type="button" onClick={() => setPhase('setup')}>Change strength</button>
             <button type="button" onClick={() => navigate(`/games/${outcome.gameId}`)}>Review</button>
           </div>
         </div>

@@ -4,8 +4,8 @@ import type { Key } from 'chessground/types'
 import Board from '../components/Board'
 import MoveList from '../components/MoveList'
 import { cgColor } from '../game/chessUtil'
-import { getLevel } from '../game/levels'
 import { db, type GameRecord } from '../lib/db'
+import { opponentLabel } from './GamesScreen'
 
 interface Props {
   id: number
@@ -55,10 +55,11 @@ export default function ReviewScreen({ id }: Props) {
       <div className="play-bar">
         <div>
           <div className="bar-title">
-            {game.playerColor === 'w' ? 'White' : 'Black'} vs {getLevel(game.levelId).name}
+            {game.playerColor === 'w' ? 'White' : 'Black'} vs {opponentLabel(game)}
           </div>
           <div className="muted small">
             {game.result} · {game.termination}
+            {game.rated === false ? ' · unrated' : ''}
           </div>
         </div>
         <div className="bar-right">

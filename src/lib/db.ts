@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 import { STARTING_RATING } from '../game/rating'
+import { LEGACY_LEVEL_ELO } from '../game/levels'
 
 export type Color = 'w' | 'b'
 export type Result = '1-0' | '0-1' | '1/2-1/2' | '*'
@@ -8,7 +9,10 @@ export interface GameRecord {
   id?: number
   playedAt: number
   playerColor: Color
-  levelId: number
+  /** opponent strength on the sliding scale */
+  opponentElo: number
+  /** false when a hint was used; the game then does not affect the rating */
+  rated: boolean
   result: Result
   termination: string
   /** SAN moves in order */
@@ -16,6 +20,8 @@ export interface GameRecord {
   finalFen: string
   ratingBefore: number
   ratingAfter: number
+  /** first build only; superseded by opponentElo */
+  levelId?: number
 }
 
 export interface Setting {
@@ -39,6 +45,21 @@ db.version(1).stores({
   settings: 'key',
 })
 
+db.version(2)
+  .stores({
+    games: '++id, playedAt, opponentElo, result',
+    settings: 'key',
+  })
+  .upgrade((tx) =>
+    tx
+      .table('games')
+      .toCollection()
+      .modify((g: GameRecord) => {
+        if (g.opponentElo == null) g.opponentElo = LEGACY_LEVEL_ELO[g.levelId ?? 5] ?? 1400
+        if (g.rated == null) g.rated = true
+      }),
+  )
+
 const DEFAULT_PROFILE: Profile = { rating: STARTING_RATING, gamesPlayed: 0, peakRating: STARTING_RATING }
 
 export async function getProfile(): Promise<Profile> {
@@ -61,19 +82,24 @@ export async function setSetting(key: string, value: unknown): Promise<void> {
 
 export async function exportBackup(): Promise<string> {
   const [games, settings] = await Promise.all([db.games.toArray(), db.settings.toArray()])
-  return JSON.stringify({ app: 'chesscoach', version: 1, exportedAt: Date.now(), games, settings }, null, 2)
+  return JSON.stringify({ app: 'chesscoach', version: 2, exportedAt: Date.now(), games, settings }, null, 2)
 }
 
 export async function importBackup(json: string): Promise<{ games: number }> {
   const data = JSON.parse(json) as { app?: string; games?: GameRecord[]; settings?: Setting[] }
   if (data.app !== 'chesscoach') throw new Error('Not a Chess Coach backup file')
+  const games = (data.games ?? []).map((g) => ({
+    ...g,
+    opponentElo: g.opponentElo ?? LEGACY_LEVEL_ELO[g.levelId ?? 5] ?? 1400,
+    rated: g.rated ?? true,
+  }))
   await db.transaction('rw', db.games, db.settings, async () => {
     await db.games.clear()
     await db.settings.clear()
-    await db.games.bulkAdd(data.games ?? [])
+    await db.games.bulkAdd(games)
     await db.settings.bulkPut(data.settings ?? [])
   })
-  return { games: data.games?.length ?? 0 }
+  return { games: games.length }
 }
 
 export async function resetAll(): Promise<void> {
