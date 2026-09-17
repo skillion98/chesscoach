@@ -1869,3 +1869,20 @@ button.link {
   box-sizing: border-box;
 }
 
+
+/* A finger drag on the board must never pan or scroll the page (iOS Safari). */
+.board-wrap,
+.board,
+.cg-wrap,
+cg-container,
+cg-board {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+html,
+body {
+  overscroll-behavior-x: none;
+}
