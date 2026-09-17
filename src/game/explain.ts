@@ -1,5 +1,5 @@
-// Rule-based "idea behind the move" for hints. Uses the engine for the move itself
-// and for threat detection (null-move searches), and chess.js for board features.
+// Rule-based "idea behind the move" for hints and analysis. Uses the engine for the move
+// itself and for threat detection (null-move searches), and chess.js for board features.
 
 import { Chess, type Color, type Move, type PieceSymbol, type Square } from 'chess.js'
 import type { Engine } from '../engine/stockfish'
@@ -13,8 +13,8 @@ export interface Hint {
   evalCp: number
 }
 
-const VALUE: Record<PieceSymbol, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 }
-const NAME: Record<PieceSymbol, string> = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' }
+export const VALUE: Record<PieceSymbol, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 }
+export const NAME: Record<PieceSymbol, string> = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' }
 const FILES = 'abcdefgh'
 
 function other(c: Color): Color {
@@ -22,38 +22,38 @@ function other(c: Color): Color {
 }
 
 /** Same position with the other side to move (a "pass"). Only valid when the side to move is not in check. */
-function nullMoveFen(fen: string): string {
+export function nullMoveFen(fen: string): string {
   const parts = fen.split(' ')
   parts[1] = parts[1] === 'w' ? 'b' : 'w'
   parts[3] = '-'
   return parts.join(' ')
 }
 
-function findMove(chess: Chess, uci: string): Move | undefined {
+export function findMove(chess: Chess, uci: string): Move | undefined {
   return chess.moves({ verbose: true }).find((m) => m.from + m.to + (m.promotion ?? '') === uci)
 }
 
-function material(chess: Chess, color: Color): number {
+export function material(chess: Chess, color: Color): number {
   let sum = 0
   for (const row of chess.board()) for (const sq of row) if (sq && sq.color === color) sum += VALUE[sq.type]
   return sum
 }
 
-function nonPawnMaterial(chess: Chess): number {
+export function nonPawnMaterial(chess: Chess): number {
   let sum = 0
   for (const row of chess.board()) for (const sq of row) if (sq && sq.type !== 'p') sum += VALUE[sq.type]
   return sum
 }
 
 /** After `mv` is played on `pos`, can the opponent capture back on the landing square? */
-function canRecapture(pos: Chess, mv: Move): boolean {
+export function canRecapture(pos: Chess, mv: Move): boolean {
   const c = new Chess(pos.fen())
   c.move(mv)
   return c.moves({ verbose: true }).some((x) => x.to === mv.to && !!x.captured)
 }
 
 /** A capture that wins material or takes something undefended. */
-function isGoodCapture(pos: Chess, mv: Move): boolean {
+export function isGoodCapture(pos: Chess, mv: Move): boolean {
   if (!mv.captured) return false
   if (VALUE[mv.captured] > VALUE[mv.piece]) return true
   return !canRecapture(pos, mv)
@@ -80,7 +80,8 @@ function relRank(s: Square, color: Color): number {
 function pawnsOnFile(chess: Chess, file: number, color?: Color): Square[] {
   const out: Square[] = []
   for (let r = 1; r <= 8; r++) {
-    const s = sq(file, r)!
+    const s = sq(file, r)
+    if (!s) continue
     const p = chess.get(s)
     if (p && p.type === 'p' && (!color || p.color === color)) out.push(s)
   }
@@ -209,30 +210,33 @@ function evalContext(cp: number, gap: number, secondSan: string | null, mate: nu
   if (cp >= 100) return 'Keeps a clear advantage.'
   if (cp >= 30) return 'Keeps a small edge.'
   if (cp > -30) return 'The position stays balanced.'
-  if (cp > -150) return 'The most resilient defense; look to trade into a holdable endgame.'
+  if (cp > -100) return 'Keeps the position close to equal.'
+  if (cp > -300) return 'Limits the damage; the position is worse but holdable.'
   return 'The best practical try in a difficult position.'
 }
 
-/** Compute the best move and a short explanation of the idea behind it. The engine must be at full strength. */
-export async function computeHint(chess: Chess, engine: Engine): Promise<Hint | null> {
+export interface ExplainContext {
+  /** evaluation after the move from the mover's perspective, centipawns */
+  cp: number
+  mate: number | null
+  /** centipawn gap to the second-best move, if known */
+  gap?: number
+  secondSan?: string | null
+}
+
+/**
+ * Explain why `m` is a good move in `chess` (side to move plays it).
+ * Runs two short null-move searches for threat detection; the engine should be at full strength.
+ */
+export async function explainMove(chess: Chess, m: Move, engine: Engine, ctx: ExplainContext): Promise<string> {
   const fen = chess.fen()
   const us = chess.turn()
-  const res = await engine.search(fen, { movetime: 1000, multipv: 3 })
-  const best = res.lines[0]
-  if (!best) return null
-  const m = findMove(chess, best.move) ?? findMove(chess, res.bestMove)
-  if (!m) return null
-  const second = res.lines[1]
-  const secondMove = second ? findMove(chess, second.move) : undefined
-  const gap = second ? best.cp - second.cp : 0
-
   const after = new Chess(fen)
   after.move(m)
   const ideas: string[] = []
+  const forcedMate = ctx.mate !== null && ctx.mate > 0
 
-  if (best.mate !== null && best.mate > 0) {
-    ideas.push(best.mate === 1 ? 'Checkmate.' : `Forces checkmate in ${best.mate}.`)
-  }
+  if (forcedMate) ideas.push(ctx.mate === 1 ? 'Checkmate.' : `Forces checkmate in ${ctx.mate}.`)
 
   // What was the opponent threatening if we simply passed?
   let oppThreat: Move | null = null
@@ -301,21 +305,31 @@ export async function computeHint(chess: Chess, engine: Engine): Promise<Hint | 
     }
   }
 
-  const forcedMate = best.mate !== null && best.mate > 0
   if (ideas.length < 2 && !forcedMate) {
     const p = positionalIdea(chess, after, m, us)
     if (p) ideas.push(p)
   }
 
-  const ctx = evalContext(best.cp, gap, secondMove?.san ?? null, best.mate)
-  if (ctx) ideas.push(ctx)
+  const c = evalContext(ctx.cp, ctx.gap ?? 0, ctx.secondSan ?? null, ctx.mate)
+  if (c) ideas.push(c)
 
-  return {
-    uci: m.from + m.to + (m.promotion ?? ''),
-    san: m.san,
-    from: m.from,
-    to: m.to,
-    idea: ideas.slice(0, 3).join(' '),
-    evalCp: best.cp,
-  }
+  return ideas.slice(0, 3).join(' ')
+}
+
+/** Compute the best move and a short explanation of the idea behind it. The engine must be at full strength. */
+export async function computeHint(chess: Chess, engine: Engine): Promise<Hint | null> {
+  const res = await engine.search(chess.fen(), { movetime: 1000, multipv: 3 })
+  const best = res.lines[0]
+  if (!best) return null
+  const m = findMove(chess, best.move) ?? findMove(chess, res.bestMove)
+  if (!m) return null
+  const second = res.lines[1]
+  const secondMove = second ? findMove(chess, second.move) : undefined
+  const idea = await explainMove(chess, m, engine, {
+    cp: best.cp,
+    mate: best.mate,
+    gap: second ? best.cp - second.cp : 0,
+    secondSan: secondMove?.san ?? null,
+  })
+  return { uci: m.from + m.to + (m.promotion ?? ''), san: m.san, from: m.from, to: m.to, idea, evalCp: best.cp }
 }

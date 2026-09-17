@@ -11,7 +11,7 @@ interface Props {
 const TILES: { title: string; icon: IconName; path?: string }[] = [
   { title: 'Play', icon: 'play', path: '/play' },
   { title: 'Games', icon: 'history', path: '/games' },
-  { title: 'Analysis', icon: 'search' },
+  { title: 'Analysis', icon: 'search', path: 'analysis' },
   { title: 'Openings', icon: 'book' },
   { title: 'Puzzles', icon: 'puzzle' },
   { title: 'Coach', icon: 'coach' },
@@ -113,7 +113,10 @@ export default function HomeScreen({ profile }: Props) {
             key={t.title}
             className={'tile' + (t.path ? '' : ' disabled')}
             disabled={!t.path}
-            onClick={() => t.path && navigate(t.path)}
+            onClick={() => {
+              if (t.path === 'analysis') navigate(recent[0] ? `/games/${recent[0].id}/analyze` : '/games')
+              else if (t.path) navigate(t.path)
+            }}
           >
             <Icon name={t.icon} size={34} className="tile-icon" />
             <span className="tile-title">{t.title}</span>

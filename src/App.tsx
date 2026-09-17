@@ -22,7 +22,7 @@ export default function App() {
 
   let title = 'Chess Coach'
   let body
-  const review = /^\/games\/(\d+)$/.exec(route)
+  const review = /^\/games\/(\d+)(\/analyze)?$/.exec(route)
   if (route === '/play') {
     title = 'Play'
     body = <PlayScreen profile={profile} onProfile={setProfile} />
@@ -31,7 +31,7 @@ export default function App() {
     body = <GamesScreen />
   } else if (review) {
     title = 'Review'
-    body = <ReviewScreen id={Number(review[1])} />
+    body = <ReviewScreen id={Number(review[1])} autoAnalyze={!!review[2]} />
   } else if (route === '/settings') {
     title = 'Settings'
     body = <SettingsScreen profile={profile} onReload={reload} />

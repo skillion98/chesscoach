@@ -727,3 +727,292 @@ button.link {
   justify-content: center;
   gap: 6px;
 }
+
+/* Analysis */
+.evalbar {
+  height: 8px;
+  margin: 0 16px 8px;
+  border-radius: 4px;
+  background: #2a2a30;
+  overflow: hidden;
+}
+
+.evalbar-white {
+  height: 100%;
+  background: #ecebe6;
+  transition: width 0.25s ease;
+}
+
+.evalgraph {
+  display: block;
+  width: calc(100% - 32px);
+  height: 72px;
+  margin: 2px 16px 6px;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+.eg-bg {
+  fill: var(--panel);
+}
+
+.eg-area-good {
+  fill: rgba(95, 179, 106, 0.35);
+}
+
+.eg-area-bad {
+  fill: rgba(217, 96, 90, 0.35);
+}
+
+.eg-mid {
+  stroke: var(--muted);
+  stroke-width: 0.6;
+  stroke-dasharray: 3 3;
+}
+
+.eg-line {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.eg-cursor {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.eg-mark {
+  fill: var(--muted);
+  opacity: 0.7;
+}
+
+.eg-mark.mine {
+  opacity: 1;
+}
+
+.eg-mark.blunder {
+  fill: var(--loss);
+}
+
+.eg-mark.mistake {
+  fill: #e0873a;
+}
+
+.eg-mark.inaccuracy {
+  fill: var(--accent);
+}
+
+.move.j-blunder {
+  color: var(--loss);
+}
+
+.move.j-mistake {
+  color: #e0873a;
+}
+
+.move.j-inacc {
+  color: var(--accent);
+}
+
+.tag.j-blunder {
+  background: var(--loss);
+  color: #fff;
+}
+
+.tag.j-mistake {
+  background: #e0873a;
+  color: #1b1b1f;
+}
+
+.tag.j-inaccuracy {
+  background: var(--accent);
+  color: #1b1b1f;
+}
+
+.tag.j-best {
+  background: var(--win);
+  color: #1b1b1f;
+}
+
+.tag.j-good {
+  background: var(--panel-2);
+}
+
+.moment-card {
+  margin: 0 16px 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border-left: 4px solid var(--panel-2);
+}
+
+.moment-card.blunder {
+  border-left-color: var(--loss);
+}
+
+.moment-card.mistake {
+  border-left-color: #e0873a;
+}
+
+.moment-card.inaccuracy {
+  border-left-color: var(--accent);
+}
+
+.moment-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.moment-move {
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.moment-phase {
+  margin-left: auto;
+  text-transform: capitalize;
+}
+
+.moment-card p {
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+.moment-explain {
+  color: var(--muted);
+}
+
+.analyze-card {
+  margin: 8px 16px;
+  text-align: center;
+}
+
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--panel-2);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+
+.summary {
+  margin: 4px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acc-row {
+  display: flex;
+  gap: 12px;
+}
+
+.acc {
+  flex: 1;
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+
+.acc-num {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--panel-2);
+}
+
+.chip.j-blunder {
+  color: var(--loss);
+}
+
+.chip.j-mistake {
+  color: #e0873a;
+}
+
+.chip.j-inacc {
+  color: var(--accent);
+}
+
+.phases {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phase-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 84px;
+  align-items: center;
+  gap: 10px;
+}
+
+.phase-name {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.phase-bar {
+  height: 8px;
+  background: var(--panel-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.phase-fill {
+  display: block;
+  height: 100%;
+  background: var(--win);
+}
+
+.phase-fill.mid {
+  background: var(--accent);
+}
+
+.phase-fill.bad {
+  background: var(--loss);
+}
+
+.phase-val {
+  text-align: right;
+}
+
+.moments h3 {
+  margin: 4px 0 8px;
+}
+
+.moment {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--panel);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-size: 15px;
+}

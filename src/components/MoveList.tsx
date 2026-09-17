@@ -1,24 +1,45 @@
 import { useEffect, useRef } from 'react'
 
+export interface MoveMark {
+  symbol: string
+  cls: string
+}
+
 interface Props {
   moves: string[]
   /** number of plies currently shown on the board */
   ply?: number
   onSelect?: (ply: number) => void
+  /** annotations keyed by 1-based ply */
+  marks?: Record<number, MoveMark>
 }
 
-export default function MoveList({ moves, ply, onSelect }: Props) {
+export default function MoveList({ moves, ply, onSelect, marks }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const current = ply ?? moves.length
 
   useEffect(() => {
     const active = ref.current?.querySelector('.move.active')
-    active?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    active?.scrollIntoView({ block: 'nearest', inline: 'center' })
   }, [current, moves.length])
 
   const rows: { n: number; w?: string; b?: string; wi: number; bi: number }[] = []
   for (let i = 0; i < moves.length; i += 2) {
     rows.push({ n: i / 2 + 1, w: moves[i], b: moves[i + 1], wi: i + 1, bi: i + 2 })
+  }
+
+  const btn = (san: string, p: number) => {
+    const mk = marks?.[p]
+    return (
+      <button
+        type="button"
+        className={'move' + (current === p ? ' active' : '') + (mk ? ' ' + mk.cls : '')}
+        onClick={() => onSelect?.(p)}
+      >
+        {san}
+        {mk?.symbol}
+      </button>
+    )
   }
 
   return (
@@ -27,22 +48,8 @@ export default function MoveList({ moves, ply, onSelect }: Props) {
       {rows.map((r) => (
         <span key={r.n} className="move-row">
           <span className="move-num">{r.n}.</span>
-          <button
-            type="button"
-            className={'move' + (current === r.wi ? ' active' : '')}
-            onClick={() => onSelect?.(r.wi)}
-          >
-            {r.w}
-          </button>
-          {r.b && (
-            <button
-              type="button"
-              className={'move' + (current === r.bi ? ' active' : '')}
-              onClick={() => onSelect?.(r.bi)}
-            >
-              {r.b}
-            </button>
-          )}
+          {r.w && btn(r.w, r.wi)}
+          {r.b && btn(r.b, r.bi)}
         </span>
       ))}
     </div>

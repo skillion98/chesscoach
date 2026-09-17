@@ -425,7 +425,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           <div className="btn-row">
             <button type="button" className="primary" onClick={() => void startGame()}>Rematch</button>
             <button type="button" onClick={() => setPhase('setup')}>Change strength</button>
-            <button type="button" onClick={() => navigate(`/games/${outcome.gameId}`)}>Review</button>
+            <button type="button" className="with-icon" onClick={() => navigate(`/games/${outcome.gameId}/analyze`)}>
+              <Icon name="search" size={18} /> Analyze
+            </button>
           </div>
         </div>
       )}

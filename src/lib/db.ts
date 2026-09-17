@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie'
 import { STARTING_RATING } from '../game/rating'
 import { LEGACY_LEVEL_ELO } from '../game/levels'
+import type { GameAnalysis } from '../analysis/analyze'
 
 export type Color = 'w' | 'b'
 export type Result = '1-0' | '0-1' | '1/2-1/2' | '*'
@@ -22,6 +23,8 @@ export interface GameRecord {
   ratingAfter: number
   /** first build only; superseded by opponentElo */
   levelId?: number
+  /** engine review, filled in on demand */
+  analysis?: GameAnalysis
 }
 
 export interface Setting {
