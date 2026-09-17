@@ -17,6 +17,13 @@ import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, t
 import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
 import { describeMove } from '../game/commentary'
+import MoveBadge from '../components/MoveBadge'
+import { baseJudgment, refineJudgment, winChance, type Judgment } from '../analysis/judge'
+import { findMove, isGoodCapture } from '../game/explain'
+import { moveFeatures } from '../game/features'
+import { isBookPrefix } from '../openings/stats'
+import { playJudgment, playMove } from '../lib/sounds'
+import type { PvLine } from '../engine/stockfish'
 import { navigate } from '../lib/router'
 
 type Phase = 'setup' | 'playing' | 'over'
@@ -77,6 +84,11 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const commentaryRef = useRef(false)
   const [comments, setComments] = useState<string[]>([])
   const [openingName, setOpeningName] = useState<string | null>(null)
+  const [badge, setBadge] = useState<{ square: string; judgment: Judgment; nonce: number } | null>(null)
+  const feedbackRef = useRef(true)
+  const soundsRef = useRef(true)
+  const preRef = useRef<{ fen: string; lines: PvLine[] } | null>(null)
+  const lastPlayerRef = useRef<{ before: Chess; m: import('chess.js').Move; history: string[] } | null>(null)
 
   useEffect(() => {
     if (phase === 'setup') suggestOpponent(profile.rating).then(setSuggestion).catch(() => undefined)
@@ -87,6 +99,66 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       setCommentaryOn(v)
       commentaryRef.current = v
     })
+    getSetting<boolean>('moveFeedback', true).then((v) => (feedbackRef.current = v))
+    getSetting<boolean>('sounds', true).then((v) => (soundsRef.current = v))
+  }, [])
+
+  /** Evaluate the position the player is about to move in, so their move can be judged right away. */
+  const preAnalyze = useCallback(async () => {
+    if (!feedbackRef.current) return
+    const fen = chessRef.current.fen()
+    const token = tokenRef.current
+    const eng = getEngine()
+    try {
+      await eng.setOptions({ 'Skill Level': 20 })
+      const res = await eng.search(fen, { movetime: 300, multipv: 2 })
+      await eng.setOptions({ 'Skill Level': strengthRef.current.skill })
+      if (token === tokenRef.current && chessRef.current.fen() === fen) preRef.current = { fen, lines: res.lines }
+    } catch {
+      /* best effort */
+    }
+  }, [])
+
+  /** Judge the player's last move using the pre-analysis and the engine's reply search. */
+  const judgePlayerMove = useCallback(async (replyLines: PvLine[]) => {
+    const lp = lastPlayerRef.current
+    const pre = preRef.current
+    if (!feedbackRef.current || !lp || !pre || pre.fen !== lp.before.fen() || pre.lines.length === 0) return
+    const uci = lp.m.from + lp.m.to + (lp.m.promotion ?? '')
+    const best = pre.lines[0]
+    const second = pre.lines[1]
+    const inList = pre.lines.find((l) => l.move === uci)
+    const moverBefore = best.cp
+    const moverAfter = inList ? inList.cp : -(replyLines[0]?.cp ?? 0)
+    const playedBest = uci === best.move
+    const cpLoss = playedBest ? 0 : Math.max(0, Math.min(1000, moverBefore - moverAfter))
+    const wcB = winChance(moverBefore)
+    const wcA = playedBest ? wcB : winChance(moverAfter)
+    const base = baseJudgment(wcB, wcA, playedBest)
+    const feats = moveFeatures(lp.before, lp.m)
+    const bestMove = findMove(lp.before, best.move)
+    const missedWin =
+      !playedBest && ((best.mate !== null && best.mate > 0) || (!!bestMove?.captured && isGoodCapture(lp.before, bestMove)))
+    let book = false
+    try {
+      book = await isBookPrefix(lp.history)
+    } catch {
+      book = false
+    }
+    const j = refineJudgment({
+      base,
+      playedBest,
+      cpLoss,
+      moverBefore,
+      moverAfter,
+      gap: second ? best.cp - second.cp : null,
+      sacrifice: feats.sacrifice,
+      prevOpponentErred: false,
+      book,
+      missedWin,
+    })
+    setBadge({ square: lp.m.to, judgment: j, nonce: Date.now() })
+    if (soundsRef.current) playJudgment(j)
   }, [])
 
   /** Called with the position before a move and the move just made, for both sides. */
@@ -178,6 +250,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     let uci = ''
     try {
       const res = await getEngine().search(c.fen(), { movetime: st.movetime, multipv: st.multipv })
+      if (token === tokenRef.current) void judgePlayerMove(res.lines)
       uci = p ? choosePersonalityMove(c, res.lines, legalUci(c), p, st) : chooseMove(res.lines, res.bestMove, legalUci(c), st)
     } catch {
       uci = legalUci(c)[0] ?? ''
@@ -196,9 +269,11 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     }
     sync()
     if (made) narrate(before, made, c.history())
+    if (made && soundsRef.current) playMove(!!made.captured)
     const stt = gameStatus(c)
     if (stt.over) void finish(stt)
-  }, [sync, finish, narrate])
+    else void preAnalyze()
+  }, [sync, finish, narrate, preAnalyze, judgePlayerMove])
 
   const startGame = useCallback(async () => {
     const p = mode === 'personality' ? (personalityById(personalityId) ?? null) : null
@@ -220,6 +295,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     setPromo(null)
     setComments([])
     setOpeningName(null)
+    setBadge(null)
+    preRef.current = null
+    lastPlayerRef.current = null
     sync()
     setPhase('playing')
     void setSetting('lastElo', elo)
@@ -230,7 +308,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     await eng.newGame()
     await eng.setOptions({ 'Skill Level': st.skill })
     if (pc === 'b') void engineTurn()
-  }, [mode, personalityId, elo, colorChoice, sync, engineTurn])
+    else void preAnalyze()
+  }, [mode, personalityId, elo, colorChoice, sync, engineTurn, preAnalyze])
 
   const playerMove = useCallback(
     (from: Key, to: Key, promotion?: string) => {
@@ -245,8 +324,11 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       }
       setPromo(null)
       setHint(null)
+      setBadge(null)
+      lastPlayerRef.current = { before, m: made, history: c.history() }
       sync()
       narrate(before, made, c.history())
+      if (soundsRef.current) playMove(!!made.captured)
       const st = gameStatus(c)
       if (st.over) {
         void finish(st)
@@ -304,6 +386,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     setHinting(false)
     setHint(null)
     setPromo(null)
+    setBadge(null)
+    preRef.current = null
+    lastPlayerRef.current = null
     // take back the engine reply (if it has been made) and the player's move
     let taken = 0
     if (c.turn() === playerColorRef.current) {
@@ -315,7 +400,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     identifyOpening(c.history())
       .then((op) => setOpeningName(op ? op.name : null))
       .catch(() => undefined)
-  }, [sync])
+    void preAnalyze()
+  }, [sync, preAnalyze])
 
   const resign = useCallback(() => {
     if (!window.confirm('Resign this game?')) return
@@ -528,6 +614,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           shapes={shapes}
           onMove={onBoardMove}
         />
+        {badge && phase === 'playing' && (
+          <MoveBadge square={badge.square} orientation={orientation} judgment={badge.judgment} nonce={badge.nonce} />
+        )}
         {promo && (
           <div className="promo">
             {promoPieces.map((pp) => (

@@ -6,6 +6,8 @@ import Board from '../components/Board'
 import EvalGraph from '../components/EvalGraph'
 import Icon from '../components/Icons'
 import MoveList, { type MoveMark } from '../components/MoveList'
+import MoveBadge from '../components/MoveBadge'
+import { JUDGMENT_META, isError } from '../analysis/judge'
 import {
   analyzeGame,
   formatEval,
@@ -28,8 +30,11 @@ interface Props {
 }
 
 const SYMBOL: Record<string, MoveMark> = {
+  brilliant: { symbol: '!!', cls: 'j-brilliant' },
+  great: { symbol: '!', cls: 'j-great' },
   blunder: { symbol: '??', cls: 'j-blunder' },
   mistake: { symbol: '?', cls: 'j-mistake' },
+  miss: { symbol: '✗', cls: 'j-miss' },
   inaccuracy: { symbol: '?!', cls: 'j-inacc' },
 }
 
@@ -125,13 +130,13 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
 
   const me = game.playerColor
   const current: PlyAnalysis | undefined = analysis && ply > 0 ? analysis.plies[ply - 1] : undefined
-  const isError = !!current && (current.judgment === 'inaccuracy' || current.judgment === 'mistake' || current.judgment === 'blunder')
-  const viewPly = showBest && isError ? ply - 1 : ply
+  const isErr = !!current && isError(current.judgment)
+  const viewPly = showBest && isErr ? ply - 1 : ply
   const pos = positions[viewPly]
   const orientation = cgColor(flipped ? (me === 'w' ? 'b' : 'w') : me)
 
   const shapes: DrawShape[] =
-    showBest && isError && current
+    showBest && isErr && current
       ? [
           { orig: current.uci.slice(0, 2) as Key, dest: current.uci.slice(2, 4) as Key, brush: 'red' },
           { orig: current.bestUci.slice(0, 2) as Key, dest: current.bestUci.slice(2, 4) as Key, brush: 'green' },
@@ -195,6 +200,9 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
           shapes={shapes}
           viewOnly
         />
+        {current && viewPly === ply && (
+          <MoveBadge square={current.uci.slice(2, 4)} orientation={orientation} judgment={current.judgment} nonce={ply} />
+        )}
       </div>
 
       <MoveList moves={game.moves} ply={ply} onSelect={go} marks={marks} />
@@ -205,7 +213,7 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
           ply={viewPly}
           perspective={me}
           marks={analysis.plies
-            .filter((p) => p.judgment === 'inaccuracy' || p.judgment === 'mistake' || p.judgment === 'blunder')
+            .filter((p) => isError(p.judgment) || p.judgment === 'brilliant' || p.judgment === 'great')
             .map((p) => ({ ply: p.ply, judgment: p.judgment, mine: p.mover === me }))}
           onSelect={go}
         />
@@ -223,11 +231,13 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
         <div className={'moment-card ' + current.judgment}>
           <div className="moment-head">
             <span className="moment-move">{moveLabel(current.ply, current.san)}</span>
-            <span className={'tag j-' + current.judgment}>{judgmentWord(current.judgment)}</span>
+            <span className="tag" style={{ background: JUDGMENT_META[current.judgment].color, color: '#1b1b1f' }}>
+              {JUDGMENT_META[current.judgment].symbol} {judgmentWord(current.judgment)}
+            </span>
             {current.cpLoss > 0 && <span className="muted small">−{(current.cpLoss / 100).toFixed(1)}</span>}
             <span className="muted small moment-phase">{current.phase}</span>
           </div>
-          {isError ? (
+          {isErr ? (
             <>
               <p>
                 {tagText(current)} Best was <strong>{current.bestSan}</strong>
@@ -281,6 +291,8 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
             </div>
           </div>
           <div className="chips">
+            {mine.brilliant > 0 && <span className="chip" style={{ color: JUDGMENT_META.brilliant.color }}>{mine.brilliant} brilliant</span>}
+            {mine.great > 0 && <span className="chip" style={{ color: JUDGMENT_META.great.color }}>{mine.great} great</span>}
             <span className="chip j-blunder">{mine.blunders} blunder{mine.blunders === 1 ? '' : 's'}</span>
             <span className="chip j-mistake">{mine.mistakes} mistake{mine.mistakes === 1 ? '' : 's'}</span>
             <span className="chip j-inacc">{mine.inaccuracies} inaccurac{mine.inaccuracies === 1 ? 'y' : 'ies'}</span>

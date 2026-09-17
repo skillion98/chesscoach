@@ -1886,3 +1886,119 @@ html,
 body {
   overscroll-behavior-x: none;
 }
+
+/* Move badges (chess.com style) */
+.move-badge {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+  z-index: 3;
+  pointer-events: none;
+  animation: badge-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.move-badge.j-book,
+.move-badge.j-inaccuracy,
+.move-badge.j-good,
+.move-badge.j-best {
+  color: #1b1b1f;
+}
+
+.move-badge.j-book {
+  font-size: 14px;
+}
+
+.move-badge.j-brilliant {
+  box-shadow: 0 0 0 4px rgba(38, 194, 163, 0.35), 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.move-badge.j-blunder {
+  animation: badge-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1), badge-shake 0.4s 0.3s;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0) rotate(-25deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.3) rotate(4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes badge-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.move.j-brilliant {
+  color: #26c2a3;
+  font-weight: 700;
+}
+
+.move.j-great {
+  color: #5b8def;
+  font-weight: 700;
+}
+
+.move.j-miss {
+  color: #ff7769;
+}
+
+.eg-mark.brilliant {
+  fill: #26c2a3;
+}
+
+.eg-mark.great {
+  fill: #5b8def;
+}
+
+.eg-mark.miss {
+  fill: #ff7769;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--panel-2);
+}
+
+.toggle-row:last-child {
+  border-bottom: 0;
+}
+
+.toggle-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-label {
+  font-weight: 600;
+}
+
+.toggle-row input {
+  width: 24px;
+  height: 24px;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}

@@ -1,5 +1,28 @@
-import { useRef, useState } from 'react'
-import { exportBackup, importBackup, resetAll, type Profile } from '../lib/db'
+import { useEffect, useRef, useState } from 'react'
+import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
+
+function Toggle({ label, hint, settingKey, fallback }: { label: string; hint: string; settingKey: string; fallback: boolean }) {
+  const [on, setOn] = useState(fallback)
+  useEffect(() => {
+    getSetting<boolean>(settingKey, fallback).then(setOn)
+  }, [settingKey, fallback])
+  return (
+    <label className="toggle-row">
+      <span>
+        <span className="toggle-label">{label}</span>
+        <span className="muted small">{hint}</span>
+      </span>
+      <input
+        type="checkbox"
+        checked={on}
+        onChange={(e) => {
+          setOn(e.target.checked)
+          void setSetting(settingKey, e.target.checked)
+        }}
+      />
+    </label>
+  )
+}
 
 interface Props {
   profile: Profile
@@ -50,6 +73,17 @@ export default function SettingsScreen({ profile, onReload }: Props) {
         <p>
           Rating <strong>{profile.rating}</strong> · {profile.gamesPlayed} games · peak {profile.peakRating}
         </p>
+      </section>
+      <section className="card">
+        <h3>During play</h3>
+        <Toggle
+          label="Move feedback"
+          hint="Brilliant, Great, Mistake, Blunder badges on your moves, judged by the engine as you play."
+          settingKey="moveFeedback"
+          fallback
+        />
+        <Toggle label="Sounds" hint="Move clicks and a short chime or thud with each badge." settingKey="sounds" fallback />
+        <Toggle label="Commentary" hint="A sentence about every move under the board." settingKey="commentary" fallback={false} />
       </section>
       <section className="card">
         <h3>Backup</h3>

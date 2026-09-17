@@ -4,10 +4,14 @@
 import { Chess, type Move } from 'chess.js'
 import type { Engine } from '../engine/stockfish'
 import { NAME, explainMove, findMove, isGoodCapture, nonPawnMaterial } from '../game/explain'
+import { moveFeatures } from '../game/features'
+import { isBookPrefix } from '../openings/stats'
+import { JUDGMENT_META, baseJudgment, isError, refineJudgment, winChance, type Judgment } from './judge'
+
+export { winChance, type Judgment }
 
 export type Side = 'w' | 'b'
 export type Phase = 'opening' | 'middlegame' | 'endgame'
-export type Judgment = 'best' | 'good' | 'inaccuracy' | 'mistake' | 'blunder'
 export type MistakeTag = 'hung-material' | 'missed-tactic' | 'missed-mate' | 'allowed-mate' | 'positional'
 
 export interface PlyAnalysis {
@@ -48,6 +52,9 @@ export interface SideSummary {
   blunders: number
   mistakes: number
   inaccuracies: number
+  brilliant: number
+  great: number
+  book: number
   byPhase: Record<Phase, PhaseSummary>
 }
 
@@ -78,26 +85,12 @@ export interface AnalyzeOptions {
 
 export const MATE_CP = 10000
 
-/** Lichess-style winning chances in [-1, 1] from a centipawn eval. */
-export function winChance(cp: number): number {
-  const c = Math.max(-1000, Math.min(1000, cp))
-  return 2 / (1 + Math.exp(-0.00368208 * c)) - 1
-}
-
 export function moveAccuracy(wcBefore: number, wcAfter: number): number {
   const before = 50 + 50 * wcBefore
   const after = 50 + 50 * wcAfter
   if (after >= before) return 100
   const a = 103.1668 * Math.exp(-0.04354 * (before - after)) - 3.1669
   return Math.max(0, Math.min(100, a))
-}
-
-export function judge(wcBefore: number, wcAfter: number, playedBest: boolean): Judgment {
-  const drop = wcBefore - wcAfter
-  if (drop >= 0.3) return 'blunder'
-  if (drop >= 0.2) return 'mistake'
-  if (drop >= 0.1) return 'inaccuracy'
-  return playedBest ? 'best' : 'good'
 }
 
 export function phaseOf(chess: Chess, ply: number): Phase {
@@ -147,7 +140,7 @@ export function tagText(p: PlyAnalysis): string {
 }
 
 export function judgmentWord(j: Judgment): string {
-  return j === 'inaccuracy' ? 'Inaccuracy' : j === 'mistake' ? 'Mistake' : j === 'blunder' ? 'Blunder' : j === 'best' ? 'Best' : 'Good'
+  return JUDGMENT_META[j].word
 }
 
 export function moveLabel(ply: number, san: string): string {
@@ -165,7 +158,7 @@ function summarize(plies: PlyAnalysis[], side: Side): SideSummary {
   const phaseLoss: Record<Phase, number> = { opening: 0, middlegame: 0, endgame: 0 }
   let loss = 0
   let acc = 0
-  const s: SideSummary = { moves: mine.length, accuracy: 0, avgCpLoss: 0, blunders: 0, mistakes: 0, inaccuracies: 0, byPhase }
+  const s: SideSummary = { moves: mine.length, accuracy: 0, avgCpLoss: 0, blunders: 0, mistakes: 0, inaccuracies: 0, brilliant: 0, great: 0, book: 0, byPhase }
   for (const p of mine) {
     loss += p.cpLoss
     acc += p.accuracy
@@ -173,8 +166,11 @@ function summarize(plies: PlyAnalysis[], side: Side): SideSummary {
     phaseLoss[p.phase] += p.cpLoss
     if (p.judgment === 'blunder') s.blunders++
     if (p.judgment === 'mistake') s.mistakes++
-    if (p.judgment === 'inaccuracy') s.inaccuracies++
-    if (p.judgment === 'blunder' || p.judgment === 'mistake' || p.judgment === 'inaccuracy') byPhase[p.phase].errors++
+    if (p.judgment === 'inaccuracy' || p.judgment === 'miss') s.inaccuracies++
+    if (p.judgment === 'brilliant') s.brilliant++
+    if (p.judgment === 'great') s.great++
+    if (p.judgment === 'book') s.book++
+    if (isError(p.judgment)) byPhase[p.phase].errors++
   }
   s.accuracy = mine.length ? Math.round((acc / mine.length) * 10) / 10 : 0
   s.avgCpLoss = mine.length ? Math.round(loss / mine.length) : 0
@@ -207,6 +203,7 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
   const mates: (number | null)[] = []
   const bestUcis: string[] = []
   const bestLines: string[][] = []
+  const gaps: (number | null)[] = []
 
   for (let i = 0; i < fens.length; i++) {
     if (cancelled()) throw new Error('cancelled')
@@ -223,9 +220,12 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
       }
       bestUcis.push('')
       bestLines.push([])
+      gaps.push(null)
     } else {
-      const r = await engine.search(fens[i], { movetime, multipv: 1 })
+      const r = await engine.search(fens[i], { movetime, multipv: 2 })
       const line = r.lines[0]
+      const second = r.lines[1]
+      gaps.push(line && second ? line.cp - second.cp : null)
       const cp = line ? line.cp : 0
       evals.push(cp * sign)
       mates.push(line && line.mate !== null ? line.mate * sign : null)
@@ -238,6 +238,8 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
 
   // Judge each move.
   const plies: PlyAnalysis[] = []
+  const sansSoFar: string[] = []
+  let inBook = true
   for (let i = 0; i < played.length; i++) {
     const m = played[i]
     const mover: Side = i % 2 === 0 ? 'w' : 'b'
@@ -251,8 +253,13 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
     const cpLoss = playedBest ? 0 : Math.max(0, Math.min(1000, mBefore - mAfter))
     const wcB = winChance(mBefore)
     const wcA = playedBest ? wcB : winChance(mAfter)
-    const judgment = judge(wcB, wcA, playedBest)
+    const base = baseJudgment(wcB, wcA, playedBest)
     const bestMove = findMove(before, bestUci)
+    sansSoFar.push(m.san)
+    if (inBook) inBook = await isBookPrefix(sansSoFar)
+    const feats = moveFeatures(before, m)
+    const prev = plies[i - 1]
+    let judgment: Judgment = base
     const p: PlyAnalysis = {
       ply: i + 1,
       mover,
@@ -271,7 +278,7 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
       phase: phaseOf(before, i + 1),
     }
 
-    if (judgment === 'inaccuracy' || judgment === 'mistake' || judgment === 'blunder') {
+    if (isError(base)) {
       const mateB = mates[i] !== null ? mates[i]! * sign : null
       const mateA = mates[i + 1] !== null ? mates[i + 1]! * sign : null
       const after = new Chess(fens[i + 1])
@@ -289,6 +296,19 @@ export async function analyzeGame(moves: string[], engine: Engine, opts: Analyze
         p.tag = 'positional'
       }
     }
+    judgment = refineJudgment({
+      base,
+      playedBest,
+      cpLoss,
+      moverBefore: mBefore,
+      moverAfter: mAfter,
+      gap: gaps[i],
+      sacrifice: feats.sacrifice,
+      prevOpponentErred: !!prev && (prev.judgment === 'mistake' || prev.judgment === 'blunder'),
+      book: inBook,
+      missedWin: p.tag === 'missed-mate' || p.tag === 'missed-tactic',
+    })
+    p.judgment = judgment
     plies.push(p)
   }
 

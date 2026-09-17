@@ -249,6 +249,27 @@ export async function identifyOpening(moves: string[]): Promise<{ eco: string; n
   return best ? { eco: best[0], name: best[1] } : null
 }
 
+let prefixes: Set<string> | null = null
+
+/** True when the SAN sequence is still inside a named ECO line (a "book" move). */
+export async function isBookPrefix(sans: string[]): Promise<boolean> {
+  if (!prefixes) {
+    const rows = await loadEco()
+    prefixes = new Set<string>()
+    for (const r of rows) {
+      const toks = r[2].split(' ')
+      let acc = ''
+      for (const t of toks) {
+        acc = acc ? acc + ' ' + t : t
+        prefixes.add(acc)
+      }
+    }
+  }
+  if (sans.length === 0) return true
+  const clean = sans.map((s) => s.replace(/[?!]+$/, ''))
+  return prefixes.has(clean.join(' '))
+}
+
 export async function ecoRange(from: string, to: string): Promise<EcoRow[]> {
   const rows = await loadEco()
   return rows.filter((r) => r[0] >= from && r[0] <= to)
