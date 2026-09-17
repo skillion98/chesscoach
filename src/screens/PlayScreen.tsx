@@ -12,6 +12,7 @@ import { computeHint, type Hint } from '../game/explain'
 import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, type Status } from '../game/chessUtil'
 import { updateRating } from '../game/rating'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
+import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { navigate } from '../lib/router'
 
 type Phase = 'setup' | 'playing' | 'over'
@@ -101,6 +102,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         ratingAfter: after,
       }
       const gameId = (await db.games.add(rec)) as number
+      void recordGameAdherence(gameId, rec.playedAt, rec.moves, pc).catch(() => undefined)
+      void identifyOpening(rec.moves)
+        .then((op) => op && db.games.update(gameId, { opening: op }))
+        .catch(() => undefined)
       if (rated) {
         const next: Profile = {
           rating: after,

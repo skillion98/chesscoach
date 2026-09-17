@@ -7,6 +7,11 @@ import PlayScreen from './screens/PlayScreen'
 import GamesScreen from './screens/GamesScreen'
 import ReviewScreen from './screens/ReviewScreen'
 import SettingsScreen from './screens/SettingsScreen'
+import OpeningsScreen from './screens/OpeningsScreen'
+import OpeningScreen from './screens/OpeningScreen'
+import LessonScreen from './screens/LessonScreen'
+import WeakLinesScreen from './screens/WeakLinesScreen'
+import { courseBySlug } from './openings/model'
 
 export default function App() {
   const route = useRoute()
@@ -22,7 +27,11 @@ export default function App() {
 
   let title = 'Chess Coach'
   let body
+  let back: string | null = '/'
   const review = /^\/games\/(\d+)(\/analyze)?$/.exec(route)
+  const lesson = /^\/openings\/([a-z0-9-]+)\/(\d+)\/(learn|drill)(?:\/(\d+))?$/.exec(route)
+  const opening = /^\/openings\/([a-z0-9-]+)$/.exec(route)
+
   if (route === '/play') {
     title = 'Play'
     body = <PlayScreen profile={profile} onProfile={setProfile} />
@@ -31,21 +40,47 @@ export default function App() {
     body = <GamesScreen />
   } else if (review) {
     title = 'Review'
+    back = '/games'
     body = <ReviewScreen id={Number(review[1])} autoAnalyze={!!review[2]} />
   } else if (route === '/settings') {
     title = 'Settings'
     body = <SettingsScreen profile={profile} onReload={reload} />
+  } else if (route === '/openings') {
+    title = 'Openings'
+    body = <OpeningsScreen />
+  } else if (route === '/openings/weak') {
+    title = 'Weak lines'
+    back = '/openings'
+    body = <WeakLinesScreen />
+  } else if (lesson) {
+    const c = courseBySlug(lesson[1])
+    title = c ? c.title : 'Lesson'
+    back = `/openings/${lesson[1]}`
+    body = (
+      <LessonScreen
+        key={`${lesson[1]}-${lesson[2]}-${lesson[3]}-${lesson[4] ?? ''}`}
+        slug={lesson[1]}
+        idx={Number(lesson[2])}
+        mode={lesson[3] as 'learn' | 'drill'}
+        startPly={lesson[4] ? Number(lesson[4]) : undefined}
+      />
+    )
+  } else if (opening) {
+    title = 'Opening'
+    back = '/openings'
+    body = <OpeningScreen slug={opening[1]} />
   } else {
+    back = null
     body = <HomeScreen profile={profile} />
   }
 
-  const isHome = route === '/' || route === ''
+  const isHome = back === null
 
   return (
     <div className="app">
       <header className="topbar">
-        {!isHome ? (
-          <button type="button" className="back" onClick={() => (review ? navigate('/games') : navigate('/'))}>
+        {back ? (
+          <button type="button" className="back" onClick={() => navigate(back)}>
             ‹ Back
           </button>
         ) : (

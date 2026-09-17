@@ -40,6 +40,7 @@ export default function GamesScreen() {
                   <span className="muted small">
                     {new Date(g.playedAt).toLocaleDateString()} · {g.termination} · {Math.ceil(g.moves.length / 2)} moves
                   </span>
+                  {g.opening && <span className="muted small">{g.opening.name}</span>}
                 </span>
                 {g.rated === false ? (
                   <span className="tag">Unrated</span>

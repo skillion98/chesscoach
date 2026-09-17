@@ -12,7 +12,7 @@ const TILES: { title: string; icon: IconName; path?: string }[] = [
   { title: 'Play', icon: 'play', path: '/play' },
   { title: 'Games', icon: 'history', path: '/games' },
   { title: 'Analysis', icon: 'search', path: 'analysis' },
-  { title: 'Openings', icon: 'book' },
+  { title: 'Openings', icon: 'book', path: '/openings' },
   { title: 'Puzzles', icon: 'puzzle' },
   { title: 'Coach', icon: 'coach' },
 ]
