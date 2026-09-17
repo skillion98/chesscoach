@@ -14,7 +14,7 @@ const TILES: { title: string; icon: IconName; path?: string }[] = [
   { title: 'Analysis', icon: 'search', path: 'analysis' },
   { title: 'Openings', icon: 'book', path: '/openings' },
   { title: 'Puzzles', icon: 'puzzle', path: '/puzzles' },
-  { title: 'Coach', icon: 'coach' },
+  { title: 'Coach', icon: 'coach', path: '/coach' },
 ]
 
 function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: number): string {

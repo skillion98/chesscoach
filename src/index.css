@@ -1602,3 +1602,210 @@ button.link {
   line-height: 1;
   color: var(--accent);
 }
+
+/* Coach */
+.radar {
+  width: min(100%, 340px);
+  height: auto;
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.radar-ring {
+  fill: none;
+  stroke: var(--panel-2);
+  stroke-width: 1;
+}
+
+.radar-spoke {
+  stroke: var(--panel-2);
+  stroke-width: 1;
+}
+
+.radar-shape {
+  fill: rgba(212, 162, 76, 0.28);
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.radar-dot {
+  fill: var(--accent);
+}
+
+.radar-dot.empty {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+
+.radar-label {
+  fill: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.radar-value {
+  fill: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.radar-value.muted {
+  fill: var(--muted);
+}
+
+.axis-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.axis-note {
+  display: grid;
+  grid-template-columns: 12px 92px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.axis-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.axis-dot.good {
+  background: var(--win);
+}
+
+.axis-dot.mid {
+  background: var(--accent);
+}
+
+.axis-dot.bad {
+  background: var(--loss);
+}
+
+.axis-dot.empty {
+  background: none;
+  border: 1.5px solid var(--muted);
+}
+
+.axis-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.style-slider {
+  margin-bottom: 12px;
+}
+
+.style-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.style-ends .strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.style-track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--panel-2), var(--panel-2));
+}
+
+.style-knob {
+  position: absolute;
+  top: -6px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  border-radius: 50%;
+  background: var(--text);
+  border: 4px solid var(--accent);
+}
+
+.style-summary {
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  background: var(--panel);
+  border-left: 4px solid var(--accent);
+}
+
+.plan-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.plan-why {
+  line-height: 1.4;
+}
+
+.plan-action {
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.suggest-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: var(--panel);
+  margin-bottom: 14px;
+}
+
+.suggest-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  line-height: 1.35;
+}
+
+.data-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.coach-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 14px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.style-pending .style-knob {
+  border-color: var(--muted);
+  opacity: 0.6;
+}

@@ -15,6 +15,7 @@ import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, ty
 import { updateRating } from '../game/rating'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
 import { identifyOpening, recordGameAdherence } from '../openings/stats'
+import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
 import { navigate } from '../lib/router'
 
 type Phase = 'setup' | 'playing' | 'over'
@@ -70,6 +71,11 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [hint, setHint] = useState<Hint | null>(null)
   const [hinting, setHinting] = useState(false)
   const [hintUsed, setHintUsed] = useState(false)
+  const [suggestion, setSuggestion] = useState<OpponentSuggestion | null>(null)
+
+  useEffect(() => {
+    if (phase === 'setup') suggestOpponent(profile.rating).then(setSuggestion).catch(() => undefined)
+  }, [phase, profile.rating])
 
   useEffect(() => {
     getEngine()
@@ -285,6 +291,21 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     const sel = personalityById(personalityId) ?? PERSONALITIES[4]
     return (
       <div className="screen setup">
+        {suggestion && (
+          <button
+            type="button"
+            className="coach-tip"
+            onClick={() => {
+              if (mode === 'personality') setPersonalityId(suggestion.personality.id)
+              else setElo(suggestion.elo)
+            }}
+          >
+            <Icon name="coach" size={18} />
+            <span>
+              Coach suggests {mode === 'personality' ? `${suggestion.personality.name} (${suggestion.personality.elo})` : suggestion.elo}
+            </span>
+          </button>
+        )}
         <div className="seg">
           {(['personality', 'custom'] as Mode[]).map((m) => (
             <button
