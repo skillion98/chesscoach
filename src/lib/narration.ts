@@ -115,7 +115,7 @@ export async function prepareNarration(text: string): Promise<boolean> {
 export function estimatePrepSeconds(text: string): number {
   const audioSecs = text.split(/\s+/).length / 2.6
   const threads = threadsAvailable()
-  const speed = webgpuAvailable() && !isPhone() ? 3 : threads >= 4 ? 1.2 : threads > 1 ? 0.8 : 0.4 // audio seconds produced per second
+  const speed = webgpuAvailable() && !isPhone() ? 3 : threads >= 4 ? 0.5 : threads > 1 ? 0.35 : 0.2 // audio seconds produced per second
   return Math.round(audioSecs / speed)
 }
 
