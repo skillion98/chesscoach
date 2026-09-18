@@ -11,6 +11,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       includeAssets: ['engine/*', 'icons/*'],
       manifest: {
         name: 'Chess Coach',
@@ -28,37 +31,10 @@ export default defineConfig({
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,jpg,wasm,woff2}'],
         globIgnores: ['**/ort-wasm*', '**/kokoro-*.js'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-        runtimeCaching: [
-          {
-            // puzzle sets and other data: fetched once, then served from cache
-            urlPattern: ({ url }) =>
-              url.pathname.includes('/data/') ||
-              url.pathname.includes('/audio/') ||
-              /ort-wasm|kokoro-/.test(url.pathname) ||
-              url.hostname === 'huggingface.co' ||
-              url.hostname.endsWith('hf.co'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'chesscoach-data',
-              expiration: { maxEntries: 800, maxAgeSeconds: 365 * 24 * 3600 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // video thumbnails for the openings grid
-            urlPattern: ({ url }) => url.hostname === 'i.ytimg.com',
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'chesscoach-thumbs',
-              expiration: { maxEntries: 60, maxAgeSeconds: 90 * 24 * 3600 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-        ],
       },
     }),
   ],

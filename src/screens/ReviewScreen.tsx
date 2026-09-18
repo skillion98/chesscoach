@@ -26,7 +26,7 @@ import { opponentLabel } from './GamesScreen'
 import { buildRecap, type Recap } from '../analysis/recap'
 import { matchCourse } from '../openings/stats'
 import { speechAvailable } from '../lib/speech'
-import { narrate, stopNarration } from '../lib/narration'
+import { narrate, prepareNarration, stopNarration } from '../lib/narration'
 
 interface Props {
   id: number
@@ -98,7 +98,10 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
       return
     }
     try {
-      setRecap(buildRecap(game, analysis, matchCourse(game.moves, game.playerColor)))
+      const r = buildRecap(game, analysis, matchCourse(game.moves, game.playerColor))
+      setRecap(r)
+      // get the natural-voice audio ready in the background so Listen is instant
+      void prepareNarration(r.wentWell + ' ' + r.improve)
     } catch {
       setRecap(null)
     }

@@ -5,7 +5,7 @@
 // Dynamic text (coach recaps) skips 1.
 
 import { db, getSetting } from './db'
-import { localTtsReady, localVoiceDisabled, loadLocalTts, synthesizeLocal } from './localTts'
+import { localTtsReady, localVoiceDisabled, loadLocalTts, synthesizeLocal, threadsAvailable, webgpuAvailable } from './localTts'
 import { speakable } from './speakable'
 import { readingMs, speak, speechAvailable, stopSpeech } from './speech'
 
@@ -98,6 +98,31 @@ function hashText(s: string): string {
   return (h >>> 0).toString(16)
 }
 
+/** Synthesize and cache dynamic text ahead of time (e.g. a recap right after analysis) without playing it. */
+export async function prepareNarration(text: string): Promise<boolean> {
+  const local = await localVoiceEnabled()
+  if (!local.on || localVoiceDisabled()) return false
+  try {
+    await loadLocalTts()
+    await cachedSynthesis(text, local.voice)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Rough wait for synthesizing `text` on this device, in seconds. */
+export function estimatePrepSeconds(text: string): number {
+  const audioSecs = text.split(/\s+/).length / 2.6
+  const threads = threadsAvailable()
+  const speed = webgpuAvailable() && !isPhone() ? 3 : threads >= 4 ? 1.2 : threads > 1 ? 0.8 : 0.4 // audio seconds produced per second
+  return Math.round(audioSecs / speed)
+}
+
+function isPhone(): boolean {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || navigator.maxTouchPoints > 1
+}
+
 /**
  * Say something. `key` selects a recorded clip when one exists; otherwise the natural
  * on-device voice if enabled, otherwise the built-in voice; muted just waits.
@@ -119,7 +144,9 @@ export async function narrate(text: string, key: string | undefined, muted: bool
     try {
       if (!localTtsReady()) onStatus?.('Loading the natural voice…')
       await loadLocalTts()
-      onStatus?.('Preparing narration…')
+      const cachedKey = `tts:${local.voice}:${hashText(text)}`
+      const already = await db.settings.get(cachedKey)
+      if (!already) onStatus?.(`Preparing narration, about ${estimatePrepSeconds(text)} seconds…`)
       const blob = await cachedSynthesis(text, local.voice)
       onStatus?.('')
       currentUrl = URL.createObjectURL(blob)

@@ -49,6 +49,11 @@ const LADDER: TtsConfig[] = [
   { device: 'wasm', dtype: 'q8', label: 'processor, compact model (90 MB)' },
 ]
 
+/** Worker threads the CPU model can use: all cores once the page is cross-origin isolated, else one. */
+export function threadsAvailable(): number {
+  return typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated ? navigator.hardwareConcurrency || 2 : 1
+}
+
 const LOADING_KEY = 'ttsLoadInProgress'
 const LEVEL_KEY = 'ttsLevel'
 const DISABLED_KEY = 'ttsDisabled'
@@ -82,6 +87,9 @@ try {
 
 /** The mode the device will use, after any crash step-downs. */
 export function currentConfig(): TtsConfig {
+  // phones: the full model crashes Safari and the half-precision one produces noise on its GPU,
+  // so use the compact model on the CPU (multi-threaded once the page is cross-origin isolated)
+  if (isMobile()) return LADDER[2]
   const lvl = Math.min(LADDER.length - 1, Math.max(0, readLevel()))
   const c = LADDER[lvl]
   if (c.device === 'webgpu' && !webgpuAvailable()) return LADDER[2]
