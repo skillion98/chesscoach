@@ -1,0 +1,3355 @@
+{
+ "common/drill": {
+  "file": "common_drill.m4a",
+  "seconds": 3.6,
+  "hash": "e37ae768b963",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/intro": {
+  "file": "english_intro.m4a",
+  "seconds": 17.8,
+  "hash": "1e6ec29b2aba",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/intro": {
+  "file": "english_0_intro.m4a",
+  "seconds": 5.3,
+  "hash": "a2ad0f1e18e5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/1": {
+  "file": "english_0_1.m4a",
+  "seconds": 6.2,
+  "hash": "19f3ff4f80c8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/4": {
+  "file": "english_0_4.m4a",
+  "seconds": 6.5,
+  "hash": "bec7a0858d30",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/7": {
+  "file": "english_0_7.m4a",
+  "seconds": 6.2,
+  "hash": "857583e6e2b8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/10": {
+  "file": "english_0_10.m4a",
+  "seconds": 9.6,
+  "hash": "263ab7ed95fe",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/12": {
+  "file": "english_0_12.m4a",
+  "seconds": 7.1,
+  "hash": "30ca13fd2d23",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/0/17": {
+  "file": "english_0_17.m4a",
+  "seconds": 6.7,
+  "hash": "3a8bb37a1a27",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/1/intro": {
+  "file": "english_1_intro.m4a",
+  "seconds": 6.1,
+  "hash": "c8184651b168",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/1/2": {
+  "file": "english_1_2.m4a",
+  "seconds": 4.7,
+  "hash": "cc51a460513d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/1/8": {
+  "file": "english_1_8.m4a",
+  "seconds": 8.6,
+  "hash": "6bd91b7f469a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/1/13": {
+  "file": "english_1_13.m4a",
+  "seconds": 5.6,
+  "hash": "5da7d0ffd1d4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/1/17": {
+  "file": "english_1_17.m4a",
+  "seconds": 9.9,
+  "hash": "07c245c10451",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/2/intro": {
+  "file": "english_2_intro.m4a",
+  "seconds": 6.5,
+  "hash": "82c7e247f4b5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/2/9": {
+  "file": "english_2_9.m4a",
+  "seconds": 7.5,
+  "hash": "c453e51dfc1b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/2/11": {
+  "file": "english_2_11.m4a",
+  "seconds": 7.3,
+  "hash": "9a9b7a57a5ca",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/2/17": {
+  "file": "english_2_17.m4a",
+  "seconds": 7.4,
+  "hash": "c836c7d6d0c3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/2/21": {
+  "file": "english_2_21.m4a",
+  "seconds": 6,
+  "hash": "5550e543b125",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/3/intro": {
+  "file": "english_3_intro.m4a",
+  "seconds": 6.2,
+  "hash": "baaa18c22ee7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/3/3": {
+  "file": "english_3_3.m4a",
+  "seconds": 7.8,
+  "hash": "f0c4909f3f8a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/3/11": {
+  "file": "english_3_11.m4a",
+  "seconds": 6.7,
+  "hash": "4cddb47c9704",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/3/15": {
+  "file": "english_3_15.m4a",
+  "seconds": 6.5,
+  "hash": "bab32d965798",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/3/22": {
+  "file": "english_3_22.m4a",
+  "seconds": 10.4,
+  "hash": "044a67366b10",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/4/intro": {
+  "file": "english_4_intro.m4a",
+  "seconds": 6.3,
+  "hash": "aa8a055c1c5b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/4/7": {
+  "file": "english_4_7.m4a",
+  "seconds": 8.5,
+  "hash": "01837d95a28f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/4/13": {
+  "file": "english_4_13.m4a",
+  "seconds": 7.5,
+  "hash": "4d31e154ba8d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/4/15": {
+  "file": "english_4_15.m4a",
+  "seconds": 6.7,
+  "hash": "fa2be1779084",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "english/4/21": {
+  "file": "english_4_21.m4a",
+  "seconds": 6.5,
+  "hash": "e0dd87176b44",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/intro": {
+  "file": "sicilian_intro.m4a",
+  "seconds": 18,
+  "hash": "101c7014ffa8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/intro": {
+  "file": "sicilian_0_intro.m4a",
+  "seconds": 5.8,
+  "hash": "b7c50ed00a1a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/6": {
+  "file": "sicilian_0_6.m4a",
+  "seconds": 6.4,
+  "hash": "934a35aaa0a0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/10": {
+  "file": "sicilian_0_10.m4a",
+  "seconds": 8.4,
+  "hash": "6e5e4dd13104",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/12": {
+  "file": "sicilian_0_12.m4a",
+  "seconds": 7.3,
+  "hash": "705c06485e0c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/16": {
+  "file": "sicilian_0_16.m4a",
+  "seconds": 10,
+  "hash": "2ea5462dfb3c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/0/20": {
+  "file": "sicilian_0_20.m4a",
+  "seconds": 8,
+  "hash": "1bdd3ba70eb6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/1/intro": {
+  "file": "sicilian_1_intro.m4a",
+  "seconds": 4.7,
+  "hash": "cd35841ca06a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/1/10": {
+  "file": "sicilian_1_10.m4a",
+  "seconds": 7.3,
+  "hash": "513d543d74e2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/1/13": {
+  "file": "sicilian_1_13.m4a",
+  "seconds": 7.8,
+  "hash": "f0f328f6b195",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/1/17": {
+  "file": "sicilian_1_17.m4a",
+  "seconds": 7.4,
+  "hash": "ea55f4eef208",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/1/20": {
+  "file": "sicilian_1_20.m4a",
+  "seconds": 9.1,
+  "hash": "483aa0cd3111",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/2/intro": {
+  "file": "sicilian_2_intro.m4a",
+  "seconds": 7.2,
+  "hash": "97b7b6e4540a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/2/4": {
+  "file": "sicilian_2_4.m4a",
+  "seconds": 10.3,
+  "hash": "dedb0fcfd815",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/2/8": {
+  "file": "sicilian_2_8.m4a",
+  "seconds": 7.3,
+  "hash": "4500923f3862",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/2/14": {
+  "file": "sicilian_2_14.m4a",
+  "seconds": 8.5,
+  "hash": "dfc2d642c48e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/2/22": {
+  "file": "sicilian_2_22.m4a",
+  "seconds": 6.6,
+  "hash": "fea75dcb1318",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/3/intro": {
+  "file": "sicilian_3_intro.m4a",
+  "seconds": 6.6,
+  "hash": "62220dabdfa1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/3/8": {
+  "file": "sicilian_3_8.m4a",
+  "seconds": 6,
+  "hash": "1e11e6bbd587",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/3/12": {
+  "file": "sicilian_3_12.m4a",
+  "seconds": 9.5,
+  "hash": "6dff62fb6ee4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/3/18": {
+  "file": "sicilian_3_18.m4a",
+  "seconds": 6.8,
+  "hash": "204e452812fb",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/3/20": {
+  "file": "sicilian_3_20.m4a",
+  "seconds": 7.2,
+  "hash": "5f991949bc3f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/4/intro": {
+  "file": "sicilian_4_intro.m4a",
+  "seconds": 7.2,
+  "hash": "778edb8e75b3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/4/5": {
+  "file": "sicilian_4_5.m4a",
+  "seconds": 7.1,
+  "hash": "650c711c4e7d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/4/10": {
+  "file": "sicilian_4_10.m4a",
+  "seconds": 7.8,
+  "hash": "2428dd78b6a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/4/13": {
+  "file": "sicilian_4_13.m4a",
+  "seconds": 5.9,
+  "hash": "4beb90c650f7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "sicilian/4/18": {
+  "file": "sicilian_4_18.m4a",
+  "seconds": 7.8,
+  "hash": "9471bbca5d35",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/intro": {
+  "file": "ruy-lopez_intro.m4a",
+  "seconds": 19.6,
+  "hash": "750c2bb1234e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/intro": {
+  "file": "ruy-lopez_0_intro.m4a",
+  "seconds": 4.3,
+  "hash": "37f1f488a28e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/5": {
+  "file": "ruy-lopez_0_5.m4a",
+  "seconds": 9.9,
+  "hash": "4c0b76ff9d10",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/11": {
+  "file": "ruy-lopez_0_11.m4a",
+  "seconds": 10.7,
+  "hash": "552daafaf8f1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/15": {
+  "file": "ruy-lopez_0_15.m4a",
+  "seconds": 7.4,
+  "hash": "03b7df7bc1d4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/17": {
+  "file": "ruy-lopez_0_17.m4a",
+  "seconds": 5.4,
+  "hash": "f3fb54c4b6fd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/21": {
+  "file": "ruy-lopez_0_21.m4a",
+  "seconds": 5.9,
+  "hash": "0f5ca265bcca",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/0/23": {
+  "file": "ruy-lopez_0_23.m4a",
+  "seconds": 8.2,
+  "hash": "a99b8794333c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/1/intro": {
+  "file": "ruy-lopez_1_intro.m4a",
+  "seconds": 5.9,
+  "hash": "7e4003b1c035",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/1/7": {
+  "file": "ruy-lopez_1_7.m4a",
+  "seconds": 8.4,
+  "hash": "8f8f71f5ad65",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/1/9": {
+  "file": "ruy-lopez_1_9.m4a",
+  "seconds": 7.5,
+  "hash": "e0c2892dfb36",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/1/13": {
+  "file": "ruy-lopez_1_13.m4a",
+  "seconds": 6.9,
+  "hash": "19a8685debd0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/1/20": {
+  "file": "ruy-lopez_1_20.m4a",
+  "seconds": 5.3,
+  "hash": "a3517fc802b0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/2/intro": {
+  "file": "ruy-lopez_2_intro.m4a",
+  "seconds": 6.5,
+  "hash": "c01536e43237",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/2/8": {
+  "file": "ruy-lopez_2_8.m4a",
+  "seconds": 9.9,
+  "hash": "a7eba3ba1131",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/2/10": {
+  "file": "ruy-lopez_2_10.m4a",
+  "seconds": 6.6,
+  "hash": "e379f1036ce4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/2/14": {
+  "file": "ruy-lopez_2_14.m4a",
+  "seconds": 5.4,
+  "hash": "0c2aef9e991c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/2/20": {
+  "file": "ruy-lopez_2_20.m4a",
+  "seconds": 8.4,
+  "hash": "020c8b22216b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/3/intro": {
+  "file": "ruy-lopez_3_intro.m4a",
+  "seconds": 6,
+  "hash": "f13ed82c78ad",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/3/14": {
+  "file": "ruy-lopez_3_14.m4a",
+  "seconds": 8.9,
+  "hash": "6dfff375fb81",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/3/15": {
+  "file": "ruy-lopez_3_15.m4a",
+  "seconds": 6.2,
+  "hash": "6b1bbc793716",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/3/17": {
+  "file": "ruy-lopez_3_17.m4a",
+  "seconds": 6,
+  "hash": "3c978930b3ca",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "ruy-lopez/3/22": {
+  "file": "ruy-lopez_3_22.m4a",
+  "seconds": 8.8,
+  "hash": "9a8eb9804b46",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/intro": {
+  "file": "italian_intro.m4a",
+  "seconds": 17.5,
+  "hash": "ee49021d0250",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/intro": {
+  "file": "italian_0_intro.m4a",
+  "seconds": 6.5,
+  "hash": "037f3f49a0fd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/7": {
+  "file": "italian_0_7.m4a",
+  "seconds": 5.6,
+  "hash": "4922c4d207a1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/9": {
+  "file": "italian_0_9.m4a",
+  "seconds": 8.7,
+  "hash": "cdbcdb0f05e6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/15": {
+  "file": "italian_0_15.m4a",
+  "seconds": 9.1,
+  "hash": "f76a9cb3724b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/19": {
+  "file": "italian_0_19.m4a",
+  "seconds": 7.7,
+  "hash": "9b999f9710e6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/0/23": {
+  "file": "italian_0_23.m4a",
+  "seconds": 8,
+  "hash": "95cc1ba32a07",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/intro": {
+  "file": "italian_1_intro.m4a",
+  "seconds": 5.4,
+  "hash": "252e7987c64a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/7": {
+  "file": "italian_1_7.m4a",
+  "seconds": 7.5,
+  "hash": "687d339ca637",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/11": {
+  "file": "italian_1_11.m4a",
+  "seconds": 6.2,
+  "hash": "b6fdb39de385",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/15": {
+  "file": "italian_1_15.m4a",
+  "seconds": 6,
+  "hash": "7f84ce652748",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/17": {
+  "file": "italian_1_17.m4a",
+  "seconds": 7,
+  "hash": "924645c05f0d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/1/21": {
+  "file": "italian_1_21.m4a",
+  "seconds": 5.5,
+  "hash": "b289f05ae64a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/2/intro": {
+  "file": "italian_2_intro.m4a",
+  "seconds": 7.9,
+  "hash": "e842ad7ba981",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/2/7": {
+  "file": "italian_2_7.m4a",
+  "seconds": 8,
+  "hash": "11c024630e51",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/2/13": {
+  "file": "italian_2_13.m4a",
+  "seconds": 7.6,
+  "hash": "87ef65a5055b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/2/19": {
+  "file": "italian_2_19.m4a",
+  "seconds": 7.4,
+  "hash": "c6116fd1e4b4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/2/25": {
+  "file": "italian_2_25.m4a",
+  "seconds": 9,
+  "hash": "538e3d444dd8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/3/intro": {
+  "file": "italian_3_intro.m4a",
+  "seconds": 5.6,
+  "hash": "0a0251efc521",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/3/6": {
+  "file": "italian_3_6.m4a",
+  "seconds": 6.4,
+  "hash": "4cd25bad840c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/3/7": {
+  "file": "italian_3_7.m4a",
+  "seconds": 7.4,
+  "hash": "32ffff0fb43f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/3/11": {
+  "file": "italian_3_11.m4a",
+  "seconds": 5.2,
+  "hash": "a2edbeb8b7d3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "italian/3/20": {
+  "file": "italian_3_20.m4a",
+  "seconds": 6.9,
+  "hash": "ac4aa46cd8ed",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/intro": {
+  "file": "queens-gambit_intro.m4a",
+  "seconds": 18,
+  "hash": "8b587345d7f9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/intro": {
+  "file": "queens-gambit_0_intro.m4a",
+  "seconds": 7.3,
+  "hash": "cc475ee6bc08",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/8": {
+  "file": "queens-gambit_0_8.m4a",
+  "seconds": 8,
+  "hash": "67c45849430d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/9": {
+  "file": "queens-gambit_0_9.m4a",
+  "seconds": 5.4,
+  "hash": "f8359ef88944",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/15": {
+  "file": "queens-gambit_0_15.m4a",
+  "seconds": 7.2,
+  "hash": "5833d22fd051",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/21": {
+  "file": "queens-gambit_0_21.m4a",
+  "seconds": 8.5,
+  "hash": "5606cc2d930f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/0/25": {
+  "file": "queens-gambit_0_25.m4a",
+  "seconds": 6.3,
+  "hash": "62767bf43106",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/1/intro": {
+  "file": "queens-gambit_1_intro.m4a",
+  "seconds": 4.3,
+  "hash": "aab356da0cf1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/1/4": {
+  "file": "queens-gambit_1_4.m4a",
+  "seconds": 7.7,
+  "hash": "f17723dc852f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/1/7": {
+  "file": "queens-gambit_1_7.m4a",
+  "seconds": 7,
+  "hash": "f9342f59833b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/1/13": {
+  "file": "queens-gambit_1_13.m4a",
+  "seconds": 7.4,
+  "hash": "dd03fd508b13",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/1/21": {
+  "file": "queens-gambit_1_21.m4a",
+  "seconds": 5,
+  "hash": "86360bffe501",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/intro": {
+  "file": "queens-gambit_2_intro.m4a",
+  "seconds": 6.8,
+  "hash": "7bc0ce232813",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/4": {
+  "file": "queens-gambit_2_4.m4a",
+  "seconds": 6.5,
+  "hash": "f5620997a53c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/9": {
+  "file": "queens-gambit_2_9.m4a",
+  "seconds": 6.3,
+  "hash": "fe2b153d96bd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/10": {
+  "file": "queens-gambit_2_10.m4a",
+  "seconds": 6.3,
+  "hash": "31d84552c296",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/17": {
+  "file": "queens-gambit_2_17.m4a",
+  "seconds": 7.9,
+  "hash": "0a3e75f06ade",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/2/21": {
+  "file": "queens-gambit_2_21.m4a",
+  "seconds": 8,
+  "hash": "c4d659f58e64",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/3/intro": {
+  "file": "queens-gambit_3_intro.m4a",
+  "seconds": 5.2,
+  "hash": "94371b9bb387",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/3/6": {
+  "file": "queens-gambit_3_6.m4a",
+  "seconds": 6.8,
+  "hash": "2adfa5f7b12a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/3/11": {
+  "file": "queens-gambit_3_11.m4a",
+  "seconds": 7,
+  "hash": "1962bdf8229f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/3/17": {
+  "file": "queens-gambit_3_17.m4a",
+  "seconds": 6.8,
+  "hash": "419ee256cd22",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-gambit/3/19": {
+  "file": "queens-gambit_3_19.m4a",
+  "seconds": 8.6,
+  "hash": "b399fb3122c9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/intro": {
+  "file": "kings-indian_intro.m4a",
+  "seconds": 18.2,
+  "hash": "d573b2cb0f32",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/intro": {
+  "file": "kings-indian_0_intro.m4a",
+  "seconds": 5.2,
+  "hash": "23455fc09e74",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/8": {
+  "file": "kings-indian_0_8.m4a",
+  "seconds": 5.3,
+  "hash": "d47bdf3adfbf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/12": {
+  "file": "kings-indian_0_12.m4a",
+  "seconds": 8.1,
+  "hash": "60385fecda01",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/16": {
+  "file": "kings-indian_0_16.m4a",
+  "seconds": 8.4,
+  "hash": "1d7ad99d0ff5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/20": {
+  "file": "kings-indian_0_20.m4a",
+  "seconds": 7.8,
+  "hash": "ac2efbece0d2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/0/24": {
+  "file": "kings-indian_0_24.m4a",
+  "seconds": 6.9,
+  "hash": "ca7b1859ee9a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/1/intro": {
+  "file": "kings-indian_1_intro.m4a",
+  "seconds": 6.8,
+  "hash": "3f2feb2e024b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/1/9": {
+  "file": "kings-indian_1_9.m4a",
+  "seconds": 9,
+  "hash": "430536a23ac8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/1/12": {
+  "file": "kings-indian_1_12.m4a",
+  "seconds": 7,
+  "hash": "718a84e34b92",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/1/16": {
+  "file": "kings-indian_1_16.m4a",
+  "seconds": 6.8,
+  "hash": "2a0259d4e6ff",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/1/24": {
+  "file": "kings-indian_1_24.m4a",
+  "seconds": 6.7,
+  "hash": "0849db495b87",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/2/intro": {
+  "file": "kings-indian_2_intro.m4a",
+  "seconds": 5,
+  "hash": "ecdafc44e52f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/2/8": {
+  "file": "kings-indian_2_8.m4a",
+  "seconds": 8.4,
+  "hash": "b7ef269c5558",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/2/12": {
+  "file": "kings-indian_2_12.m4a",
+  "seconds": 8,
+  "hash": "0a0ea5327037",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/2/18": {
+  "file": "kings-indian_2_18.m4a",
+  "seconds": 7.1,
+  "hash": "149ceb1c35e1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/2/22": {
+  "file": "kings-indian_2_22.m4a",
+  "seconds": 7.8,
+  "hash": "4f91925c5c81",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/3/intro": {
+  "file": "kings-indian_3_intro.m4a",
+  "seconds": 4.8,
+  "hash": "fd832474d675",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/3/9": {
+  "file": "kings-indian_3_9.m4a",
+  "seconds": 6.3,
+  "hash": "a0b465a5f21a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/3/12": {
+  "file": "kings-indian_3_12.m4a",
+  "seconds": 5.4,
+  "hash": "a545df7943d9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/3/14": {
+  "file": "kings-indian_3_14.m4a",
+  "seconds": 8.9,
+  "hash": "175edbe089f1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/3/24": {
+  "file": "kings-indian_3_24.m4a",
+  "seconds": 8.7,
+  "hash": "aa27f1667dc6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/4/intro": {
+  "file": "kings-indian_4_intro.m4a",
+  "seconds": 7.4,
+  "hash": "1ec7be6704f0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/4/11": {
+  "file": "kings-indian_4_11.m4a",
+  "seconds": 8.1,
+  "hash": "4b4d4a7e7bd8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/4/12": {
+  "file": "kings-indian_4_12.m4a",
+  "seconds": 6.7,
+  "hash": "0a3f2e0e1c9d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/4/16": {
+  "file": "kings-indian_4_16.m4a",
+  "seconds": 5.3,
+  "hash": "eb3ebe27bf34",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-indian/4/22": {
+  "file": "kings-indian_4_22.m4a",
+  "seconds": 5.9,
+  "hash": "ed045f6021b1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/intro": {
+  "file": "nimzo-indian_intro.m4a",
+  "seconds": 21.4,
+  "hash": "2bc47aaf1fc5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/intro": {
+  "file": "nimzo-indian_0_intro.m4a",
+  "seconds": 7.1,
+  "hash": "8c25f36365c5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/6": {
+  "file": "nimzo-indian_0_6.m4a",
+  "seconds": 5.6,
+  "hash": "cae4b85486a9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/10": {
+  "file": "nimzo-indian_0_10.m4a",
+  "seconds": 6.9,
+  "hash": "92d7884b5e58",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/14": {
+  "file": "nimzo-indian_0_14.m4a",
+  "seconds": 10.5,
+  "hash": "2feded94303a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/22": {
+  "file": "nimzo-indian_0_22.m4a",
+  "seconds": 6.3,
+  "hash": "ead7bc8cbafe",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/0/24": {
+  "file": "nimzo-indian_0_24.m4a",
+  "seconds": 7.7,
+  "hash": "95909d6e6bfa",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/intro": {
+  "file": "nimzo-indian_1_intro.m4a",
+  "seconds": 5.9,
+  "hash": "3750bcb65263",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/7": {
+  "file": "nimzo-indian_1_7.m4a",
+  "seconds": 7.9,
+  "hash": "f96d431ac20a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/10": {
+  "file": "nimzo-indian_1_10.m4a",
+  "seconds": 6.5,
+  "hash": "03353b6f3bf6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/13": {
+  "file": "nimzo-indian_1_13.m4a",
+  "seconds": 8.8,
+  "hash": "30cb9756cb12",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/20": {
+  "file": "nimzo-indian_1_20.m4a",
+  "seconds": 9.8,
+  "hash": "2e8db44ff957",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/1/24": {
+  "file": "nimzo-indian_1_24.m4a",
+  "seconds": 6,
+  "hash": "f0d054f1ec89",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/2/intro": {
+  "file": "nimzo-indian_2_intro.m4a",
+  "seconds": 6.3,
+  "hash": "cd933e43afa4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/2/7": {
+  "file": "nimzo-indian_2_7.m4a",
+  "seconds": 5.9,
+  "hash": "0ac903bff578",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/2/12": {
+  "file": "nimzo-indian_2_12.m4a",
+  "seconds": 4.9,
+  "hash": "1ce920476604",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/2/16": {
+  "file": "nimzo-indian_2_16.m4a",
+  "seconds": 7.3,
+  "hash": "cf7bf9e4009d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/2/24": {
+  "file": "nimzo-indian_2_24.m4a",
+  "seconds": 6.2,
+  "hash": "22bf2d51c767",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/3/intro": {
+  "file": "nimzo-indian_3_intro.m4a",
+  "seconds": 6.7,
+  "hash": "0bee31e5d769",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/3/8": {
+  "file": "nimzo-indian_3_8.m4a",
+  "seconds": 6.3,
+  "hash": "8a6a0af04733",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/3/12": {
+  "file": "nimzo-indian_3_12.m4a",
+  "seconds": 6.1,
+  "hash": "e1316230f0c3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/3/16": {
+  "file": "nimzo-indian_3_16.m4a",
+  "seconds": 6.6,
+  "hash": "a0b6ce3613cc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "nimzo-indian/3/22": {
+  "file": "nimzo-indian_3_22.m4a",
+  "seconds": 7.2,
+  "hash": "615cd2da8f3b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/intro": {
+  "file": "queens-indian_intro.m4a",
+  "seconds": 16.1,
+  "hash": "67e935d4b71a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/0/intro": {
+  "file": "queens-indian_0_intro.m4a",
+  "seconds": 4.7,
+  "hash": "d3dcf7517102",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/0/8": {
+  "file": "queens-indian_0_8.m4a",
+  "seconds": 10.5,
+  "hash": "4b0302033776",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/0/10": {
+  "file": "queens-indian_0_10.m4a",
+  "seconds": 8.6,
+  "hash": "4490a30931c7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/0/16": {
+  "file": "queens-indian_0_16.m4a",
+  "seconds": 7.1,
+  "hash": "1d2731e339a7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/0/24": {
+  "file": "queens-indian_0_24.m4a",
+  "seconds": 7,
+  "hash": "424aa22f0937",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/1/intro": {
+  "file": "queens-indian_1_intro.m4a",
+  "seconds": 6.3,
+  "hash": "98bcfba1d21b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/1/8": {
+  "file": "queens-indian_1_8.m4a",
+  "seconds": 6.9,
+  "hash": "8aeb8f615bf5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/1/14": {
+  "file": "queens-indian_1_14.m4a",
+  "seconds": 7.7,
+  "hash": "3a947768db00",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/1/18": {
+  "file": "queens-indian_1_18.m4a",
+  "seconds": 5.9,
+  "hash": "93bac6e2af3c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/1/22": {
+  "file": "queens-indian_1_22.m4a",
+  "seconds": 7.2,
+  "hash": "345ba60830a4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/2/intro": {
+  "file": "queens-indian_2_intro.m4a",
+  "seconds": 5.6,
+  "hash": "9e301636270f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/2/7": {
+  "file": "queens-indian_2_7.m4a",
+  "seconds": 5.7,
+  "hash": "900598ce8bc9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/2/12": {
+  "file": "queens-indian_2_12.m4a",
+  "seconds": 6.7,
+  "hash": "32259d6fc508",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/2/17": {
+  "file": "queens-indian_2_17.m4a",
+  "seconds": 7.2,
+  "hash": "a41007aecb9b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/2/22": {
+  "file": "queens-indian_2_22.m4a",
+  "seconds": 8.2,
+  "hash": "a0761b9b50e5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/3/intro": {
+  "file": "queens-indian_3_intro.m4a",
+  "seconds": 6,
+  "hash": "bb7264b9a538",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/3/7": {
+  "file": "queens-indian_3_7.m4a",
+  "seconds": 5.3,
+  "hash": "f1b2b8822579",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/3/12": {
+  "file": "queens-indian_3_12.m4a",
+  "seconds": 7.3,
+  "hash": "f4dbedc182ac",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/3/20": {
+  "file": "queens-indian_3_20.m4a",
+  "seconds": 6.7,
+  "hash": "ae2bd3fee6a4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "queens-indian/3/22": {
+  "file": "queens-indian_3_22.m4a",
+  "seconds": 6.5,
+  "hash": "2a97212e08dc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/intro": {
+  "file": "grunfeld_intro.m4a",
+  "seconds": 19.3,
+  "hash": "601c93522841",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/intro": {
+  "file": "grunfeld_0_intro.m4a",
+  "seconds": 4.9,
+  "hash": "99b592f65c17",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/6": {
+  "file": "grunfeld_0_6.m4a",
+  "seconds": 10.6,
+  "hash": "94f9e4467712",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/12": {
+  "file": "grunfeld_0_12.m4a",
+  "seconds": 7.5,
+  "hash": "68cd0135d3a6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/15": {
+  "file": "grunfeld_0_15.m4a",
+  "seconds": 6,
+  "hash": "5a7595910574",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/20": {
+  "file": "grunfeld_0_20.m4a",
+  "seconds": 7.7,
+  "hash": "14ac7cc07da7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/0/24": {
+  "file": "grunfeld_0_24.m4a",
+  "seconds": 8.4,
+  "hash": "8f4971a55412",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/1/intro": {
+  "file": "grunfeld_1_intro.m4a",
+  "seconds": 5.9,
+  "hash": "ff83179f6aa0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/1/9": {
+  "file": "grunfeld_1_9.m4a",
+  "seconds": 6.3,
+  "hash": "308dfd54c460",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/1/14": {
+  "file": "grunfeld_1_14.m4a",
+  "seconds": 5.4,
+  "hash": "bd90c2f93860",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/1/16": {
+  "file": "grunfeld_1_16.m4a",
+  "seconds": 4.9,
+  "hash": "b9c72d3ef702",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/1/22": {
+  "file": "grunfeld_1_22.m4a",
+  "seconds": 8.7,
+  "hash": "61cb0075d67f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/2/intro": {
+  "file": "grunfeld_2_intro.m4a",
+  "seconds": 6.4,
+  "hash": "eb6e85976345",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/2/10": {
+  "file": "grunfeld_2_10.m4a",
+  "seconds": 7.3,
+  "hash": "25dce9b99cd4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/2/14": {
+  "file": "grunfeld_2_14.m4a",
+  "seconds": 6.3,
+  "hash": "7401ecc77c4e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/2/18": {
+  "file": "grunfeld_2_18.m4a",
+  "seconds": 7.4,
+  "hash": "f596a038ba43",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/2/22": {
+  "file": "grunfeld_2_22.m4a",
+  "seconds": 4.5,
+  "hash": "e6b0b434c0a0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/3/intro": {
+  "file": "grunfeld_3_intro.m4a",
+  "seconds": 6.3,
+  "hash": "3c69e7b353b8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/3/8": {
+  "file": "grunfeld_3_8.m4a",
+  "seconds": 6.5,
+  "hash": "9a106522296e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/3/12": {
+  "file": "grunfeld_3_12.m4a",
+  "seconds": 7,
+  "hash": "f3e811c878b9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/3/18": {
+  "file": "grunfeld_3_18.m4a",
+  "seconds": 6.6,
+  "hash": "fef6153e229f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "grunfeld/3/22": {
+  "file": "grunfeld_3_22.m4a",
+  "seconds": 5.3,
+  "hash": "5dc146805312",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/intro": {
+  "file": "french_intro.m4a",
+  "seconds": 15,
+  "hash": "9f78baca6071",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/intro": {
+  "file": "french_0_intro.m4a",
+  "seconds": 6.2,
+  "hash": "ee8608ca2d05",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/5": {
+  "file": "french_0_5.m4a",
+  "seconds": 6.5,
+  "hash": "739dc5a9a57b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/6": {
+  "file": "french_0_6.m4a",
+  "seconds": 5.1,
+  "hash": "829a0885aa2c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/10": {
+  "file": "french_0_10.m4a",
+  "seconds": 9.3,
+  "hash": "74a62394c9f6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/16": {
+  "file": "french_0_16.m4a",
+  "seconds": 5.3,
+  "hash": "9085ea02d523",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/0/20": {
+  "file": "french_0_20.m4a",
+  "seconds": 5.4,
+  "hash": "b0284d5a5e45",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/intro": {
+  "file": "french_1_intro.m4a",
+  "seconds": 6.5,
+  "hash": "5b9bc9ab5dac",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/6": {
+  "file": "french_1_6.m4a",
+  "seconds": 5.8,
+  "hash": "34998c01c95f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/10": {
+  "file": "french_1_10.m4a",
+  "seconds": 7.5,
+  "hash": "43e0320bb7f9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/12": {
+  "file": "french_1_12.m4a",
+  "seconds": 8.1,
+  "hash": "12d3affadf77",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/14": {
+  "file": "french_1_14.m4a",
+  "seconds": 5.4,
+  "hash": "b83a4088c9a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/1/22": {
+  "file": "french_1_22.m4a",
+  "seconds": 7.3,
+  "hash": "cfeb00591a3b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/2/intro": {
+  "file": "french_2_intro.m4a",
+  "seconds": 6.4,
+  "hash": "b18435676847",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/2/5": {
+  "file": "french_2_5.m4a",
+  "seconds": 6.9,
+  "hash": "74ee239fc241",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/2/6": {
+  "file": "french_2_6.m4a",
+  "seconds": 6.9,
+  "hash": "b82c2b1abf64",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/2/14": {
+  "file": "french_2_14.m4a",
+  "seconds": 9.5,
+  "hash": "0df1c3357428",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/2/22": {
+  "file": "french_2_22.m4a",
+  "seconds": 7.2,
+  "hash": "fea3a540abdf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/3/intro": {
+  "file": "french_3_intro.m4a",
+  "seconds": 5.7,
+  "hash": "7cda2deb3edd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/3/6": {
+  "file": "french_3_6.m4a",
+  "seconds": 6.3,
+  "hash": "4f56e4559bbd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/3/8": {
+  "file": "french_3_8.m4a",
+  "seconds": 6.3,
+  "hash": "070b617041fd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/3/14": {
+  "file": "french_3_14.m4a",
+  "seconds": 6,
+  "hash": "7d9eb53eeba8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/3/22": {
+  "file": "french_3_22.m4a",
+  "seconds": 8.7,
+  "hash": "5af1e9bae47a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/4/intro": {
+  "file": "french_4_intro.m4a",
+  "seconds": 6.9,
+  "hash": "a3099e289698",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/4/8": {
+  "file": "french_4_8.m4a",
+  "seconds": 7.2,
+  "hash": "f7b73defe694",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/4/10": {
+  "file": "french_4_10.m4a",
+  "seconds": 6.3,
+  "hash": "0de90e6116d9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/4/16": {
+  "file": "french_4_16.m4a",
+  "seconds": 7.4,
+  "hash": "71cea1dbf985",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "french/4/24": {
+  "file": "french_4_24.m4a",
+  "seconds": 6.8,
+  "hash": "d58cfba50a6e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/intro": {
+  "file": "caro-kann_intro.m4a",
+  "seconds": 15,
+  "hash": "cb43f725ebf0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/intro": {
+  "file": "caro-kann_0_intro.m4a",
+  "seconds": 5.9,
+  "hash": "64174390ec9f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/8": {
+  "file": "caro-kann_0_8.m4a",
+  "seconds": 6.8,
+  "hash": "631c3d43c017",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/12": {
+  "file": "caro-kann_0_12.m4a",
+  "seconds": 6.1,
+  "hash": "3936e8d1174e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/14": {
+  "file": "caro-kann_0_14.m4a",
+  "seconds": 9.8,
+  "hash": "2441064b3242",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/18": {
+  "file": "caro-kann_0_18.m4a",
+  "seconds": 5.9,
+  "hash": "977ef4d6bd4d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/0/24": {
+  "file": "caro-kann_0_24.m4a",
+  "seconds": 7.1,
+  "hash": "054648655dd6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/1/intro": {
+  "file": "caro-kann_1_intro.m4a",
+  "seconds": 6.7,
+  "hash": "9544256b722e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/1/6": {
+  "file": "caro-kann_1_6.m4a",
+  "seconds": 5.2,
+  "hash": "e555637d7ec0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/1/10": {
+  "file": "caro-kann_1_10.m4a",
+  "seconds": 4.1,
+  "hash": "7856c14e5c5c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/1/14": {
+  "file": "caro-kann_1_14.m4a",
+  "seconds": 5.9,
+  "hash": "69817e4712b3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/1/24": {
+  "file": "caro-kann_1_24.m4a",
+  "seconds": 6.7,
+  "hash": "c3883acffc5d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/2/intro": {
+  "file": "caro-kann_2_intro.m4a",
+  "seconds": 7.9,
+  "hash": "0a5bfcfe11bb",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/2/6": {
+  "file": "caro-kann_2_6.m4a",
+  "seconds": 6.9,
+  "hash": "84c8f2479b76",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/2/12": {
+  "file": "caro-kann_2_12.m4a",
+  "seconds": 8.7,
+  "hash": "aba28808df8b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/2/14": {
+  "file": "caro-kann_2_14.m4a",
+  "seconds": 8.7,
+  "hash": "bb48707d83f5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/2/22": {
+  "file": "caro-kann_2_22.m4a",
+  "seconds": 7.2,
+  "hash": "2bd32d6a8773",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/3/intro": {
+  "file": "caro-kann_3_intro.m4a",
+  "seconds": 7.8,
+  "hash": "9c1fc0187ce4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/3/7": {
+  "file": "caro-kann_3_7.m4a",
+  "seconds": 6.1,
+  "hash": "aae64548dfcb",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/3/12": {
+  "file": "caro-kann_3_12.m4a",
+  "seconds": 5.3,
+  "hash": "8a4a15975ce7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/3/14": {
+  "file": "caro-kann_3_14.m4a",
+  "seconds": 6.9,
+  "hash": "6d121729d847",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/3/22": {
+  "file": "caro-kann_3_22.m4a",
+  "seconds": 11.3,
+  "hash": "0399fad6b8c4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/4/intro": {
+  "file": "caro-kann_4_intro.m4a",
+  "seconds": 7,
+  "hash": "111521171ef7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/4/6": {
+  "file": "caro-kann_4_6.m4a",
+  "seconds": 5.1,
+  "hash": "1cdac33f6a42",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/4/8": {
+  "file": "caro-kann_4_8.m4a",
+  "seconds": 7.2,
+  "hash": "611d64f7f439",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/4/16": {
+  "file": "caro-kann_4_16.m4a",
+  "seconds": 6.9,
+  "hash": "ff8071fe489c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "caro-kann/4/22": {
+  "file": "caro-kann_4_22.m4a",
+  "seconds": 7,
+  "hash": "4332d4686375",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/intro": {
+  "file": "dutch_intro.m4a",
+  "seconds": 17.6,
+  "hash": "adf089f00c53",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/0/intro": {
+  "file": "dutch_0_intro.m4a",
+  "seconds": 6.2,
+  "hash": "d60bcc2e1829",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/0/2": {
+  "file": "dutch_0_2.m4a",
+  "seconds": 5.8,
+  "hash": "abb34ffb248f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/0/8": {
+  "file": "dutch_0_8.m4a",
+  "seconds": 7.1,
+  "hash": "c7a3d06df84e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/0/14": {
+  "file": "dutch_0_14.m4a",
+  "seconds": 7.9,
+  "hash": "323b95784b80",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/0/20": {
+  "file": "dutch_0_20.m4a",
+  "seconds": 6.7,
+  "hash": "178360a2dd26",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/1/intro": {
+  "file": "dutch_1_intro.m4a",
+  "seconds": 7,
+  "hash": "dfc7524d24e9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/1/8": {
+  "file": "dutch_1_8.m4a",
+  "seconds": 5.7,
+  "hash": "068962e3ab1f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/1/10": {
+  "file": "dutch_1_10.m4a",
+  "seconds": 5.6,
+  "hash": "e21854782106",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/1/14": {
+  "file": "dutch_1_14.m4a",
+  "seconds": 8.4,
+  "hash": "cd3a789283a3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/1/20": {
+  "file": "dutch_1_20.m4a",
+  "seconds": 8.7,
+  "hash": "09636eacf617",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/2/intro": {
+  "file": "dutch_2_intro.m4a",
+  "seconds": 6.9,
+  "hash": "b63ee6e6cbee",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/2/8": {
+  "file": "dutch_2_8.m4a",
+  "seconds": 8.1,
+  "hash": "cc8ca38664d5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/2/14": {
+  "file": "dutch_2_14.m4a",
+  "seconds": 5.9,
+  "hash": "0779554bd4d8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/2/17": {
+  "file": "dutch_2_17.m4a",
+  "seconds": 6.9,
+  "hash": "2e5d7fcbbc7d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/2/22": {
+  "file": "dutch_2_22.m4a",
+  "seconds": 8.3,
+  "hash": "d8d1942b7ea4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/3/intro": {
+  "file": "dutch_3_intro.m4a",
+  "seconds": 7.1,
+  "hash": "d39898292a65",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/3/3": {
+  "file": "dutch_3_3.m4a",
+  "seconds": 7.3,
+  "hash": "0452abfc427f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/3/6": {
+  "file": "dutch_3_6.m4a",
+  "seconds": 6,
+  "hash": "131786ac4a52",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/3/12": {
+  "file": "dutch_3_12.m4a",
+  "seconds": 5.7,
+  "hash": "2a6c5be0dc80",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/3/20": {
+  "file": "dutch_3_20.m4a",
+  "seconds": 7.8,
+  "hash": "ba9ee49fed91",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/4/intro": {
+  "file": "dutch_4_intro.m4a",
+  "seconds": 6.2,
+  "hash": "9b7f48e69fa6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/4/4": {
+  "file": "dutch_4_4.m4a",
+  "seconds": 6.2,
+  "hash": "1d19dbfcec92",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/4/8": {
+  "file": "dutch_4_8.m4a",
+  "seconds": 6,
+  "hash": "54034534d714",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/4/12": {
+  "file": "dutch_4_12.m4a",
+  "seconds": 7.7,
+  "hash": "fb1cafc7aa10",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "dutch/4/20": {
+  "file": "dutch_4_20.m4a",
+  "seconds": 6.1,
+  "hash": "f9a8fab703ff",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/intro": {
+  "file": "pirc_intro.m4a",
+  "seconds": 17,
+  "hash": "298d8150e66a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/0/intro": {
+  "file": "pirc_0_intro.m4a",
+  "seconds": 4.6,
+  "hash": "5573bb02615c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/0/6": {
+  "file": "pirc_0_6.m4a",
+  "seconds": 7.7,
+  "hash": "069725cd201e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/0/12": {
+  "file": "pirc_0_12.m4a",
+  "seconds": 5.9,
+  "hash": "1514617abd54",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/0/16": {
+  "file": "pirc_0_16.m4a",
+  "seconds": 5.8,
+  "hash": "6cfa04a9561d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/0/20": {
+  "file": "pirc_0_20.m4a",
+  "seconds": 7.1,
+  "hash": "db893e1694d7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/1/intro": {
+  "file": "pirc_1_intro.m4a",
+  "seconds": 6.2,
+  "hash": "6b432233216d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/1/7": {
+  "file": "pirc_1_7.m4a",
+  "seconds": 5.8,
+  "hash": "c95433b8c506",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/1/12": {
+  "file": "pirc_1_12.m4a",
+  "seconds": 6.2,
+  "hash": "1154bb995a5c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/1/16": {
+  "file": "pirc_1_16.m4a",
+  "seconds": 5.4,
+  "hash": "bf50620b9bf2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/1/20": {
+  "file": "pirc_1_20.m4a",
+  "seconds": 6.3,
+  "hash": "eef072cda982",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/2/intro": {
+  "file": "pirc_2_intro.m4a",
+  "seconds": 7.8,
+  "hash": "8c3bbb36edee",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/2/7": {
+  "file": "pirc_2_7.m4a",
+  "seconds": 8.5,
+  "hash": "212cab58699a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/2/10": {
+  "file": "pirc_2_10.m4a",
+  "seconds": 6.3,
+  "hash": "d3e3ececcb57",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/2/16": {
+  "file": "pirc_2_16.m4a",
+  "seconds": 5.8,
+  "hash": "b6b9f56a282f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/2/20": {
+  "file": "pirc_2_20.m4a",
+  "seconds": 5.1,
+  "hash": "456e39b61771",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/3/intro": {
+  "file": "pirc_3_intro.m4a",
+  "seconds": 7.7,
+  "hash": "1931faf8cfdb",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/3/7": {
+  "file": "pirc_3_7.m4a",
+  "seconds": 10.1,
+  "hash": "ffe10ed0c59a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/3/12": {
+  "file": "pirc_3_12.m4a",
+  "seconds": 5.3,
+  "hash": "419f21075fd1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/3/18": {
+  "file": "pirc_3_18.m4a",
+  "seconds": 6.9,
+  "hash": "bd572d76eb75",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "pirc/3/20": {
+  "file": "pirc_3_20.m4a",
+  "seconds": 5.2,
+  "hash": "4d1670cecf3b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/intro": {
+  "file": "alekhine_intro.m4a",
+  "seconds": 16.2,
+  "hash": "85cbfcfca8c6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/intro": {
+  "file": "alekhine_0_intro.m4a",
+  "seconds": 5.8,
+  "hash": "deb3bc82ac4d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/4": {
+  "file": "alekhine_0_4.m4a",
+  "seconds": 6.1,
+  "hash": "03ca6d7dd1a6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/8": {
+  "file": "alekhine_0_8.m4a",
+  "seconds": 7.3,
+  "hash": "18738b2787e4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/14": {
+  "file": "alekhine_0_14.m4a",
+  "seconds": 6.2,
+  "hash": "469e141e72bf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/18": {
+  "file": "alekhine_0_18.m4a",
+  "seconds": 7.3,
+  "hash": "a01336f72dd9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/0/22": {
+  "file": "alekhine_0_22.m4a",
+  "seconds": 5.8,
+  "hash": "f8a9790d5172",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/1/intro": {
+  "file": "alekhine_1_intro.m4a",
+  "seconds": 5.2,
+  "hash": "c4c6edb9ff37",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/1/10": {
+  "file": "alekhine_1_10.m4a",
+  "seconds": 7.6,
+  "hash": "6d7edb395b6b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/1/14": {
+  "file": "alekhine_1_14.m4a",
+  "seconds": 5.9,
+  "hash": "5ee315415371",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/1/18": {
+  "file": "alekhine_1_18.m4a",
+  "seconds": 8.6,
+  "hash": "3fdb36dd4f65",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/1/22": {
+  "file": "alekhine_1_22.m4a",
+  "seconds": 6,
+  "hash": "e1596c06e2d6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/2/intro": {
+  "file": "alekhine_2_intro.m4a",
+  "seconds": 6.2,
+  "hash": "d82d011be4ad",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/2/9": {
+  "file": "alekhine_2_9.m4a",
+  "seconds": 5.7,
+  "hash": "b3816cfb96ca",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/2/12": {
+  "file": "alekhine_2_12.m4a",
+  "seconds": 8.4,
+  "hash": "b11d2070d3a6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/2/19": {
+  "file": "alekhine_2_19.m4a",
+  "seconds": 6.1,
+  "hash": "33f3b1d8e7c3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/2/22": {
+  "file": "alekhine_2_22.m4a",
+  "seconds": 7,
+  "hash": "6fdca03079a1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/3/intro": {
+  "file": "alekhine_3_intro.m4a",
+  "seconds": 4.4,
+  "hash": "8deb1310b283",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/3/6": {
+  "file": "alekhine_3_6.m4a",
+  "seconds": 6,
+  "hash": "292b9110309d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/3/12": {
+  "file": "alekhine_3_12.m4a",
+  "seconds": 5.5,
+  "hash": "80ee608a9c3a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/3/16": {
+  "file": "alekhine_3_16.m4a",
+  "seconds": 6.1,
+  "hash": "f66b81791d49",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "alekhine/3/20": {
+  "file": "alekhine_3_20.m4a",
+  "seconds": 5.7,
+  "hash": "d09f705b6cdf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/intro": {
+  "file": "vienna_intro.m4a",
+  "seconds": 17.8,
+  "hash": "776f08814df8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/intro": {
+  "file": "vienna_0_intro.m4a",
+  "seconds": 6.3,
+  "hash": "d42c408bcc35",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/5": {
+  "file": "vienna_0_5.m4a",
+  "seconds": 8.3,
+  "hash": "f15c3fccc556",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/6": {
+  "file": "vienna_0_6.m4a",
+  "seconds": 5.9,
+  "hash": "6dbaea04e25e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/11": {
+  "file": "vienna_0_11.m4a",
+  "seconds": 7,
+  "hash": "27a7f4f54123",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/16": {
+  "file": "vienna_0_16.m4a",
+  "seconds": 7.7,
+  "hash": "04439ab36c57",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/0/20": {
+  "file": "vienna_0_20.m4a",
+  "seconds": 7.2,
+  "hash": "ce16f1faa511",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/1/intro": {
+  "file": "vienna_1_intro.m4a",
+  "seconds": 7,
+  "hash": "bb15017b547e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/1/6": {
+  "file": "vienna_1_6.m4a",
+  "seconds": 5.7,
+  "hash": "ff80845d7509",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/1/8": {
+  "file": "vienna_1_8.m4a",
+  "seconds": 5.7,
+  "hash": "0b97c0d8d9a8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/1/14": {
+  "file": "vienna_1_14.m4a",
+  "seconds": 6.8,
+  "hash": "38dab20f4b50",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/1/20": {
+  "file": "vienna_1_20.m4a",
+  "seconds": 5.5,
+  "hash": "81715c76a81a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/2/intro": {
+  "file": "vienna_2_intro.m4a",
+  "seconds": 7.6,
+  "hash": "6e603884c371",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/2/5": {
+  "file": "vienna_2_5.m4a",
+  "seconds": 6.2,
+  "hash": "74b481f65c7d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/2/9": {
+  "file": "vienna_2_9.m4a",
+  "seconds": 6.6,
+  "hash": "3e1d0bf7d7ba",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/2/13": {
+  "file": "vienna_2_13.m4a",
+  "seconds": 6.9,
+  "hash": "518ff8d5db74",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/2/21": {
+  "file": "vienna_2_21.m4a",
+  "seconds": 5.1,
+  "hash": "d51ac059132f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/3/intro": {
+  "file": "vienna_3_intro.m4a",
+  "seconds": 5.9,
+  "hash": "4e1b853d8027",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/3/5": {
+  "file": "vienna_3_5.m4a",
+  "seconds": 6.9,
+  "hash": "98d75351b6ac",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/3/9": {
+  "file": "vienna_3_9.m4a",
+  "seconds": 5.8,
+  "hash": "16b48e3e4df5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/3/16": {
+  "file": "vienna_3_16.m4a",
+  "seconds": 6,
+  "hash": "8de4599df140",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "vienna/3/21": {
+  "file": "vienna_3_21.m4a",
+  "seconds": 7.2,
+  "hash": "e20b1e223000",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/intro": {
+  "file": "four-knights_intro.m4a",
+  "seconds": 14.8,
+  "hash": "b1d8e90c4339",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/intro": {
+  "file": "four-knights_0_intro.m4a",
+  "seconds": 5.8,
+  "hash": "91f95baf222e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/7": {
+  "file": "four-knights_0_7.m4a",
+  "seconds": 8,
+  "hash": "408543dc413e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/13": {
+  "file": "four-knights_0_13.m4a",
+  "seconds": 7.7,
+  "hash": "b4d0ba36f816",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/16": {
+  "file": "four-knights_0_16.m4a",
+  "seconds": 5.8,
+  "hash": "3c2a805e5d1c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/19": {
+  "file": "four-knights_0_19.m4a",
+  "seconds": 5,
+  "hash": "be55659344a1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/0/22": {
+  "file": "four-knights_0_22.m4a",
+  "seconds": 7.3,
+  "hash": "c7b74daf1634",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/1/intro": {
+  "file": "four-knights_1_intro.m4a",
+  "seconds": 5.8,
+  "hash": "db4b34c5f472",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/1/7": {
+  "file": "four-knights_1_7.m4a",
+  "seconds": 4.8,
+  "hash": "fec7c861c5e4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/1/12": {
+  "file": "four-knights_1_12.m4a",
+  "seconds": 7.7,
+  "hash": "12c48277f98a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/1/16": {
+  "file": "four-knights_1_16.m4a",
+  "seconds": 6.7,
+  "hash": "6bddb16be8a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/1/21": {
+  "file": "four-knights_1_21.m4a",
+  "seconds": 11.6,
+  "hash": "a1000f7b0dad",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/2/intro": {
+  "file": "four-knights_2_intro.m4a",
+  "seconds": 6.3,
+  "hash": "7ce89aa7e1fc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/2/8": {
+  "file": "four-knights_2_8.m4a",
+  "seconds": 6.7,
+  "hash": "a37c27c5401f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/2/11": {
+  "file": "four-knights_2_11.m4a",
+  "seconds": 8.5,
+  "hash": "3cd9546a99b5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/2/15": {
+  "file": "four-knights_2_15.m4a",
+  "seconds": 5.5,
+  "hash": "d09a959e1457",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/2/20": {
+  "file": "four-knights_2_20.m4a",
+  "seconds": 6.3,
+  "hash": "63bc3fa8b100",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/3/intro": {
+  "file": "four-knights_3_intro.m4a",
+  "seconds": 5.4,
+  "hash": "0deb90a0af91",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/3/7": {
+  "file": "four-knights_3_7.m4a",
+  "seconds": 5.4,
+  "hash": "4a6a09fdb608",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/3/11": {
+  "file": "four-knights_3_11.m4a",
+  "seconds": 7.1,
+  "hash": "365e96116e17",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/3/16": {
+  "file": "four-knights_3_16.m4a",
+  "seconds": 7.5,
+  "hash": "f38899b6999a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "four-knights/3/22": {
+  "file": "four-knights_3_22.m4a",
+  "seconds": 8.4,
+  "hash": "c8844313746e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/intro": {
+  "file": "kings-gambit_intro.m4a",
+  "seconds": 17.9,
+  "hash": "97332c7053fc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/intro": {
+  "file": "kings-gambit_0_intro.m4a",
+  "seconds": 6.7,
+  "hash": "93cbd1b083b1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/5": {
+  "file": "kings-gambit_0_5.m4a",
+  "seconds": 7.1,
+  "hash": "b6d539799132",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/7": {
+  "file": "kings-gambit_0_7.m4a",
+  "seconds": 6.1,
+  "hash": "3405f7baaa09",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/11": {
+  "file": "kings-gambit_0_11.m4a",
+  "seconds": 6.9,
+  "hash": "36afd2cf2d06",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/17": {
+  "file": "kings-gambit_0_17.m4a",
+  "seconds": 6.6,
+  "hash": "6484f31fd75d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/0/21": {
+  "file": "kings-gambit_0_21.m4a",
+  "seconds": 6.2,
+  "hash": "440c2086e251",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/1/intro": {
+  "file": "kings-gambit_1_intro.m4a",
+  "seconds": 7.7,
+  "hash": "e3b748f4344c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/1/6": {
+  "file": "kings-gambit_1_6.m4a",
+  "seconds": 8.4,
+  "hash": "522ccfd29a40",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/1/11": {
+  "file": "kings-gambit_1_11.m4a",
+  "seconds": 7.5,
+  "hash": "139fa032cacf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/1/16": {
+  "file": "kings-gambit_1_16.m4a",
+  "seconds": 5.4,
+  "hash": "73b1d4b17a9e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/1/19": {
+  "file": "kings-gambit_1_19.m4a",
+  "seconds": 8.7,
+  "hash": "70132b69b464",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/2/intro": {
+  "file": "kings-gambit_2_intro.m4a",
+  "seconds": 8.8,
+  "hash": "eb9d0b2502a1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/2/4": {
+  "file": "kings-gambit_2_4.m4a",
+  "seconds": 6.9,
+  "hash": "e922990e03a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/2/7": {
+  "file": "kings-gambit_2_7.m4a",
+  "seconds": 4.6,
+  "hash": "f33a1a55ec58",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/2/14": {
+  "file": "kings-gambit_2_14.m4a",
+  "seconds": 6.7,
+  "hash": "ed1a0e5329da",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/2/20": {
+  "file": "kings-gambit_2_20.m4a",
+  "seconds": 6.8,
+  "hash": "5dcdf0c1dbfc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/3/intro": {
+  "file": "kings-gambit_3_intro.m4a",
+  "seconds": 8.3,
+  "hash": "91de58ce6edc",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/3/4": {
+  "file": "kings-gambit_3_4.m4a",
+  "seconds": 5.6,
+  "hash": "10f9c55567bb",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/3/10": {
+  "file": "kings-gambit_3_10.m4a",
+  "seconds": 5.8,
+  "hash": "b82cd1589af5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/3/14": {
+  "file": "kings-gambit_3_14.m4a",
+  "seconds": 6.6,
+  "hash": "06b6e961cdca",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/3/20": {
+  "file": "kings-gambit_3_20.m4a",
+  "seconds": 7.9,
+  "hash": "19e28603f012",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/4/intro": {
+  "file": "kings-gambit_4_intro.m4a",
+  "seconds": 7.8,
+  "hash": "92d4d40d4d56",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/4/5": {
+  "file": "kings-gambit_4_5.m4a",
+  "seconds": 8.7,
+  "hash": "046d83165a13",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/4/8": {
+  "file": "kings-gambit_4_8.m4a",
+  "seconds": 6.1,
+  "hash": "34c428097d54",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/4/13": {
+  "file": "kings-gambit_4_13.m4a",
+  "seconds": 4.9,
+  "hash": "2dc9125f54f0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kings-gambit/4/21": {
+  "file": "kings-gambit_4_21.m4a",
+  "seconds": 5.4,
+  "hash": "8902fc76ea65",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/intro": {
+  "file": "catalan_intro.m4a",
+  "seconds": 15.9,
+  "hash": "1077aea99c10",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/intro": {
+  "file": "catalan_0_intro.m4a",
+  "seconds": 6.2,
+  "hash": "581459e0f24b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/8": {
+  "file": "catalan_0_8.m4a",
+  "seconds": 9.3,
+  "hash": "20a804e4a5b2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/13": {
+  "file": "catalan_0_13.m4a",
+  "seconds": 6.4,
+  "hash": "4c793f03dd99",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/16": {
+  "file": "catalan_0_16.m4a",
+  "seconds": 6.6,
+  "hash": "3da3e141efe9",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/20": {
+  "file": "catalan_0_20.m4a",
+  "seconds": 8.7,
+  "hash": "3ee275debb02",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/0/22": {
+  "file": "catalan_0_22.m4a",
+  "seconds": 7.2,
+  "hash": "56d2e7d0a647",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/1/intro": {
+  "file": "catalan_1_intro.m4a",
+  "seconds": 5.9,
+  "hash": "e24a416f3b9a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/1/8": {
+  "file": "catalan_1_8.m4a",
+  "seconds": 10,
+  "hash": "993fb338b8a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/1/13": {
+  "file": "catalan_1_13.m4a",
+  "seconds": 7.4,
+  "hash": "7cab32541bfd",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/1/17": {
+  "file": "catalan_1_17.m4a",
+  "seconds": 5.6,
+  "hash": "cdc30a9e8bf6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/1/22": {
+  "file": "catalan_1_22.m4a",
+  "seconds": 8.2,
+  "hash": "a86d858c2bae",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/2/intro": {
+  "file": "catalan_2_intro.m4a",
+  "seconds": 7.4,
+  "hash": "65441ce48e8c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/2/8": {
+  "file": "catalan_2_8.m4a",
+  "seconds": 8.4,
+  "hash": "51f4deb92ea6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/2/17": {
+  "file": "catalan_2_17.m4a",
+  "seconds": 6,
+  "hash": "27be4b82857e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/2/18": {
+  "file": "catalan_2_18.m4a",
+  "seconds": 9,
+  "hash": "7e9c2a2e78bf",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/2/22": {
+  "file": "catalan_2_22.m4a",
+  "seconds": 5.8,
+  "hash": "7cef8b577bb2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/3/intro": {
+  "file": "catalan_3_intro.m4a",
+  "seconds": 6.7,
+  "hash": "d7ce671abc03",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/3/8": {
+  "file": "catalan_3_8.m4a",
+  "seconds": 5.8,
+  "hash": "4a491fa9ce21",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/3/12": {
+  "file": "catalan_3_12.m4a",
+  "seconds": 5.3,
+  "hash": "dfc6e4fa14c7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/3/17": {
+  "file": "catalan_3_17.m4a",
+  "seconds": 5.2,
+  "hash": "ec5e18d918ee",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "catalan/3/22": {
+  "file": "catalan_3_22.m4a",
+  "seconds": 8.6,
+  "hash": "681bb814dba7",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/intro": {
+  "file": "benoni_intro.m4a",
+  "seconds": 16.7,
+  "hash": "fe596deb6da8",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/intro": {
+  "file": "benoni_0_intro.m4a",
+  "seconds": 9.2,
+  "hash": "be3a5b115d16",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/6": {
+  "file": "benoni_0_6.m4a",
+  "seconds": 10.4,
+  "hash": "40be4124660b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/12": {
+  "file": "benoni_0_12.m4a",
+  "seconds": 7,
+  "hash": "1702ad831122",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/18": {
+  "file": "benoni_0_18.m4a",
+  "seconds": 9.8,
+  "hash": "d44347389c93",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/22": {
+  "file": "benoni_0_22.m4a",
+  "seconds": 6.3,
+  "hash": "07912353c37c",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/0/24": {
+  "file": "benoni_0_24.m4a",
+  "seconds": 5.1,
+  "hash": "e538118bc88e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/1/intro": {
+  "file": "benoni_1_intro.m4a",
+  "seconds": 7.3,
+  "hash": "755633467e62",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/1/13": {
+  "file": "benoni_1_13.m4a",
+  "seconds": 5.4,
+  "hash": "4d3cf1cb8bc0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/1/15": {
+  "file": "benoni_1_15.m4a",
+  "seconds": 7.6,
+  "hash": "15aec562598d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/1/20": {
+  "file": "benoni_1_20.m4a",
+  "seconds": 6.7,
+  "hash": "5e1f2134506f",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/1/26": {
+  "file": "benoni_1_26.m4a",
+  "seconds": 6.8,
+  "hash": "6bf8e271162d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/2/intro": {
+  "file": "benoni_2_intro.m4a",
+  "seconds": 6.7,
+  "hash": "b92306a1a736",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/2/13": {
+  "file": "benoni_2_13.m4a",
+  "seconds": 7.4,
+  "hash": "60f32dff67f6",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/2/18": {
+  "file": "benoni_2_18.m4a",
+  "seconds": 5.7,
+  "hash": "337c59459d87",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/2/22": {
+  "file": "benoni_2_22.m4a",
+  "seconds": 7,
+  "hash": "2128476b601d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/2/24": {
+  "file": "benoni_2_24.m4a",
+  "seconds": 6.4,
+  "hash": "3ce0d0b29ef5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/3/intro": {
+  "file": "benoni_3_intro.m4a",
+  "seconds": 5.1,
+  "hash": "40f046030f1b",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/3/6": {
+  "file": "benoni_3_6.m4a",
+  "seconds": 6.4,
+  "hash": "b168306550a1",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/3/10": {
+  "file": "benoni_3_10.m4a",
+  "seconds": 5.7,
+  "hash": "372269915616",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/3/14": {
+  "file": "benoni_3_14.m4a",
+  "seconds": 6.9,
+  "hash": "633523ca9c02",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "benoni/3/24": {
+  "file": "benoni_3_24.m4a",
+  "seconds": 8,
+  "hash": "ac45ae0445b5",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/intro": {
+  "file": "kia_intro.m4a",
+  "seconds": 18.4,
+  "hash": "eccf1708a6ae",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/intro": {
+  "file": "kia_0_intro.m4a",
+  "seconds": 5.5,
+  "hash": "1ffdb25bbbb4",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/3": {
+  "file": "kia_0_3.m4a",
+  "seconds": 6.2,
+  "hash": "03f6672f50f0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/9": {
+  "file": "kia_0_9.m4a",
+  "seconds": 5.9,
+  "hash": "acaec18a463a",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/17": {
+  "file": "kia_0_17.m4a",
+  "seconds": 5.5,
+  "hash": "e5278365251d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/19": {
+  "file": "kia_0_19.m4a",
+  "seconds": 7.5,
+  "hash": "a41019a42146",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/0/23": {
+  "file": "kia_0_23.m4a",
+  "seconds": 10.9,
+  "hash": "a1dba329e7fe",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/1/intro": {
+  "file": "kia_1_intro.m4a",
+  "seconds": 5.4,
+  "hash": "ac411d3f9228",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/1/5": {
+  "file": "kia_1_5.m4a",
+  "seconds": 5.7,
+  "hash": "23b4048c9e4e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/1/15": {
+  "file": "kia_1_15.m4a",
+  "seconds": 7,
+  "hash": "859a49656e17",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/1/17": {
+  "file": "kia_1_17.m4a",
+  "seconds": 5.8,
+  "hash": "a4753a46ea0e",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/1/23": {
+  "file": "kia_1_23.m4a",
+  "seconds": 10.4,
+  "hash": "fc751ab973ab",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/2/intro": {
+  "file": "kia_2_intro.m4a",
+  "seconds": 6.3,
+  "hash": "a5ce16c35757",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/2/1": {
+  "file": "kia_2_1.m4a",
+  "seconds": 5.7,
+  "hash": "d9db27941f98",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/2/8": {
+  "file": "kia_2_8.m4a",
+  "seconds": 7.2,
+  "hash": "b1891514fe00",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/2/13": {
+  "file": "kia_2_13.m4a",
+  "seconds": 8,
+  "hash": "7903b6e151b3",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/2/19": {
+  "file": "kia_2_19.m4a",
+  "seconds": 7,
+  "hash": "302af0808f7d",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/3/intro": {
+  "file": "kia_3_intro.m4a",
+  "seconds": 5.2,
+  "hash": "81f68da370a2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/3/8": {
+  "file": "kia_3_8.m4a",
+  "seconds": 5.1,
+  "hash": "056a12d2e0e2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/3/13": {
+  "file": "kia_3_13.m4a",
+  "seconds": 5.4,
+  "hash": "94eda0316bb0",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/3/17": {
+  "file": "kia_3_17.m4a",
+  "seconds": 6.7,
+  "hash": "7b25354e94c2",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ },
+ "kia/3/19": {
+  "file": "kia_3_19.m4a",
+  "seconds": 7.2,
+  "hash": "a2b327083d22",
+  "engine": "kokoro",
+  "voice": "af_heart"
+ }
+}
