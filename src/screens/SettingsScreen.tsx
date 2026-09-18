@@ -1,5 +1,57 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
+import { listVoices, setPreferredVoice, speak, speechAvailable, stopSpeech, type VoiceOption } from '../lib/speech'
+
+function VoicePicker() {
+  const [voices, setVoices] = useState<VoiceOption[]>([])
+  const [uri, setUri] = useState<string>('')
+  useEffect(() => {
+    const load = () => setVoices(listVoices())
+    load()
+    if (speechAvailable()) window.speechSynthesis.addEventListener('voiceschanged', load)
+    getSetting<string | null>('voiceURI', null).then((v) => setUri(v ?? ''))
+    return () => {
+      if (speechAvailable()) window.speechSynthesis.removeEventListener('voiceschanged', load)
+      stopSpeech()
+    }
+  }, [])
+  if (!speechAvailable()) return <p className="muted small">This browser has no speech voices.</p>
+  const label = (v: VoiceOption) => `${v.name}${v.quality !== 'standard' ? ` (${v.quality})` : ''} · ${v.lang}`
+  const bestInstalled = voices[0]?.quality ?? 'standard'
+  return (
+    <>
+      <select
+        className="select"
+        value={uri}
+        onChange={(e) => {
+          const v = e.target.value || null
+          setUri(e.target.value)
+          setPreferredVoice(v)
+          void setSetting('voiceURI', v)
+        }}
+      >
+        <option value="">Automatic (best installed)</option>
+        {voices.map((v) => (
+          <option key={v.uri} value={v.uri}>
+            {label(v)}
+          </option>
+        ))}
+      </select>
+      <div className="btn-row left">
+        <button type="button" onClick={() => void speak('Bishop to c4. It eyes f7 and develops with tempo. Castle next, then push d4.')}>
+          Test voice
+        </button>
+      </div>
+      {bestInstalled === 'standard' && (
+        <p className="muted small">
+          Only basic voices are installed. For a much better narrator, on your iPhone open Settings, Accessibility, Spoken
+          Content, Voices, English, then download an Enhanced or Premium voice such as Ava, Zoe, or Evan. It will appear here
+          after you relaunch the app and is used automatically.
+        </p>
+      )}
+    </>
+  )
+}
 
 function Toggle({ label, hint, settingKey, fallback }: { label: string; hint: string; settingKey: string; fallback: boolean }) {
   const [on, setOn] = useState(fallback)
@@ -84,6 +136,10 @@ export default function SettingsScreen({ profile, onReload }: Props) {
         />
         <Toggle label="Sounds" hint="Move clicks and a short chime or thud with each badge." settingKey="sounds" fallback />
         <Toggle label="Commentary" hint="A sentence about every move under the board." settingKey="commentary" fallback={false} />
+      </section>
+      <section className="card">
+        <h3>Narration voice</h3>
+        <VoicePicker />
       </section>
       <section className="card">
         <h3>Backup</h3>

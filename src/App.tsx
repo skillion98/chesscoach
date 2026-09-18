@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Icon from './components/Icons'
 import { getProfile, getSetting, saveProfile, setSetting, type Profile } from './lib/db'
 import { RATING_ERA, STARTING_RATING } from './game/rating'
+import { setPreferredVoice } from './lib/speech'
 import { navigate, useRoute } from './lib/router'
 import HomeScreen from './screens/HomeScreen'
 import PlayScreen from './screens/PlayScreen'
@@ -28,6 +29,7 @@ export default function App() {
         await saveProfile({ rating: STARTING_RATING, gamesPlayed: 0, peakRating: STARTING_RATING })
         await setSetting('ratingEra', RATING_ERA)
       }
+      setPreferredVoice(await getSetting<string | null>('voiceURI', null))
       setProfile(await getProfile())
     })()
   }, [])
