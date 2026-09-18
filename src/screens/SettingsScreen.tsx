@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
 import { listVoices, setPreferredVoice, speak, speechAvailable, stopSpeech, type VoiceOption } from '../lib/speech'
-import { LOCAL_VOICES, loadLocalTts, localTtsReady, modelSizeMb, webgpuAvailable } from '../lib/localTts'
+import { LOCAL_VOICES, currentConfig, loadLocalTts, localTtsReady, localVoiceDisabled, modelSizeMb, resetLocalVoice } from '../lib/localTts'
 import { narrate } from '../lib/narration'
 
 function NaturalVoice() {
@@ -39,8 +39,8 @@ function NaturalVoice() {
         <span>
           <span className="toggle-label">Natural voice on this device</span>
           <span className="muted small">
-            Free, runs on the phone{webgpuAvailable() ? ' using its graphics chip' : ', slowly, on its CPU'}. Downloads about {modelSizeMb()} MB
-            once over Wi-Fi. Used for coach recaps and as the fallback for lessons.
+            Free, runs on the phone: {currentConfig().label}. Downloads about {modelSizeMb()} MB once over Wi-Fi. Used for
+            coach recaps and as the fallback for lessons.
           </span>
         </span>
         <input
@@ -53,6 +53,14 @@ function NaturalVoice() {
           }}
         />
       </label>
+      {on && localVoiceDisabled() && (
+        <p className="muted small">
+          The natural voice crashed on this device in every mode, so it is switched off and the built-in voice is used.{' '}
+          <button type="button" className="link small" onClick={() => { resetLocalVoice(); void warm() }}>
+            Try again
+          </button>
+        </p>
+      )}
       {on && (
         <>
           <select

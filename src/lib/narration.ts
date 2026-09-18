@@ -5,7 +5,7 @@
 // Dynamic text (coach recaps) skips 1.
 
 import { db, getSetting } from './db'
-import { localTtsReady, loadLocalTts, synthesizeLocal } from './localTts'
+import { localTtsReady, localVoiceDisabled, loadLocalTts, synthesizeLocal } from './localTts'
 import { speakable } from './speakable'
 import { readingMs, speak, speechAvailable, stopSpeech } from './speech'
 
@@ -115,7 +115,7 @@ export async function narrate(text: string, key: string | undefined, muted: bool
     if (ok) return
   }
   const local = await localVoiceEnabled()
-  if (local.on) {
+  if (local.on && !localVoiceDisabled()) {
     try {
       if (!localTtsReady()) onStatus?.('Loading the natural voice…')
       await loadLocalTts()

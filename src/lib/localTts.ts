@@ -29,11 +29,84 @@ export function localTtsError(): string | null {
 
 /** Download size of the model the device will use. */
 export function modelSizeMb(): number {
-  return webgpuAvailable() ? 330 : 90
+  const c = currentConfig()
+  return c.dtype === 'fp32' ? 330 : c.dtype === 'fp16' ? 165 : 90
 }
 
 export function webgpuAvailable(): boolean {
   return typeof navigator !== 'undefined' && 'gpu' in navigator
+}
+
+export interface TtsConfig {
+  device: 'webgpu' | 'wasm'
+  dtype: 'fp32' | 'fp16' | 'q8'
+  label: string
+}
+
+const LADDER: TtsConfig[] = [
+  { device: 'webgpu', dtype: 'fp32', label: 'graphics chip, full precision (330 MB)' },
+  { device: 'webgpu', dtype: 'fp16', label: 'graphics chip, half precision (165 MB)' },
+  { device: 'wasm', dtype: 'q8', label: 'processor, compact model (90 MB)' },
+]
+
+const LOADING_KEY = 'ttsLoadInProgress'
+const LEVEL_KEY = 'ttsLevel'
+const DISABLED_KEY = 'ttsDisabled'
+
+function isMobile(): boolean {
+  return typeof navigator !== 'undefined' && (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || navigator.maxTouchPoints > 1)
+}
+
+function readLevel(): number {
+  try {
+    const v = localStorage.getItem(LEVEL_KEY)
+    if (v !== null) return Number(v)
+  } catch {
+    /* ignore */
+  }
+  // phones start one step down: the full-precision model is too big for a Safari tab
+  return isMobile() ? 1 : 0
+}
+
+// Crash guard: if a load was in progress when the page last died, step down a level.
+try {
+  if (localStorage.getItem(LOADING_KEY)) {
+    localStorage.removeItem(LOADING_KEY)
+    const next = readLevel() + 1
+    if (next >= LADDER.length) localStorage.setItem(DISABLED_KEY, '1')
+    else localStorage.setItem(LEVEL_KEY, String(next))
+  }
+} catch {
+  /* ignore */
+}
+
+/** The mode the device will use, after any crash step-downs. */
+export function currentConfig(): TtsConfig {
+  const lvl = Math.min(LADDER.length - 1, Math.max(0, readLevel()))
+  const c = LADDER[lvl]
+  if (c.device === 'webgpu' && !webgpuAvailable()) return LADDER[2]
+  return c
+}
+
+/** True when every mode crashed on this device; the natural voice is then skipped. */
+export function localVoiceDisabled(): boolean {
+  try {
+    return localStorage.getItem(DISABLED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function resetLocalVoice(): void {
+  try {
+    localStorage.removeItem(DISABLED_KEY)
+    localStorage.removeItem(LEVEL_KEY)
+    localStorage.removeItem(LOADING_KEY)
+  } catch {
+    /* ignore */
+  }
+  engine = null
+  loading = null
 }
 
 /** Load (downloading on first use). Progress is 0..100. */
@@ -42,9 +115,14 @@ export function loadLocalTts(onProgress?: (pct: number, note: string) => void): 
   if (loading) return loading
   lastError = null
   loading = (async () => {
+    if (localVoiceDisabled()) throw new Error('The natural voice crashed on this device in every mode and is switched off.')
     const { KokoroTTS } = await import('kokoro-js')
-    const device = webgpuAvailable() ? 'webgpu' : 'wasm'
-    const dtype = device === 'webgpu' ? 'fp32' : 'q8'
+    const { device, dtype } = currentConfig()
+    try {
+      localStorage.setItem(LOADING_KEY, JSON.stringify({ device, dtype, at: Date.now() }))
+    } catch {
+      /* ignore */
+    }
     const files = new Map<string, { loaded: number; total: number }>()
     const tts = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
       dtype,
@@ -65,9 +143,19 @@ export function loadLocalTts(onProgress?: (pct: number, note: string) => void): 
       },
     })
     engine = tts as unknown as Kokoro
+    try {
+      localStorage.removeItem(LOADING_KEY)
+    } catch {
+      /* ignore */
+    }
     return engine
   })().catch((e) => {
     loading = null
+    try {
+      localStorage.removeItem(LOADING_KEY)
+    } catch {
+      /* ignore */
+    }
     lastError = e instanceof Error ? e.message : String(e)
     throw e
   })
