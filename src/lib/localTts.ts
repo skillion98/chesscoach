@@ -55,6 +55,8 @@ export function threadsAvailable(): number {
 }
 
 const LOADING_KEY = 'ttsLoadInProgress'
+const QUALITY_KEY = 'ttsQuality' // 'compact' | 'full'
+const FULL_CRASHED_KEY = 'ttsFullCrashed'
 const LEVEL_KEY = 'ttsLevel'
 const DISABLED_KEY = 'ttsDisabled'
 
@@ -76,7 +78,13 @@ function readLevel(): number {
 // Crash guard: if a load was in progress when the page last died, step down a level.
 try {
   if (localStorage.getItem(LOADING_KEY)) {
+    const was = JSON.parse(localStorage.getItem(LOADING_KEY) || '{}')
     localStorage.removeItem(LOADING_KEY)
+    if (was.device === 'wasm' && was.dtype === 'fp32') {
+      localStorage.setItem(FULL_CRASHED_KEY, '1')
+      localStorage.setItem(QUALITY_KEY, 'compact')
+      throw new Error('handled')
+    }
     const next = readLevel() + 1
     if (next >= LADDER.length) localStorage.setItem(DISABLED_KEY, '1')
     else localStorage.setItem(LEVEL_KEY, String(next))
@@ -89,11 +97,49 @@ try {
 export function currentConfig(): TtsConfig {
   // phones: the full model crashes Safari and the half-precision one produces noise on its GPU,
   // so use the compact model on the CPU (multi-threaded once the page is cross-origin isolated)
-  if (isMobile()) return LADDER[2]
+  if (isMobile()) {
+    return getQuality() === 'full'
+      ? { device: 'wasm', dtype: 'fp32', label: 'processor, full model (330 MB)' }
+      : LADDER[2]
+  }
   const lvl = Math.min(LADDER.length - 1, Math.max(0, readLevel()))
   const c = LADDER[lvl]
   if (c.device === 'webgpu' && !webgpuAvailable()) return LADDER[2]
   return c
+}
+
+export type Quality = 'compact' | 'full'
+
+export function getQuality(): Quality {
+  try {
+    return localStorage.getItem(QUALITY_KEY) === 'full' ? 'full' : 'compact'
+  } catch {
+    return 'compact'
+  }
+}
+
+export function setQuality(q: Quality): void {
+  try {
+    localStorage.setItem(QUALITY_KEY, q)
+    if (q === 'full') localStorage.removeItem(FULL_CRASHED_KEY)
+  } catch {
+    /* ignore */
+  }
+  engine = null
+  loading = null
+}
+
+/** True when the full model crashed on this phone and was switched back to compact. */
+export function fullModelCrashed(): boolean {
+  try {
+    return localStorage.getItem(FULL_CRASHED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function isPhoneDevice(): boolean {
+  return isMobile()
 }
 
 /** True when every mode crashed on this device; the natural voice is then skipped. */

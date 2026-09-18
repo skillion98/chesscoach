@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
 import { listVoices, setPreferredVoice, speak, speechAvailable, stopSpeech, type VoiceOption } from '../lib/speech'
-import { LOCAL_VOICES, currentConfig, loadLocalTts, localTtsReady, localVoiceDisabled, modelSizeMb, resetLocalVoice } from '../lib/localTts'
+import { LOCAL_VOICES, currentConfig, fullModelCrashed, getQuality, isPhoneDevice, loadLocalTts, localTtsReady, localVoiceDisabled, modelSizeMb, resetLocalVoice, setQuality } from '../lib/localTts'
 import { narrate } from '../lib/narration'
 
 function NaturalVoice() {
@@ -10,6 +10,7 @@ function NaturalVoice() {
   const [pct, setPct] = useState<number | null>(null)
   const [note, setNote] = useState('')
   const [testing, setTesting] = useState(false)
+  const [quality, setQualityState] = useState(getQuality())
   useEffect(() => {
     getSetting<boolean>('localVoice', false).then((v) => {
       setOn(v)
@@ -77,6 +78,29 @@ function NaturalVoice() {
               </option>
             ))}
           </select>
+          {isPhoneDevice() && (
+            <div className="seg" style={{ marginBottom: 8 }}>
+              {(['compact', 'full'] as const).map((q) => (
+                <button
+                  type="button"
+                  key={q}
+                  className={'seg-btn' + (quality === q ? ' selected' : '')}
+                  disabled={pct !== null}
+                  onClick={() => {
+                    if (q === quality) return
+                    setQuality(q)
+                    setQualityState(q)
+                    void warm()
+                  }}
+                >
+                  {q === 'compact' ? 'Compact (90 MB)' : 'Full (330 MB)'}
+                </button>
+              ))}
+            </div>
+          )}
+          {isPhoneDevice() && fullModelCrashed() && quality === 'compact' && (
+            <p className="muted small">The full model ran out of memory on this phone, so Compact is in use.</p>
+          )}
           {pct !== null && (
             <div className="progress">
               <div className="progress-fill" style={{ width: `${pct}%` }} />
