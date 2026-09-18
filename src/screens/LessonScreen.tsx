@@ -8,7 +8,7 @@ import MoveList from '../components/MoveList'
 import { cgColor, computeDests } from '../game/chessUtil'
 import { courseBySlug, parseChapter, moveText } from '../openings/model'
 import { recordResult } from '../openings/stats'
-import { readingMs, speak, speechAvailable, stopSpeech } from '../lib/speech'
+import { narrate, stopNarration } from '../lib/narration'
 import { getSetting, setSetting } from '../lib/db'
 import { navigate } from '../lib/router'
 
@@ -47,18 +47,14 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
     getSetting<boolean>('muted', false).then(setMuted)
     return () => {
       tokenRef.current++
-      stopSpeech()
+      stopNarration()
     }
   }, [])
 
   const say = useCallback(
-    async (text: string, token: number) => {
+    async (text: string, token: number, key?: string) => {
       setCaption(text)
-      if (muted || !speechAvailable()) {
-        await sleep(readingMs(text))
-      } else {
-        await speak(text)
-      }
+      await narrate(text, key, muted)
       return token === tokenRef.current
     },
     [muted],
@@ -73,14 +69,14 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
       setDone(false)
       if (from === 0) {
         setPly(0)
-        if (!(await say(ch.intro, token))) return
+        if (!(await say(ch.intro, token, `${slug}/${idx}/intro`))) return
       }
       for (let p = from; p < ch.sans.length; p++) {
         if (token !== tokenRef.current) return
         setPly(p + 1)
         const note = ch.notes.get(p + 1)
         if (note) {
-          if (!(await say(note, token))) return
+          if (!(await say(note, token, `${slug}/${idx}/${p + 1}`))) return
           await sleep(350)
         } else {
           await sleep(850)
@@ -89,14 +85,14 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
       if (token !== tokenRef.current) return
       setPlaying(false)
       setDone(true)
-      await say('That is the line. Now drill it: play the moves yourself.', token)
+      await say('That is the line. Now drill it: play the moves yourself.', token, 'common/drill')
     },
     [ch, say],
   )
 
   const pause = useCallback(() => {
     tokenRef.current++
-    stopSpeech()
+    stopNarration()
     setPlaying(false)
   }, [])
 
@@ -130,7 +126,7 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
   const startDrill = useCallback(async () => {
     if (!ch) return
     const token = ++tokenRef.current
-    stopSpeech()
+    stopNarration()
     const from = startPly ? Math.max(0, Math.min(ch.sans.length, startPly - 1)) : 0
     setPly(from)
     setWrong(0)
@@ -296,7 +292,7 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
                 const m = !muted
                 setMuted(m)
                 void setSetting('muted', m)
-                if (m) stopSpeech()
+                if (m) stopNarration()
               }}
             >
               <Icon name={muted ? 'mute' : 'sound'} size={20} />

@@ -2,6 +2,8 @@
 // Voice quality depends entirely on which voices are installed on the device; premium and
 // enhanced voices are preferred automatically, and the user can pick one in Settings.
 
+import { speakable } from './speakable'
+
 let preferredURI: string | null = null
 let voice: SpeechSynthesisVoice | null = null
 let current: SpeechSynthesisUtterance | null = null
@@ -78,7 +80,7 @@ export function speak(text: string, rate = 0.95): Promise<void> {
   if (!speechAvailable()) return Promise.resolve()
   return new Promise((resolve) => {
     stopSpeech()
-    const u = new SpeechSynthesisUtterance(text)
+    const u = new SpeechSynthesisUtterance(speakable(text))
     const v = pickVoice()
     if (v) u.voice = v
     u.rate = rate

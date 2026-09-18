@@ -44,9 +44,8 @@ function VoicePicker() {
       </div>
       {bestInstalled === 'standard' && (
         <p className="muted small">
-          Only basic voices are installed. For a much better narrator, on your iPhone open Settings, Accessibility, Spoken
-          Content, Voices, English, then download an Enhanced or Premium voice such as Ava, Zoe, or Evan. It will appear here
-          after you relaunch the app and is used automatically.
+          These are the only voices Apple lets web apps use; Siri and downloaded Premium voices are not available here.
+          Recorded narration for the opening lessons uses a separate, natural voice when it is installed.
         </p>
       )}
     </>

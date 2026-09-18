@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import Icon from '../components/Icons'
 import { allChapters, courseBySlug, moveText, thumbnail, videoUrl } from '../openings/model'
 import { courseMastery, ecoRange, weakLines, type CourseMastery, type WeakLine } from '../openings/stats'
-import { speak, speechAvailable, stopSpeech } from '../lib/speech'
+import { speechAvailable } from '../lib/speech'
+import { narrate, stopNarration } from '../lib/narration'
 import { navigate } from '../lib/router'
 
 interface Props {
@@ -24,7 +25,7 @@ export default function OpeningScreen({ slug }: Props) {
     weakLines(5, course.slug).then((w) => alive && setWeak(w))
     return () => {
       alive = false
-      stopSpeech()
+      stopNarration()
     }
   }, [course])
 
@@ -37,12 +38,12 @@ export default function OpeningScreen({ slug }: Props) {
 
   const listen = async () => {
     if (speaking) {
-      stopSpeech()
+      stopNarration()
       setSpeaking(false)
       return
     }
     setSpeaking(true)
-    await speak(course.intro)
+    await narrate(course.intro, `${course.slug}/intro`, false)
     setSpeaking(false)
   }
 

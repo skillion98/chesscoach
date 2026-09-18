@@ -34,11 +34,11 @@ export default defineConfig({
         runtimeCaching: [
           {
             // puzzle sets and other data: fetched once, then served from cache
-            urlPattern: ({ url }) => url.pathname.includes('/data/'),
+            urlPattern: ({ url }) => url.pathname.includes('/data/') || url.pathname.includes('/audio/'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'chesscoach-data',
-              expiration: { maxEntries: 40, maxAgeSeconds: 365 * 24 * 3600 },
+              expiration: { maxEntries: 800, maxAgeSeconds: 365 * 24 * 3600 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
