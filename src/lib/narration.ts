@@ -1,5 +1,12 @@
-// Recorded narration clips (generated once with a neural voice) with the device voice as fallback.
+// Narration with three sources, best available first:
+//   1. recorded clips generated once for fixed lesson text (public/audio + manifest)
+//   2. the natural on-device voice (Kokoro in the browser), when the user enabled it
+//   3. the device's built-in speech voice
+// Dynamic text (coach recaps) skips 1.
 
+import { db, getSetting } from './db'
+import { localTtsReady, loadLocalTts, synthesizeLocal } from './localTts'
+import { speakable } from './speakable'
 import { readingMs, speak, speechAvailable, stopSpeech } from './speech'
 
 interface ManifestEntry {
@@ -10,6 +17,7 @@ interface ManifestEntry {
 let manifest: Record<string, ManifestEntry> | null = null
 let loading: Promise<void> | null = null
 let current: HTMLAudioElement | null = null
+let currentUrl: string | null = null
 
 export function loadNarration(): Promise<void> {
   if (manifest) return Promise.resolve()
@@ -30,7 +38,6 @@ export function hasClip(key: string): boolean {
   return !!manifest && key in manifest
 }
 
-/** True once a recorded voice is available for at least one lesson. */
 export function narrationInstalled(): boolean {
   return !!manifest && Object.keys(manifest).length > 0
 }
@@ -41,14 +48,61 @@ export function stopNarration(): void {
     current.src = ''
     current = null
   }
+  if (currentUrl) {
+    URL.revokeObjectURL(currentUrl)
+    currentUrl = null
+  }
   stopSpeech()
 }
 
+function playUrl(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const a = new Audio(url)
+    current = a
+    a.onended = () => {
+      if (current === a) current = null
+      resolve(true)
+    }
+    a.onerror = () => {
+      if (current === a) current = null
+      resolve(false)
+    }
+    a.play().catch(() => {
+      if (current === a) current = null
+      resolve(false)
+    })
+  })
+}
+
+async function localVoiceEnabled(): Promise<{ on: boolean; voice: string }> {
+  const on = await getSetting<boolean>('localVoice', false)
+  const voice = await getSetting<string>('localVoiceId', 'af_heart')
+  return { on, voice }
+}
+
+async function cachedSynthesis(text: string, voice: string): Promise<Blob> {
+  const key = `tts:${voice}:${hashText(text)}`
+  const row = await db.settings.get(key)
+  if (row && row.value instanceof Blob) return row.value
+  const blob = await synthesizeLocal(speakable(text), voice)
+  await db.settings.put({ key, value: blob })
+  return blob
+}
+
+function hashText(s: string): string {
+  let h = 2166136261
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return (h >>> 0).toString(16)
+}
+
 /**
- * Say something: the recorded clip when one exists for `key`, otherwise the device voice,
- * otherwise (or when muted) just wait roughly as long as reading it would take.
+ * Say something. `key` selects a recorded clip when one exists; otherwise the natural
+ * on-device voice if enabled, otherwise the built-in voice; muted just waits.
  */
-export async function narrate(text: string, key: string | undefined, muted: boolean): Promise<void> {
+export async function narrate(text: string, key: string | undefined, muted: boolean, onStatus?: (s: string) => void): Promise<void> {
   await loadNarration()
   stopNarration()
   if (muted) {
@@ -57,25 +111,23 @@ export async function narrate(text: string, key: string | undefined, muted: bool
   }
   const entry = key && manifest ? manifest[key] : undefined
   if (entry) {
-    await new Promise<void>((resolve) => {
-      const a = new Audio(`${import.meta.env.BASE_URL}audio/${entry.file}`)
-      current = a
-      const done = () => {
-        if (current === a) current = null
-        resolve()
-      }
-      a.onended = done
-      a.onerror = () => {
-        // fall back to the device voice if the file is missing
-        if (current === a) current = null
-        void speak(text).then(resolve)
-      }
-      a.play().catch(() => {
-        if (current === a) current = null
-        void speak(text).then(resolve)
-      })
-    })
-    return
+    const ok = await playUrl(`${import.meta.env.BASE_URL}audio/${entry.file}`)
+    if (ok) return
+  }
+  const local = await localVoiceEnabled()
+  if (local.on) {
+    try {
+      if (!localTtsReady()) onStatus?.('Loading the natural voice…')
+      await loadLocalTts()
+      onStatus?.('Preparing narration…')
+      const blob = await cachedSynthesis(text, local.voice)
+      onStatus?.('')
+      currentUrl = URL.createObjectURL(blob)
+      const ok = await playUrl(currentUrl)
+      if (ok) return
+    } catch {
+      onStatus?.('')
+    }
   }
   if (speechAvailable()) await speak(text)
   else await new Promise((r) => setTimeout(r, readingMs(text)))

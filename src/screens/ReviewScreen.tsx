@@ -25,7 +25,8 @@ import { db, type GameRecord } from '../lib/db'
 import { opponentLabel } from './GamesScreen'
 import { buildRecap, type Recap } from '../analysis/recap'
 import { matchCourse } from '../openings/stats'
-import { speak, speechAvailable, stopSpeech } from '../lib/speech'
+import { speechAvailable } from '../lib/speech'
+import { narrate, stopNarration } from '../lib/narration'
 
 interface Props {
   id: number
@@ -52,6 +53,7 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
   const [showBest, setShowBest] = useState(false)
   const [recap, setRecap] = useState<Recap | null>(null)
   const [speaking, setSpeaking] = useState(false)
+  const [voiceStatus, setVoiceStatus] = useState('')
   const cancelRef = useRef(false)
   const startedRef = useRef(false)
 
@@ -106,7 +108,7 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
     () => () => {
       cancelRef.current = true
       getEngine().stop()
-      stopSpeech()
+      stopNarration()
     },
     [],
   )
@@ -310,19 +312,22 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
                     aria-label={speaking ? 'Stop' : 'Listen'}
                     onClick={async () => {
                       if (speaking) {
-                        stopSpeech()
+                        stopNarration()
                         setSpeaking(false)
+                        setVoiceStatus('')
                         return
                       }
                       setSpeaking(true)
-                      await speak(recap.wentWell + ' ' + recap.improve)
+                      await narrate(recap.wentWell + ' ' + recap.improve, undefined, false, setVoiceStatus)
                       setSpeaking(false)
+                      setVoiceStatus('')
                     }}
                   >
                     <Icon name={speaking ? 'pause' : 'sound'} size={18} />
                   </button>
                 )}
               </div>
+              {voiceStatus && <p className="muted small">{voiceStatus}</p>}
               <p>{recap.wentWell}</p>
               <p>{recap.improve}</p>
             </div>

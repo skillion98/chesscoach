@@ -1,6 +1,98 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
 import { listVoices, setPreferredVoice, speak, speechAvailable, stopSpeech, type VoiceOption } from '../lib/speech'
+import { LOCAL_VOICES, loadLocalTts, localTtsReady, modelSizeMb, webgpuAvailable } from '../lib/localTts'
+import { narrate } from '../lib/narration'
+
+function NaturalVoice() {
+  const [on, setOn] = useState(false)
+  const [voice, setVoice] = useState('af_heart')
+  const [pct, setPct] = useState<number | null>(null)
+  const [note, setNote] = useState('')
+  const [testing, setTesting] = useState(false)
+  useEffect(() => {
+    getSetting<boolean>('localVoice', false).then((v) => {
+      setOn(v)
+      if (v && !localTtsReady()) void warm()
+    })
+    getSetting<string>('localVoiceId', 'af_heart').then(setVoice)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const warm = async () => {
+    setPct(0)
+    setNote('Starting download…')
+    try {
+      await loadLocalTts((p, n) => {
+        setPct(p)
+        setNote(n)
+      })
+      setNote('Ready. This voice now reads recaps and anything without a recording.')
+    } catch (e) {
+      setNote('Could not load the voice: ' + (e instanceof Error ? e.message : String(e)))
+    } finally {
+      setPct(null)
+    }
+  }
+  return (
+    <>
+      <label className="toggle-row">
+        <span>
+          <span className="toggle-label">Natural voice on this device</span>
+          <span className="muted small">
+            Free, runs on the phone{webgpuAvailable() ? ' using its graphics chip' : ', slowly, on its CPU'}. Downloads about {modelSizeMb()} MB
+            once over Wi-Fi. Used for coach recaps and as the fallback for lessons.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          checked={on}
+          onChange={(e) => {
+            setOn(e.target.checked)
+            void setSetting('localVoice', e.target.checked)
+            if (e.target.checked && !localTtsReady()) void warm()
+          }}
+        />
+      </label>
+      {on && (
+        <>
+          <select
+            className="select"
+            value={voice}
+            onChange={(e) => {
+              setVoice(e.target.value)
+              void setSetting('localVoiceId', e.target.value)
+            }}
+          >
+            {LOCAL_VOICES.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.label}
+              </option>
+            ))}
+          </select>
+          {pct !== null && (
+            <div className="progress">
+              <div className="progress-fill" style={{ width: `${pct}%` }} />
+            </div>
+          )}
+          {note && <p className="muted small">{note}</p>}
+          <div className="btn-row left">
+            <button
+              type="button"
+              disabled={testing || pct !== null}
+              onClick={async () => {
+                setTesting(true)
+                await narrate('Bishop to c4. It eyes f7 and develops with tempo. Castle next, then push d4 to open the center.', undefined, false, setNote)
+                setTesting(false)
+              }}
+            >
+              {testing ? 'Playing…' : 'Test natural voice'}
+            </button>
+          </div>
+        </>
+      )}
+    </>
+  )
+}
 
 function VoicePicker() {
   const [voices, setVoices] = useState<VoiceOption[]>([])
@@ -138,6 +230,8 @@ export default function SettingsScreen({ profile, onReload }: Props) {
       </section>
       <section className="card">
         <h3>Narration voice</h3>
+        <NaturalVoice />
+        <h3 style={{ marginTop: 14 }}>Built-in fallback voice</h3>
         <VoicePicker />
       </section>
       <section className="card">

@@ -30,11 +30,17 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,jpg,wasm,woff2}'],
+        globIgnores: ['**/ort-wasm*', '**/kokoro-*.js'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         runtimeCaching: [
           {
             // puzzle sets and other data: fetched once, then served from cache
-            urlPattern: ({ url }) => url.pathname.includes('/data/') || url.pathname.includes('/audio/'),
+            urlPattern: ({ url }) =>
+              url.pathname.includes('/data/') ||
+              url.pathname.includes('/audio/') ||
+              /ort-wasm|kokoro-/.test(url.pathname) ||
+              url.hostname === 'huggingface.co' ||
+              url.hostname.endsWith('hf.co'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'chesscoach-data',
