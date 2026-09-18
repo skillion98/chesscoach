@@ -4,6 +4,15 @@
 import { Chess, type Color, type Move, type PieceSymbol, type Square } from 'chess.js'
 import type { Engine } from '../engine/stockfish'
 
+export interface HintLine {
+  uci: string
+  san: string
+  cp: number
+  mate: number | null
+  /** SAN continuation, best move first */
+  line: string[]
+}
+
 export interface Hint {
   uci: string
   san: string
@@ -11,6 +20,50 @@ export interface Hint {
   to: Square
   idea: string
   evalCp: number
+  /** one-line verdict on the position from the player's side */
+  assessment: string
+  /** what the opponent would do if you passed, if it is dangerous */
+  threat: string | null
+  /** candidate moves, best first */
+  lines: HintLine[]
+}
+
+/** Convert a UCI continuation to SAN from a position. */
+export function pvToSan(fen: string, ucis: string[], max = 8): string[] {
+  const c = new Chess(fen)
+  const out: string[] = []
+  for (const u of ucis.slice(0, max)) {
+    const m = findMove(c, u)
+    if (!m) break
+    c.move(m)
+    out.push(m.san)
+  }
+  return out
+}
+
+export function assessPosition(cp: number, mate: number | null): string {
+  if (mate !== null) return mate > 0 ? `You have a forced mate in ${mate}.` : `You are getting mated in ${-mate} unless something changes.`
+  if (cp >= 300) return `You are winning (${(cp / 100).toFixed(1)}). Keep it simple.`
+  if (cp >= 100) return `You are clearly better (+${(cp / 100).toFixed(1)}).`
+  if (cp >= 30) return `You are slightly better (+${(cp / 100).toFixed(1)}).`
+  if (cp > -30) return 'The position is balanced.'
+  if (cp > -100) return `You are slightly worse (${(cp / 100).toFixed(1)}).`
+  if (cp > -300) return `You are worse (${(cp / 100).toFixed(1)}); look for activity and trades.`
+  return `You are losing (${(cp / 100).toFixed(1)}); set problems and hope for a slip.`
+}
+
+/** The opponent's most dangerous idea if you passed: a good capture or a mate threat. */
+export async function opponentThreat(chess: Chess, engine: Engine): Promise<Move | null> {
+  if (chess.inCheck()) return null
+  try {
+    const passed = new Chess(nullMoveFen(chess.fen()))
+    const r = await engine.search(passed.fen(), { movetime: 350, multipv: 1 })
+    const t = r.lines[0] ? findMove(passed, r.lines[0].move) : undefined
+    if (t && ((r.lines[0].mate !== null && r.lines[0].mate > 0) || (t.captured && isGoodCapture(passed, t)))) return t
+  } catch {
+    /* best effort */
+  }
+  return null
 }
 
 export const VALUE: Record<PieceSymbol, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 }
@@ -228,7 +281,13 @@ export interface ExplainContext {
  * Explain why `m` is a good move in `chess` (side to move plays it).
  * Runs two short null-move searches for threat detection; the engine should be at full strength.
  */
-export async function explainMove(chess: Chess, m: Move, engine: Engine, ctx: ExplainContext): Promise<string> {
+export async function explainMove(
+  chess: Chess,
+  m: Move,
+  engine: Engine,
+  ctx: ExplainContext,
+  knownThreat?: Move | null,
+): Promise<string> {
   const fen = chess.fen()
   const us = chess.turn()
   const after = new Chess(fen)
@@ -239,17 +298,7 @@ export async function explainMove(chess: Chess, m: Move, engine: Engine, ctx: Ex
   if (forcedMate) ideas.push(ctx.mate === 1 ? 'Checkmate.' : `Forces checkmate in ${ctx.mate}.`)
 
   // What was the opponent threatening if we simply passed?
-  let oppThreat: Move | null = null
-  if (!chess.inCheck()) {
-    try {
-      const passed = new Chess(nullMoveFen(fen))
-      const r = await engine.search(passed.fen(), { movetime: 350, multipv: 1 })
-      const t = r.lines[0] ? findMove(passed, r.lines[0].move) : undefined
-      if (t && ((r.lines[0].mate !== null && r.lines[0].mate > 0) || (t.captured && isGoodCapture(passed, t)))) oppThreat = t
-    } catch {
-      oppThreat = null
-    }
-  }
+  const oppThreat: Move | null = knownThreat !== undefined ? knownThreat : await opponentThreat(chess, engine)
 
   if (oppThreat) {
     if (m.from === oppThreat.to) {
@@ -316,20 +365,45 @@ export async function explainMove(chess: Chess, m: Move, engine: Engine, ctx: Ex
   return ideas.slice(0, 3).join(' ')
 }
 
-/** Compute the best move and a short explanation of the idea behind it. The engine must be at full strength. */
+/** A proper hint: deeper search, assessment, the opponent's threat, best line with its idea, and alternatives. */
 export async function computeHint(chess: Chess, engine: Engine): Promise<Hint | null> {
-  const res = await engine.search(chess.fen(), { movetime: 1000, multipv: 3 })
+  const fen = chess.fen()
+  const res = await engine.search(fen, { movetime: 1600, multipv: 3 })
   const best = res.lines[0]
   if (!best) return null
   const m = findMove(chess, best.move) ?? findMove(chess, res.bestMove)
   if (!m) return null
   const second = res.lines[1]
   const secondMove = second ? findMove(chess, second.move) : undefined
-  const idea = await explainMove(chess, m, engine, {
-    cp: best.cp,
-    mate: best.mate,
-    gap: second ? best.cp - second.cp : 0,
-    secondSan: secondMove?.san ?? null,
-  })
-  return { uci: m.from + m.to + (m.promotion ?? ''), san: m.san, from: m.from, to: m.to, idea, evalCp: best.cp }
+  const threat = await opponentThreat(chess, engine)
+  const idea = await explainMove(
+    chess,
+    m,
+    engine,
+    { cp: best.cp, mate: best.mate, gap: second ? best.cp - second.cp : 0, secondSan: secondMove?.san ?? null },
+    threat,
+  )
+  const lines: HintLine[] = res.lines
+    .map((l) => {
+      const mv = findMove(chess, l.move)
+      return mv ? { uci: l.move, san: mv.san, cp: l.cp, mate: l.mate, line: pvToSan(fen, l.pv, 8) } : null
+    })
+    .filter((x): x is HintLine => !!x)
+  let threatText: string | null = null
+  if (threat) {
+    threatText = threat.captured
+      ? `${threat.san}, winning the ${NAME[threat.captured]}`
+      : `${threat.san}, with mating ideas`
+  }
+  return {
+    uci: m.from + m.to + (m.promotion ?? ''),
+    san: m.san,
+    from: m.from,
+    to: m.to,
+    idea,
+    evalCp: best.cp,
+    assessment: assessPosition(best.cp, best.mate),
+    threat: threatText,
+    lines,
+  }
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import Icon from './components/Icons'
-import { getProfile, type Profile } from './lib/db'
+import { getProfile, getSetting, saveProfile, setSetting, type Profile } from './lib/db'
+import { RATING_ERA, STARTING_RATING } from './game/rating'
 import { navigate, useRoute } from './lib/router'
 import HomeScreen from './screens/HomeScreen'
 import PlayScreen from './screens/PlayScreen'
@@ -20,7 +21,15 @@ export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null)
 
   const reload = useCallback(() => {
-    getProfile().then(setProfile)
+    ;(async () => {
+      // one-time reset: earn the rating from zero
+      const era = await getSetting<number>('ratingEra', 1)
+      if (era < RATING_ERA) {
+        await saveProfile({ rating: STARTING_RATING, gamesPlayed: 0, peakRating: STARTING_RATING })
+        await setSetting('ratingEra', RATING_ERA)
+      }
+      setProfile(await getProfile())
+    })()
   }, [])
 
   useEffect(reload, [reload])

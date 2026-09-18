@@ -2051,3 +2051,36 @@ body {
   margin: 8px 0 0;
   line-height: 1.5;
 }
+
+/* Hint analysis card */
+.hint-head .muted.small {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hint-threat {
+  color: var(--loss);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.hint-line {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.hint-alts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tag.cost {
+  background: var(--loss);
+  color: #fff;
+  margin-left: 6px;
+  font-size: 11px;
+}

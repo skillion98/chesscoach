@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Icon, { type IconName } from '../components/Icons'
-import { MAX_ELO, MIN_ELO, bandFor } from '../game/levels'
+import { MAX_ELO, bandFor } from '../game/levels'
 import { db, type GameRecord, type Profile } from '../lib/db'
 import { navigate } from '../lib/router'
 
@@ -29,7 +29,7 @@ function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: nu
 }
 
 function Gauge({ rating }: { rating: number }) {
-  const frac = Math.min(1, Math.max(0, (rating - MIN_ELO) / (MAX_ELO - MIN_ELO)))
+  const frac = Math.min(1, Math.max(0, rating / MAX_ELO))
   const start = 150
   const sweep = 240
   const end = start + sweep * frac

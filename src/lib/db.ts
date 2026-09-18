@@ -14,8 +14,12 @@ export interface GameRecord {
   opponentElo: number
   /** personality id when the opponent was a named character */
   opponentId?: string
-  /** false when a hint was used; the game then does not affect the rating */
+  /** false only for games from the first build that used a hint; games are always rated now */
   rated: boolean
+  /** assists used, and what they cost in rating points */
+  hints?: number
+  undos?: number
+  assistCost?: number
   result: Result
   termination: string
   /** SAN moves in order */

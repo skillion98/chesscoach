@@ -12,7 +12,7 @@ import { chooseMove } from '../game/choose'
 import { computeHint, type Hint } from '../game/explain'
 import { PERSONALITIES, choosePersonalityMove, personalityById, personalityStrength, type Personality } from '../game/personalities'
 import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, type Status } from '../game/chessUtil'
-import { updateRating } from '../game/rating'
+import { hintCost, undoCost, updateRating } from '../game/rating'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
 import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
@@ -41,6 +41,10 @@ interface Outcome {
   rated: boolean
   ratingBefore: number
   ratingAfter: number
+  resultDelta: number
+  assistCost: number
+  hints: number
+  undos: number
   gameId: number
 }
 
@@ -64,7 +68,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const playerColorRef = useRef<Color>('w')
   const profileRef = useRef(profile)
   profileRef.current = profile
-  const hintUsedRef = useRef(false)
+  const hintsRef = useRef(0)
+  const undosRef = useRef(0)
 
   const [playerColor, setPlayerColor] = useState<Color>('w')
   const [strength, setStrength] = useState<Strength>(strengthRef.current)
@@ -79,7 +84,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [engineReady, setEngineReady] = useState(false)
   const [hint, setHint] = useState<Hint | null>(null)
   const [hinting, setHinting] = useState(false)
-  const [hintUsed, setHintUsed] = useState(false)
+  const [assists, setAssists] = useState({ hints: 0, undos: 0 })
   const [suggestion, setSuggestion] = useState<OpponentSuggestion | null>(null)
   const [commentaryOn, setCommentaryOn] = useState(false)
   const commentaryRef = useRef(false)
@@ -202,17 +207,24 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       const pc = playerColorRef.current
       const st = strengthRef.current
       const prof = profileRef.current
-      const rated = !hintUsedRef.current
+      const rated = true
       const score: 0 | 0.5 | 1 =
         status.result === '1/2-1/2' ? 0.5 : (status.result === '1-0') === (pc === 'w') ? 1 : 0
       const before = prof.rating
-      const after = rated ? updateRating(before, st.elo, score, prof.gamesPlayed) : before
+      const resultDelta = updateRating(before, st.elo, score, prof.gamesPlayed) - before
+      const hints = hintsRef.current
+      const undos = undosRef.current
+      const assistCost = hints * hintCost(prof.gamesPlayed) + undos * undoCost(prof.gamesPlayed)
+      const after = Math.max(0, before + resultDelta - assistCost)
       const rec: GameRecord = {
         playedAt: Date.now(),
         playerColor: pc,
         opponentElo: st.elo,
         opponentId: personalityRef.current?.id,
         rated,
+        hints,
+        undos,
+        assistCost,
         result: status.result,
         termination: status.termination,
         moves: chessRef.current.history(),
@@ -236,7 +248,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       }
       setThinking(false)
       setHint(null)
-      setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, gameId })
+      setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, resultDelta, assistCost, hints, undos, gameId })
       setPhase('over')
       if (score === 1) {
         setCelebrate(true)
@@ -290,8 +302,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     strengthRef.current = st
     personalityRef.current = p
     playerColorRef.current = pc
-    hintUsedRef.current = false
-    setHintUsed(false)
+    hintsRef.current = 0
+    undosRef.current = 0
+    setAssists({ hints: 0, undos: 0 })
     setHint(null)
     setStrength(st)
     setOpponent(p)
@@ -358,11 +371,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   )
 
   const askHint = useCallback(async () => {
-    if (!hintUsedRef.current) {
-      if (!window.confirm('Using a hint makes this game unrated. Continue?')) return
-      hintUsedRef.current = true
-      setHintUsed(true)
-    }
+    const cost = hintCost(profileRef.current.gamesPlayed)
+    if (hintsRef.current === 0 && !window.confirm(`Each hint costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
+    hintsRef.current++
+    setAssists({ hints: hintsRef.current, undos: undosRef.current })
     const token = tokenRef.current
     setHinting(true)
     const eng = getEngine()
@@ -381,11 +393,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const undo = useCallback(() => {
     const c = chessRef.current
     if (c.history().length === 0) return
-    if (!hintUsedRef.current) {
-      if (!window.confirm('Taking back a move makes this game unrated. Continue?')) return
-      hintUsedRef.current = true
-      setHintUsed(true)
-    }
+    const cost = undoCost(profileRef.current.gamesPlayed)
+    if (undosRef.current === 0 && !window.confirm(`Each undo costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
+    undosRef.current++
+    setAssists({ hints: hintsRef.current, undos: undosRef.current })
     // cancel any engine move in progress
     tokenRef.current++
     getEngine().stop()
@@ -432,10 +443,11 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const inCheck = chessRef.current.inCheck()
   const orientation = cgColor(flipped ? (playerColor === 'w' ? 'b' : 'w') : playerColor)
   const canMove = phase === 'playing' && !thinking && turn === playerColor && !promo
-  const shapes = useMemo<DrawShape[]>(
-    () => (hint ? [{ orig: hint.from as Key, dest: hint.to as Key, brush: 'green' }] : []),
-    [hint],
-  )
+  const shapes = useMemo<DrawShape[]>(() => {
+    if (!hint) return []
+    const alts = hint.lines.slice(1, 3).map((l) => ({ orig: l.uci.slice(0, 2) as Key, dest: l.uci.slice(2, 4) as Key, brush: 'blue' }))
+    return [...alts, { orig: hint.from as Key, dest: hint.to as Key, brush: 'green' }]
+  }, [hint])
 
   if (phase === 'setup') {
     const band = bandFor(elo)
@@ -604,7 +616,14 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           </div>
         </div>
         <div className="bar-right">
-          <div className="bar-title">{hintUsed ? <span className="tag">Unrated</span> : profile.rating}</div>
+          <div className="bar-title">
+            {profile.rating}
+            {assists.hints + assists.undos > 0 && (
+              <span className="tag cost">
+                −{assists.hints * hintCost(profile.gamesPlayed) + assists.undos * undoCost(profile.gamesPlayed)}
+              </span>
+            )}
+          </div>
           <div className="muted small">you ({playerColor === 'w' ? 'White' : 'Black'})</div>
         </div>
       </div>
@@ -674,21 +693,40 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           <div className="hint-head">
             <Icon name="bulb" size={18} />
             <span className="hint-move">{hint.san}</span>
+            <span className="muted small">{hint.assessment}</span>
             <button type="button" className="hint-close" onClick={() => setHint(null)} aria-label="Dismiss hint">
               ✕
             </button>
           </div>
+          {hint.threat && (
+            <p className="hint-threat">
+              <Icon name="target" size={14} /> Opponent threatens {hint.threat}.
+            </p>
+          )}
           <p>{hint.idea}</p>
+          {hint.lines[0] && hint.lines[0].line.length > 1 && (
+            <p className="hint-line muted small">Line: {hint.lines[0].line.join(' ')}</p>
+          )}
+          {hint.lines.length > 1 && (
+            <div className="hint-alts">
+              {hint.lines.slice(1).map((l) => (
+                <span key={l.uci} className="chip">
+                  {l.san}{' '}
+                  <span className="muted">{l.mate !== null ? (l.mate > 0 ? `M${l.mate}` : `-M${-l.mate}`) : (l.cp >= 0 ? '+' : '') + (l.cp / 100).toFixed(1)}</span>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {phase === 'playing' && (
         <div className="btn-row">
           <button type="button" className="with-icon" onClick={undo} disabled={moves.length === 0}>
-            <Icon name="undo" size={18} /> Undo
+            <Icon name="undo" size={18} /> Undo <span className="muted small">−{undoCost(profile.gamesPlayed)}</span>
           </button>
           <button type="button" className="with-icon" onClick={() => void askHint()} disabled={!canMove || hinting}>
-            <Icon name="bulb" size={18} /> Hint
+            <Icon name="bulb" size={18} /> Hint <span className="muted small">−{hintCost(profile.gamesPlayed)}</span>
           </button>
           <button
             type="button"
@@ -718,16 +756,21 @@ export default function PlayScreen({ profile, onProfile }: Props) {
             {outcome.status.termination}
             {opponent ? ` · vs ${opponent.name}` : ''}
           </p>
-          {outcome.rated ? (
-            <p>
-              Rating {outcome.ratingBefore} → <strong>{outcome.ratingAfter}</strong>{' '}
-              <span className={delta >= 0 ? 'up' : 'down'}>
-                ({delta >= 0 ? '+' : ''}
-                {delta})
-              </span>
+          <p>
+            Rating {outcome.ratingBefore} → <strong>{outcome.ratingAfter}</strong>{' '}
+            <span className={delta >= 0 ? 'up' : 'down'}>
+              ({delta >= 0 ? '+' : ''}
+              {delta})
+            </span>
+          </p>
+          {outcome.assistCost > 0 && (
+            <p className="muted small">
+              {outcome.resultDelta >= 0 ? '+' : ''}
+              {outcome.resultDelta} for the result, −{outcome.assistCost} for{' '}
+              {[outcome.hints ? `${outcome.hints} hint${outcome.hints === 1 ? '' : 's'}` : '', outcome.undos ? `${outcome.undos} undo${outcome.undos === 1 ? '' : 's'}` : '']
+                .filter(Boolean)
+                .join(' and ')}
             </p>
-          ) : (
-            <p className="muted">Unrated game (a hint or undo was used). Rating stays at {outcome.ratingBefore}.</p>
           )}
           <div className="btn-row">
             <button type="button" className="primary" onClick={() => void startGame()}>Rematch</button>
