@@ -25,7 +25,7 @@ import { baseJudgment, refineJudgment, winChance, type Judgment } from '../analy
 import { findMove, isGoodCapture } from '../game/explain'
 import { moveFeatures } from '../game/features'
 import { isBookPrefix } from '../openings/stats'
-import { playFanfare, playJudgment, playMove } from '../lib/sounds'
+import { playJudgment, playLoss, playMove, playWin } from '../lib/sounds'
 import type { PvLine } from '../engine/stockfish'
 import { navigate } from '../lib/router'
 
@@ -270,7 +270,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       setPhase('over')
       if (score === 1) {
         setCelebrate(true)
-        if (soundsRef.current) playFanfare()
+        if (soundsRef.current) playWin()
+      } else if (score === 0 && soundsRef.current && status.termination !== 'Resignation') {
+        playLoss()
       }
     },
     [onProfile],
@@ -305,7 +307,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     }
     sync()
     if (made) narrate(before, made, c.history())
-    if (made && soundsRef.current) playMove(!!made.captured)
+    if (made && soundsRef.current) playMove({ capture: !!made.captured, check: made.san.includes('+') || made.san.includes('#'), castle: made.san.startsWith('O-O') })
     const stt = gameStatus(c)
     if (stt.over) void finish(stt)
     else void preAnalyze()
@@ -366,7 +368,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       lastPlayerRef.current = { before, m: made, history: c.history() }
       sync()
       narrate(before, made, c.history())
-      if (soundsRef.current) playMove(!!made.captured)
+      if (soundsRef.current) playMove({ capture: !!made.captured, check: made.san.includes('+') || made.san.includes('#'), castle: made.san.startsWith('O-O') })
       const st = gameStatus(c)
       if (st.over) {
         void finish(st)

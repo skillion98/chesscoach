@@ -17,6 +17,7 @@ import {
   type PuzzleProfile,
 } from '../puzzles/puzzles'
 import { XP_AWARDS, addXp } from '../lib/xp'
+import { playMove as playMoveSound } from '../lib/sounds'
 
 type Status = 'loading' | 'intro' | 'solving' | 'done' | 'empty'
 
@@ -102,12 +103,21 @@ export default function PuzzleScreen() {
     return c.turn() === 'w' ? ('b' as const) : ('w' as const)
   }, [puzzle])
 
+  const soundsRef = useRef(true)
+  const heardRef = useRef(0)
+  useEffect(() => {
+    getSetting<boolean>('sounds', true).then((v) => (soundsRef.current = v))
+  }, [])
   const sync = useCallback(() => {
     const c = chessRef.current
     setFen(c.fen())
     const h = c.history({ verbose: true })
     const last = h[h.length - 1]
     setLastMove(last ? [last.from as Key, last.to as Key] : undefined)
+    if (last && h.length !== heardRef.current && soundsRef.current) {
+      playMoveSound({ capture: !!last.captured, check: last.san.includes('+') || last.san.includes('#'), castle: last.san.startsWith('O-O') })
+    }
+    heardRef.current = h.length
   }, [])
 
   const loadNext = useCallback(

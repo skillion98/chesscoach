@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportBackup, getSetting, importBackup, resetAll, setSetting, type Profile } from '../lib/db'
+import { playMove } from '../lib/sounds'
 import { listVoices, setPreferredVoice, speak, speechAvailable, stopSpeech, type VoiceOption } from '../lib/speech'
 import { LOCAL_VOICES, currentConfig, fullModelCrashed, getQuality, isPhoneDevice, loadLocalTts, localTtsReady, localVoiceDisabled, modelSizeMb, resetLocalVoice, setQuality } from '../lib/localTts'
 import { narrate } from '../lib/narration'
@@ -193,6 +194,7 @@ function Toggle({ label, hint, settingKey, fallback }: { label: string; hint: st
         onChange={(e) => {
           setOn(e.target.checked)
           void setSetting(settingKey, e.target.checked)
+          if (settingKey === 'sounds' && e.target.checked) playMove({ capture: true })
         }}
       />
     </label>
@@ -257,7 +259,7 @@ export default function SettingsScreen({ profile, onReload }: Props) {
           settingKey="moveFeedback"
           fallback
         />
-        <Toggle label="Sounds" hint="Move clicks and a short chime or thud with each badge." settingKey="sounds" fallback />
+        <Toggle label="Sounds" hint="Wooden piece clicks, applause when you win, a chime or thud with each badge." settingKey="sounds" fallback />
         <Toggle label="Commentary" hint="A sentence about every move under the board." settingKey="commentary" fallback={false} />
       </section>
       <section className="card">

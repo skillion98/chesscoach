@@ -21,7 +21,8 @@ import {
 } from '../analysis/analyze'
 import { getEngine } from '../engine/stockfish'
 import { cgColor } from '../game/chessUtil'
-import { db, type GameRecord } from '../lib/db'
+import { db, getSetting, type GameRecord } from '../lib/db'
+import { playMove } from '../lib/sounds'
 import { opponentLabel } from './GamesScreen'
 import { buildRecap, type Recap } from '../analysis/recap'
 import { matchCourse } from '../openings/stats'
@@ -132,6 +133,19 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
     }
     return out
   }, [game])
+
+  const soundsRef = useRef(true)
+  const lastPlyRef = useRef(-1)
+  useEffect(() => {
+    getSetting<boolean>('sounds', true).then((v) => (soundsRef.current = v))
+  }, [])
+  useEffect(() => {
+    const prev = lastPlyRef.current
+    lastPlyRef.current = ply
+    if (!game || prev < 0 || ply !== prev + 1 || !soundsRef.current) return
+    const san = game.moves[ply - 1] ?? ''
+    playMove({ capture: san.includes('x'), check: san.includes('+') || san.includes('#'), castle: san.startsWith('O-O') })
+  }, [ply, game])
 
   const total = game?.moves.length ?? 0
   const go = useCallback(

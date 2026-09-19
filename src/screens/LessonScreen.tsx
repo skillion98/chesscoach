@@ -11,6 +11,7 @@ import { recordResult } from '../openings/stats'
 import { narrate, stopNarration } from '../lib/narration'
 import { getSetting, setSetting } from '../lib/db'
 import { XP_AWARDS, addXp } from '../lib/xp'
+import { playMove } from '../lib/sounds'
 import { navigate } from '../lib/router'
 
 interface Props {
@@ -43,6 +44,21 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
   const [finished, setFinished] = useState(false)
   const [busy, setBusy] = useState(false)
   const missedNodes = useRef(new Set<number>())
+
+  const soundsRef = useRef(true)
+  const lastPlyRef = useRef(0)
+  useEffect(() => {
+    getSetting<boolean>('sounds', true).then((v) => (soundsRef.current = v))
+  }, [])
+  useEffect(() => {
+    if (!ch) return
+    const prev = lastPlyRef.current
+    lastPlyRef.current = ply
+    if (ply === prev + 1 && soundsRef.current) {
+      const san = ch.sans[ply - 1] ?? ''
+      playMove({ capture: san.includes('x'), check: san.includes('+') || san.includes('#'), castle: san.startsWith('O-O') })
+    }
+  }, [ply, ch])
 
   useEffect(() => {
     getSetting<boolean>('muted', false).then(setMuted)
