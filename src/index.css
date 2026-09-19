@@ -2175,3 +2175,49 @@ body {
 .teach-legend .dot.red { background: #e04040; }
 .teach-legend .dot.yellow { background: #e0b020; }
 .teach-legend .dot.green { background: #40b050; }
+
+/* Coach: strategic patterns */
+.patterns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.card.pattern {
+  border-left: 4px solid var(--muted);
+}
+.card.pattern.weak { border-left-color: var(--loss); }
+.card.pattern.ok { border-left-color: var(--accent); }
+.card.pattern.strong { border-left-color: var(--win); }
+.pattern-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pattern-head .plan-title { flex: 1; font-size: 15px; }
+.pattern-verdict { white-space: nowrap; }
+.pattern-evidence {
+  margin: 8px 0 4px;
+  line-height: 1.45;
+}
+.pattern-lesson {
+  margin: 4px 0 6px;
+  line-height: 1.45;
+  font-size: 14px;
+}
+.pattern-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+.linkish {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--text);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  box-shadow: none;
+}
+.linkish.accent { color: var(--accent); font-weight: 600; text-decoration: none; }

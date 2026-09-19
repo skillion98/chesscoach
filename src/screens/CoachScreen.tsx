@@ -57,6 +57,46 @@ export default function CoachScreen() {
         ))}
       </div>
 
+      {a.patterns.length > 0 && (
+        <>
+          <h3>What your games say</h3>
+          <div className="patterns">
+            {a.patterns.map((p) => (
+              <div className={'card pattern ' + p.verdict} key={p.key}>
+                <div className="pattern-head">
+                  <span className={'axis-dot' + (p.verdict === 'strong' ? ' good' : p.verdict === 'ok' ? ' mid' : p.verdict === 'weak' ? ' bad' : ' empty')} />
+                  <span className="plan-title">{p.title}</span>
+                  <span className="muted small pattern-verdict">
+                    {p.verdict === 'weak' ? 'work on this' : p.verdict === 'strong' ? 'a strength' : p.verdict === 'ok' ? 'fine' : 'watching'}
+                  </span>
+                </div>
+                <p className="pattern-evidence">{p.evidence}</p>
+                {p.verdict !== 'strong' && <p className="pattern-lesson muted">{p.lesson}</p>}
+                <div className="pattern-links">
+                  {p.examples.slice(0, 2).map((e) => (
+                    <button type="button" className="linkish" key={e.gameId + ':' + e.ply} onClick={() => navigate(`/games/${e.gameId}/analyze/${e.ply}`)}>
+                      {e.good === false ? 'See where it went wrong' : 'See the game'} · {new Date(e.playedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ›
+                    </button>
+                  ))}
+                  {p.action && p.verdict !== 'strong' && (
+                    <button
+                      type="button"
+                      className="linkish accent"
+                      onClick={async () => {
+                        for (const s of p.action!.setup ?? []) await setSetting(s.key, s.value)
+                        navigate(p.action!.path)
+                      }}
+                    >
+                      {p.action.label} ›
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       <h3>Your style</h3>
       <div className={'card' + (enough ? '' : ' style-pending')}>
         <Slider left="Positional" right="Attacking" value={attackPos} />

@@ -7,6 +7,7 @@ import { VALUE } from '../game/explain'
 import type { CourseMatch } from '../openings/stats'
 import { isError } from './judge'
 import { moveLabel, tagText, type GameAnalysis, type PlyAnalysis } from './analyze'
+import { gamePatternNotes } from '../coach/patterns'
 
 export interface Recap {
   wentWell: string
@@ -54,6 +55,8 @@ export function buildRecap(game: GameRecord, a: GameAnalysis, course: CourseMatc
   const tradesAfterLead = firstLeadPly > 0 ? trades.filter((t) => t > firstLeadPly).length : 0
   const finalEval = a.evals[a.evals.length - 1] * sign
 
+  const patterns = gamePatternNotes(game)
+
   // --- paragraph 1: what went well ---
   const good: string[] = []
   if (course && course.matched >= 6) {
@@ -94,10 +97,13 @@ export function buildRecap(game: GameRecord, a: GameAnalysis, course: CourseMatc
       )
     }
   }
+  if (patterns.good[0]) good.push(patterns.good[0])
   if (good.length === 0) good.push(won ? 'You won, and the engine agrees it was earned.' : drew ? 'You held the balance for most of the game.' : 'There were solid stretches in this game.')
 
   // --- paragraph 2: what to work on ---
   const fix: string[] = []
+  if (patterns.bad[0]) fix.push(patterns.bad[0])
+  if (patterns.bad[1]) fix.push(patterns.bad[1])
   if (worst) {
     const detail = tagText(worst)
     fix.push(`The move that cost the most was ${moveLabel(worst.ply, worst.san)} in the ${worst.phase}${detail ? `: ${detail.replace(/^This /, 'it ')}` : '.'} Better was ${worst.bestSan}.`)
@@ -108,12 +114,12 @@ export function buildRecap(game: GameRecord, a: GameAnalysis, course: CourseMatc
   if (hung >= 2) fix.push(`You left material hanging ${n(hung, 'time')}. Before every move, ask what your opponent can take.`)
   else if (hung === 1) fix.push('One hung piece. Make the "what can be taken?" check a habit before you touch a piece.')
   if (missed >= 1) fix.push(`You missed ${n(missed, 'tactical chance')}; when a capture or check is available, calculate it before playing a quiet move.`)
-  if (slow >= 2 && openingErrs.some((p) => p.tag === 'positional')) fix.push('In the opening, get the pieces out and the king castled before pawn adventures.')
+  if (slow >= 2 && openingErrs.some((p) => p.tag === 'positional') && !patterns.goodKeys.includes('development')) fix.push('In the opening, get the pieces out and the king castled before pawn adventures.')
   if (endErrs.length >= 2) fix.push(`The endgame got messy (${n(endErrs.length, 'error')}). Activate the king early and keep the rooks active; endgame puzzles will help.`)
   if (blunders.length >= 3) fix.push(`${blunders.length} blunders in one game says you were moving too fast. Slow down when the position is sharp.`)
   if (course?.deviation) fix.push(`Drill the ${course.chapterName} line so ${course.deviation.expected} comes automatically.`)
   if (!won && !drew && firstLeadPly > 0 && finalEval < -100) fix.push(`You were ahead around move ${moveNo(firstLeadPly)} and let it slip. When ahead, trade pieces, not pawns, and keep it simple.`)
   if (fix.length === 0) fix.push(allErrs.length === 0 ? 'Nothing to fix from this one. Push the difficulty up a notch.' : 'Only minor inaccuracies. Keep doing what you are doing and tighten the calculation in sharp moments.')
 
-  return { wentWell: good.slice(0, 4).join(' '), improve: fix.slice(0, 4).join(' ') }
+  return { wentWell: good.slice(0, 4).join(' '), improve: fix.slice(0, 5).join(' ') }
 }

@@ -43,7 +43,7 @@ export default function App() {
   let title = 'Chess Coach'
   let body
   let back: string | null = '/'
-  const review = /^\/games\/(\d+)(\/analyze)?$/.exec(route)
+  const review = /^\/games\/(\d+)(\/analyze(?:\/(\d+))?)?$/.exec(route)
   const lesson = /^\/openings\/([a-z0-9-]+)\/(\d+)\/(learn|drill)(?:\/(\d+))?$/.exec(route)
   const opening = /^\/openings\/([a-z0-9-]+)$/.exec(route)
 
@@ -56,7 +56,7 @@ export default function App() {
   } else if (review) {
     title = 'Review'
     back = '/games'
-    body = <ReviewScreen id={Number(review[1])} autoAnalyze={!!review[2]} />
+    body = <ReviewScreen id={Number(review[1])} autoAnalyze={!!review[2]} initialPly={review[3] ? Number(review[3]) : undefined} />
   } else if (route === '/settings') {
     title = 'Settings'
     body = <SettingsScreen profile={profile} onReload={reload} />

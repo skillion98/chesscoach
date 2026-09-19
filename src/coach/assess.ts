@@ -11,6 +11,7 @@ import { getPuzzleProfile, themeAccuracy } from '../puzzles/puzzles'
 import { COURSES } from '../openings/model'
 import { courseMastery, weakLines } from '../openings/stats'
 import { setSetting } from '../lib/db'
+import { buildPatternReports, type PatternReport } from './patterns'
 
 export type AxisKey = 'opening' | 'tactics' | 'calculation' | 'strategy' | 'endgame' | 'safety'
 
@@ -38,6 +39,7 @@ export interface Assessment {
   style: StyleProfile
   styleSummary: string
   recs: Recommendation[]
+  patterns: PatternReport[]
   suggested: OpponentSuggestion
   games: number
   analyzedGames: number
@@ -228,6 +230,9 @@ export async function assess(): Promise<Assessment> {
     },
   ]
 
+  // --- strategic patterns across games ---
+  const patterns = buildPatternReports(games)
+
   // --- recommendations ---
   const recs: Recommendation[] = []
   const scored = axes.filter((a) => a.score !== null).sort((a, b) => a.score! - b.score!)
@@ -270,6 +275,19 @@ export async function assess(): Promise<Assessment> {
       why: `You keep missing ${weak[0].expected} in the ${weak[0].chapterName}. Drilling the exact position fixes it fastest.`,
       action: 'Drill it',
       path: `/openings/${weak[0].slug}/${weak[0].chapter}/drill/${weak[0].ply}`,
+    })
+  }
+  const weakest = patterns.find((p) => p.verdict === 'weak' && p.action)
+  if (weakest) {
+    push({
+      id: 'pattern-' + weakest.key,
+      title: weakest.title,
+      why: weakest.evidence,
+      action: weakest.action!.label,
+      path: weakest.action!.path,
+      setup: async () => {
+        for (const s of weakest.action!.setup ?? []) await setSetting(s.key, s.value)
+      },
     })
   }
   for (const a of scored) {
@@ -329,6 +347,7 @@ export async function assess(): Promise<Assessment> {
     style,
     styleSummary: styleSummary(style),
     recs,
+    patterns,
     suggested,
     games: games.length,
     analyzedGames: analyzed.length,

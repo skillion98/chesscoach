@@ -33,6 +33,8 @@ import { XP_AWARDS, addXp } from '../lib/xp'
 interface Props {
   id: number
   autoAnalyze?: boolean
+  /** open the review at this ply (from a coach pattern link) */
+  initialPly?: number
 }
 
 const SYMBOL: Record<string, MoveMark> = {
@@ -46,7 +48,7 @@ const SYMBOL: Record<string, MoveMark> = {
 
 const PHASES: Phase[] = ['opening', 'middlegame', 'endgame']
 
-export default function ReviewScreen({ id, autoAnalyze }: Props) {
+export default function ReviewScreen({ id, autoAnalyze, initialPly }: Props) {
   const [game, setGame] = useState<GameRecord | null | undefined>(undefined)
   const [ply, setPly] = useState(0)
   const [flipped, setFlipped] = useState(false)
@@ -63,8 +65,9 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
     db.games.get(id).then((g) => {
       setGame(g ?? null)
       setAnalysis(g?.analysis ?? null)
-      setPly(g?.analysis ? 0 : (g?.moves.length ?? 0))
+      setPly(initialPly !== undefined ? Math.max(0, Math.min(g?.moves.length ?? 0, initialPly)) : g?.analysis ? 0 : (g?.moves.length ?? 0))
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const runAnalysis = useCallback(async () => {
@@ -81,7 +84,7 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
       await db.games.update(id, { analysis: a })
       if (fresh) void addXp(XP_AWARDS.analysis, 'Analyzed a game')
       setAnalysis(a)
-      setPly(0)
+      setPly(initialPly ?? 0)
     } catch {
       /* cancelled or engine error */
     } finally {
