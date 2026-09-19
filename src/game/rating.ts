@@ -6,6 +6,8 @@ export const RATING_ERA = 3
 /** Fixed prices for assistance, in rating points. */
 export const HINT_COST = 8
 export const UNDO_COST = 5
+/** Teaching mode (threat overlay) is priced once per game it was used in. */
+export const TEACHING_COST = 10
 
 export function expectedScore(player: number, opponent: number): number {
   return 1 / (1 + 10 ** ((opponent - player) / 400))
@@ -26,6 +28,14 @@ export function hintCost(): number {
 
 export function undoCost(): number {
   return UNDO_COST
+}
+
+export function teachingCost(): number {
+  return TEACHING_COST
+}
+
+export function assistCostFor(hints: number, undos: number, teaching: boolean): number {
+  return hints * HINT_COST + undos * UNDO_COST + (teaching ? TEACHING_COST : 0)
 }
 
 export interface RatingState extends GlickoRating {

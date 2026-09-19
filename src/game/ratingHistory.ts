@@ -2,7 +2,7 @@
 
 import { db, saveProfile, type Profile } from '../lib/db'
 import { START_RD, START_VOL } from './glicko'
-import { HINT_COST, UNDO_COST, applyGame, type RatingState } from './rating'
+import { applyGame, assistCostFor, type RatingState } from './rating'
 
 export async function rebuildProfileFromGames(): Promise<Profile> {
   const games = await db.games.orderBy('playedAt').toArray()
@@ -14,7 +14,7 @@ export async function rebuildProfileFromGames(): Promise<Profile> {
     const score: 0 | 0.5 | 1 = g.result === '1/2-1/2' ? 0.5 : won ? 1 : 0
     const before = state.rating
     state = applyGame(state, g.opponentElo, score, g.playedAt)
-    const cost = (g.hints ?? 0) * HINT_COST + (g.undos ?? 0) * UNDO_COST
+    const cost = assistCostFor(g.hints ?? 0, g.undos ?? 0, g.teaching === true)
     state = { ...state, rating: Math.max(0, state.rating - cost) }
     peak = Math.max(peak, state.rating)
     if (g.id !== undefined) await db.games.update(g.id, { ratingBefore: before, ratingAfter: state.rating, assistCost: cost })

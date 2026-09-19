@@ -19,6 +19,7 @@ export type IconName =
   | 'video'
   | 'comment'
   | 'undo'
+  | 'eye'
 
 const PATHS: Record<IconName, string> = {
   play: 'M8 5v14l11-7z',
@@ -41,6 +42,7 @@ const PATHS: Record<IconName, string> = {
   video: 'M3 6h13v12H3zM16 10l5-3v10l-5-3z',
   comment: 'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',
   undo: 'M9 14l-4-4 4-4M5 10h9a5 5 0 0 1 0 10h-3',
+  eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
 }
 
 const FILLED: Partial<Record<IconName, boolean>> = { play: true, pause: true }

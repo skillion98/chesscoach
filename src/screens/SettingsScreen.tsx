@@ -260,6 +260,7 @@ export default function SettingsScreen({ profile, onReload }: Props) {
           fallback
         />
         <Toggle label="Sounds" hint="Wooden piece clicks, applause when you win, a chime or thud with each badge." settingKey="sounds" fallback />
+        <Toggle label="Teaching mode" hint="Circles hanging and attacked pieces during play. Costs 10 rating points per game it is used in." settingKey="teaching" fallback={false} />
         <Toggle label="Commentary" hint="A sentence about every move under the board." settingKey="commentary" fallback={false} />
       </section>
       <section className="card">

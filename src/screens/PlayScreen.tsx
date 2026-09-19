@@ -12,7 +12,8 @@ import { chooseMove } from '../game/choose'
 import { computeHint, type Hint } from '../game/explain'
 import { PERSONALITIES, choosePersonalityMove, personalityById, personalityStrength, type Personality } from '../game/personalities'
 import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, type Status } from '../game/chessUtil'
-import { applyGame, hintCost, undoCost, type RatingState } from '../game/rating'
+import { applyGame, assistCostFor, hintCost, teachingCost, undoCost, type RatingState } from '../game/rating'
+import { scanThreats } from '../game/threats'
 import { START_RD, START_VOL } from '../game/glicko'
 import { XP_AWARDS, addXp } from '../lib/xp'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
@@ -47,6 +48,7 @@ interface Outcome {
   assistCost: number
   hints: number
   undos: number
+  teaching: boolean
   gameId: number
 }
 
@@ -86,7 +88,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const [engineReady, setEngineReady] = useState(false)
   const [hint, setHint] = useState<Hint | null>(null)
   const [hinting, setHinting] = useState(false)
-  const [assists, setAssists] = useState({ hints: 0, undos: 0 })
+  const [assists, setAssists] = useState({ hints: 0, undos: 0, teaching: false })
+  const [teachingOn, setTeachingOn] = useState(false)
+  const teachingUsedRef = useRef(false)
   const [suggestion, setSuggestion] = useState<OpponentSuggestion | null>(null)
   const [commentaryOn, setCommentaryOn] = useState(false)
   const commentaryRef = useRef(false)
@@ -104,6 +108,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   }, [phase, profile.rating])
 
   useEffect(() => {
+    getSetting<boolean>('teaching', false).then(setTeachingOn)
     getSetting<boolean>('commentary', false).then((v) => {
       setCommentaryOn(v)
       commentaryRef.current = v
@@ -225,7 +230,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       const resultDelta = updated.rating - before
       const hints = hintsRef.current
       const undos = undosRef.current
-      const assistCost = hints * hintCost() + undos * undoCost()
+      const teaching = teachingUsedRef.current
+      const assistCost = assistCostFor(hints, undos, teaching)
       const after = Math.max(0, updated.rating - assistCost)
       const rec: GameRecord = {
         playedAt,
@@ -235,6 +241,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         rated,
         hints,
         undos,
+        teaching,
         assistCost,
         result: status.result,
         termination: status.termination,
@@ -266,7 +273,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       }
       setThinking(false)
       setHint(null)
-      setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, resultDelta, assistCost, hints, undos, gameId })
+      setOutcome({ status, rated, ratingBefore: before, ratingAfter: after, resultDelta, assistCost, hints, undos, teaching, gameId })
       setPhase('over')
       if (score === 1) {
         setCelebrate(true)
@@ -324,7 +331,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     playerColorRef.current = pc
     hintsRef.current = 0
     undosRef.current = 0
-    setAssists({ hints: 0, undos: 0 })
+    teachingUsedRef.current = teachingOn
+    setAssists({ hints: 0, undos: 0, teaching: teachingOn })
     setHint(null)
     setStrength(st)
     setOpponent(p)
@@ -394,7 +402,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     const cost = hintCost()
     if (hintsRef.current === 0 && !window.confirm(`Each hint costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
     hintsRef.current++
-    setAssists({ hints: hintsRef.current, undos: undosRef.current })
+    setAssists({ hints: hintsRef.current, undos: undosRef.current, teaching: teachingUsedRef.current })
     const token = tokenRef.current
     setHinting(true)
     const eng = getEngine()
@@ -416,7 +424,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
     const cost = undoCost()
     if (undosRef.current === 0 && !window.confirm(`Each undo costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
     undosRef.current++
-    setAssists({ hints: hintsRef.current, undos: undosRef.current })
+    setAssists({ hints: hintsRef.current, undos: undosRef.current, teaching: teachingUsedRef.current })
     // cancel any engine move in progress
     tokenRef.current++
     getEngine().stop()
@@ -463,11 +471,19 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const inCheck = chessRef.current.inCheck()
   const orientation = cgColor(flipped ? (playerColor === 'w' ? 'b' : 'w') : playerColor)
   const canMove = phase === 'playing' && !thinking && turn === playerColor && !promo
+  const threats = useMemo(() => (teachingOn && phase === 'playing' ? scanThreats(chessRef.current, playerColor) : []), [teachingOn, phase, fen, playerColor]) // eslint-disable-line react-hooks/exhaustive-deps
   const shapes = useMemo<DrawShape[]>(() => {
-    if (!hint) return []
-    const alts = hint.lines.slice(1, 3).map((l) => ({ orig: l.uci.slice(0, 2) as Key, dest: l.uci.slice(2, 4) as Key, brush: 'blue' }))
-    return [...alts, { orig: hint.from as Key, dest: hint.to as Key, brush: 'green' }]
-  }, [hint])
+    const out: DrawShape[] = []
+    for (const t of threats) {
+      out.push({ orig: t.square as Key, brush: t.kind === 'hanging' ? 'red' : t.kind === 'attacked' ? 'yellow' : 'green' })
+      if (t.kind === 'hanging') for (const a of t.attackers) out.push({ orig: a as Key, dest: t.square as Key, brush: 'paleRed' })
+    }
+    if (hint) {
+      out.push(...hint.lines.slice(1, 3).map((l) => ({ orig: l.uci.slice(0, 2) as Key, dest: l.uci.slice(2, 4) as Key, brush: 'blue' })))
+      out.push({ orig: hint.from as Key, dest: hint.to as Key, brush: 'green' })
+    }
+    return out
+  }, [hint, threats])
 
   if (phase === 'setup') {
     const band = bandFor(elo)
@@ -638,10 +654,8 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         <div className="bar-right">
           <div className="bar-title">
             {profile.rating}
-            {assists.hints + assists.undos > 0 && (
-              <span className="tag cost">
-                −{assists.hints * hintCost() + assists.undos * undoCost()}
-              </span>
+            {assistCostFor(assists.hints, assists.undos, assists.teaching) > 0 && (
+              <span className="tag cost">−{assistCostFor(assists.hints, assists.undos, assists.teaching)}</span>
             )}
           </div>
           <div className="muted small">you ({playerColor === 'w' ? 'White' : 'Black'})</div>
@@ -694,6 +708,14 @@ export default function PlayScreen({ profile, onProfile }: Props) {
         </div>
       )}
 
+      {teachingOn && phase === 'playing' && (
+        <div className="teach-legend muted small" aria-live="polite">
+          <span><i className="dot red" /> hanging</span>
+          <span><i className="dot yellow" /> attacked</span>
+          <span><i className="dot green" /> you can win</span>
+          {threats.length === 0 && <span>· nothing loose right now</span>}
+        </div>
+      )}
       {commentaryOn && phase === 'playing' && (
         <div className="commentary" aria-live="polite">
           {comments.length === 0 ? (
@@ -761,6 +783,22 @@ export default function PlayScreen({ profile, onProfile }: Props) {
           >
             <Icon name="comment" size={20} />
           </button>
+          <button
+            type="button"
+            className={'icon-only' + (teachingOn ? ' active' : '')}
+            aria-label={teachingOn ? 'Turn teaching mode off' : `Turn teaching mode on (−${teachingCost()} this game)`}
+            onClick={() => {
+              const v = !teachingOn
+              setTeachingOn(v)
+              void setSetting('teaching', v)
+              if (v && !teachingUsedRef.current) {
+                teachingUsedRef.current = true
+                setAssists((a) => ({ ...a, teaching: true }))
+              }
+            }}
+          >
+            <Icon name="eye" size={20} />
+          </button>
           <button type="button" onClick={() => setFlipped((f) => !f)}>Flip</button>
           <button type="button" className="with-icon" onClick={resign} disabled={moves.length === 0}>
             <Icon name="flag" size={18} /> Resign
@@ -787,9 +825,9 @@ export default function PlayScreen({ profile, onProfile }: Props) {
             <p className="muted small">
               {outcome.resultDelta >= 0 ? '+' : ''}
               {outcome.resultDelta} for the result, −{outcome.assistCost} for{' '}
-              {[outcome.hints ? `${outcome.hints} hint${outcome.hints === 1 ? '' : 's'}` : '', outcome.undos ? `${outcome.undos} undo${outcome.undos === 1 ? '' : 's'}` : '']
+              {[outcome.hints ? `${outcome.hints} hint${outcome.hints === 1 ? '' : 's'}` : '', outcome.undos ? `${outcome.undos} undo${outcome.undos === 1 ? '' : 's'}` : '', outcome.teaching ? 'teaching mode' : '']
                 .filter(Boolean)
-                .join(' and ')}
+                .join(', ')}
             </p>
           )}
           <div className="btn-row">

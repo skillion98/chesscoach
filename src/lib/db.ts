@@ -19,6 +19,8 @@ export interface GameRecord {
   /** assists used, and what they cost in rating points */
   hints?: number
   undos?: number
+  /** the teaching overlay (hanging and attacked pieces) was on at some point */
+  teaching?: boolean
   assistCost?: number
   result: Result
   termination: string
