@@ -10,6 +10,7 @@ import { courseBySlug, parseChapter, moveText } from '../openings/model'
 import { recordResult } from '../openings/stats'
 import { narrate, stopNarration } from '../lib/narration'
 import { getSetting, setSetting } from '../lib/db'
+import { XP_AWARDS, addXp } from '../lib/xp'
 import { navigate } from '../lib/router'
 
 interface Props {
@@ -85,6 +86,7 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
       if (token !== tokenRef.current) return
       setPlaying(false)
       setDone(true)
+      void addXp(XP_AWARDS.lesson, 'Finished a lesson')
       await say('That is the line. Now drill it: play the moves yourself.', token, 'common/drill')
     },
     [ch, say],
@@ -184,6 +186,10 @@ export default function LessonScreen({ slug, idx, mode, startPly }: Props) {
         if (p >= ch.sans.length) {
           setFinished(true)
           setFeedback(null)
+          void addXp(
+            XP_AWARDS.drill + (missedNodes.current.size === 0 ? XP_AWARDS.drillPerfect : 0),
+            missedNodes.current.size === 0 ? 'Perfect drill' : 'Finished a drill',
+          )
         } else {
           const note = ch.notes.get(p)
           setFeedback({ text: note ? note : 'Your move.', kind: 'info' })

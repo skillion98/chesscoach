@@ -504,7 +504,7 @@ button.link {
   font-weight: 700;
 }
 
-.gauge-band {
+.gauge-band-label {
   fill: var(--muted);
   font-size: 13px;
 }
@@ -2104,4 +2104,54 @@ body {
 
 .btn-row.left button {
   flex: 0 0 auto;
+}
+
+/* Experience track */
+.xp {
+  width: 100%;
+  max-width: 360px;
+  margin: 2px auto 6px;
+}
+
+.xp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.xp-level {
+  font-weight: 700;
+}
+
+.xp-track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--panel-2);
+  overflow: hidden;
+}
+
+.xp-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #f0c66a);
+  transition: width 0.4s ease;
+}
+
+.xp-recent {
+  margin-top: 4px;
+  text-align: right;
+}
+
+.gauge-band {
+  fill: none;
+  stroke: rgba(212, 162, 76, 0.22);
+  stroke-width: 12;
+  stroke-linecap: butt;
+}
+
+.gauge-sub {
+  fill: var(--muted);
+  font-size: 11px;
 }

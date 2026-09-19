@@ -12,7 +12,9 @@ import { chooseMove } from '../game/choose'
 import { computeHint, type Hint } from '../game/explain'
 import { PERSONALITIES, choosePersonalityMove, personalityById, personalityStrength, type Personality } from '../game/personalities'
 import { cgColor, computeDests, gameStatus, isPromotion, legalUci, uciToMove, type Status } from '../game/chessUtil'
-import { hintCost, undoCost, updateRating } from '../game/rating'
+import { applyGame, hintCost, undoCost, type RatingState } from '../game/rating'
+import { START_RD, START_VOL } from '../game/glicko'
+import { XP_AWARDS, addXp } from '../lib/xp'
 import { db, getSetting, saveProfile, setSetting, type Color, type GameRecord, type Profile } from '../lib/db'
 import { identifyOpening, recordGameAdherence } from '../openings/stats'
 import { suggestOpponent, type OpponentSuggestion } from '../coach/assess'
@@ -211,13 +213,22 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       const score: 0 | 0.5 | 1 =
         status.result === '1/2-1/2' ? 0.5 : (status.result === '1-0') === (pc === 'w') ? 1 : 0
       const before = prof.rating
-      const resultDelta = updateRating(before, st.elo, score, prof.gamesPlayed) - before
+      const playedAt = Date.now()
+      const stateBefore: RatingState = {
+        rating: prof.rating,
+        rd: prof.rd ?? START_RD,
+        vol: prof.vol ?? START_VOL,
+        gamesPlayed: prof.gamesPlayed,
+        lastGameAt: prof.lastGameAt ?? null,
+      }
+      const updated = applyGame(stateBefore, st.elo, score, playedAt)
+      const resultDelta = updated.rating - before
       const hints = hintsRef.current
       const undos = undosRef.current
-      const assistCost = hints * hintCost(prof.gamesPlayed) + undos * undoCost(prof.gamesPlayed)
-      const after = Math.max(0, before + resultDelta - assistCost)
+      const assistCost = hints * hintCost() + undos * undoCost()
+      const after = Math.max(0, updated.rating - assistCost)
       const rec: GameRecord = {
-        playedAt: Date.now(),
+        playedAt,
         playerColor: pc,
         opponentElo: st.elo,
         opponentId: personalityRef.current?.id,
@@ -240,11 +251,18 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       if (rated) {
         const next: Profile = {
           rating: after,
-          gamesPlayed: prof.gamesPlayed + 1,
+          gamesPlayed: updated.gamesPlayed,
           peakRating: Math.max(prof.peakRating, after),
+          rd: updated.rd,
+          vol: updated.vol,
+          lastGameAt: playedAt,
         }
         await saveProfile(next)
         onProfile(next)
+        void addXp(
+          XP_AWARDS.gamePlayed + (score === 1 ? XP_AWARDS.gameWon : score === 0.5 ? XP_AWARDS.gameDrawn : 0),
+          score === 1 ? 'Won a game' : score === 0.5 ? 'Drew a game' : 'Played a game',
+        )
       }
       setThinking(false)
       setHint(null)
@@ -371,7 +389,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   )
 
   const askHint = useCallback(async () => {
-    const cost = hintCost(profileRef.current.gamesPlayed)
+    const cost = hintCost()
     if (hintsRef.current === 0 && !window.confirm(`Each hint costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
     hintsRef.current++
     setAssists({ hints: hintsRef.current, undos: undosRef.current })
@@ -393,7 +411,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
   const undo = useCallback(() => {
     const c = chessRef.current
     if (c.history().length === 0) return
-    const cost = undoCost(profileRef.current.gamesPlayed)
+    const cost = undoCost()
     if (undosRef.current === 0 && !window.confirm(`Each undo costs ${cost} rating points, taken off at the end of the game. Continue?`)) return
     undosRef.current++
     setAssists({ hints: hintsRef.current, undos: undosRef.current })
@@ -620,7 +638,7 @@ export default function PlayScreen({ profile, onProfile }: Props) {
             {profile.rating}
             {assists.hints + assists.undos > 0 && (
               <span className="tag cost">
-                −{assists.hints * hintCost(profile.gamesPlayed) + assists.undos * undoCost(profile.gamesPlayed)}
+                −{assists.hints * hintCost() + assists.undos * undoCost()}
               </span>
             )}
           </div>
@@ -723,10 +741,10 @@ export default function PlayScreen({ profile, onProfile }: Props) {
       {phase === 'playing' && (
         <div className="btn-row">
           <button type="button" className="with-icon" onClick={undo} disabled={moves.length === 0}>
-            <Icon name="undo" size={18} /> Undo <span className="muted small">−{undoCost(profile.gamesPlayed)}</span>
+            <Icon name="undo" size={18} /> Undo <span className="muted small">−{undoCost()}</span>
           </button>
           <button type="button" className="with-icon" onClick={() => void askHint()} disabled={!canMove || hinting}>
-            <Icon name="bulb" size={18} /> Hint <span className="muted small">−{hintCost(profile.gamesPlayed)}</span>
+            <Icon name="bulb" size={18} /> Hint <span className="muted small">−{hintCost()}</span>
           </button>
           <button
             type="button"

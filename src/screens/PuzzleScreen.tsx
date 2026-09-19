@@ -16,6 +16,7 @@ import {
   type Puzzle,
   type PuzzleProfile,
 } from '../puzzles/puzzles'
+import { XP_AWARDS, addXp } from '../lib/xp'
 
 type Status = 'loading' | 'intro' | 'solving' | 'done' | 'empty'
 
@@ -170,6 +171,7 @@ export default function PuzzleScreen() {
       const r = await recordPuzzle(puzzle, solved, hintUsed, themeKey)
       setProfile(r.profile)
       setDelta(r.after - r.before)
+      void addXp(solved ? XP_AWARDS.puzzleSolved : XP_AWARDS.puzzleFailed, solved ? 'Solved a puzzle' : 'Tried a puzzle')
     },
     [puzzle, hintUsed, themeKey],
   )

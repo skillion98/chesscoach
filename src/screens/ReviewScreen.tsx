@@ -27,6 +27,7 @@ import { buildRecap, type Recap } from '../analysis/recap'
 import { matchCourse } from '../openings/stats'
 import { speechAvailable } from '../lib/speech'
 import { narrate, prepareNarration, stopNarration } from '../lib/narration'
+import { XP_AWARDS, addXp } from '../lib/xp'
 
 interface Props {
   id: number
@@ -75,7 +76,9 @@ export default function ReviewScreen({ id, autoAnalyze }: Props) {
         onProgress: (d, t) => setProgress(Math.round((d / t) * 100)),
         isCancelled: () => cancelRef.current,
       })
+      const fresh = !game.analysis
       await db.games.update(id, { analysis: a })
+      if (fresh) void addXp(XP_AWARDS.analysis, 'Analyzed a game')
       setAnalysis(a)
       setPly(0)
     } catch {

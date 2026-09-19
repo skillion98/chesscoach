@@ -246,7 +246,7 @@ export default function SettingsScreen({ profile, onReload }: Props) {
       <section className="card">
         <h3>Profile</h3>
         <p>
-          Rating <strong>{profile.rating}</strong> · {profile.gamesPlayed} games · peak {profile.peakRating}
+          Rating <strong>{profile.rating}</strong>{profile.rd ? <span className="muted"> ±{profile.rd}</span> : null} · {profile.gamesPlayed} games · peak {profile.peakRating}
         </p>
       </section>
       <section className="card">

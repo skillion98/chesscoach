@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import Icon from './components/Icons'
-import { getProfile, getSetting, saveProfile, setSetting, type Profile } from './lib/db'
-import { RATING_ERA, STARTING_RATING } from './game/rating'
+import { getProfile, getSetting, setSetting, type Profile } from './lib/db'
+import { RATING_ERA } from './game/rating'
+import { rebuildProfileFromGames } from './game/ratingHistory'
 import { setPreferredVoice } from './lib/speech'
 import { navigate, useRoute } from './lib/router'
 import HomeScreen from './screens/HomeScreen'
@@ -26,7 +27,8 @@ export default function App() {
       // one-time reset: earn the rating from zero
       const era = await getSetting<number>('ratingEra', 1)
       if (era < RATING_ERA) {
-        await saveProfile({ rating: STARTING_RATING, gamesPlayed: 0, peakRating: STARTING_RATING })
+        // new rating system: replay the game history through it
+        await rebuildProfileFromGames()
         await setSetting('ratingEra', RATING_ERA)
       }
       setPreferredVoice(await getSetting<string | null>('voiceURI', null))

@@ -44,6 +44,10 @@ export interface Profile {
   rating: number
   gamesPlayed: number
   peakRating: number
+  /** Glicko-2 deviation and volatility; missing on profiles from the Elo era */
+  rd?: number
+  vol?: number
+  lastGameAt?: number
 }
 
 /** One node of a course line: the player's move at a given ply of a chapter. */

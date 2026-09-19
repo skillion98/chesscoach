@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Icon, { type IconName } from '../components/Icons'
 import { MAX_ELO, bandFor } from '../game/levels'
+import { PROVISIONAL_RD, START_RD } from '../game/glicko'
+import XpBar from '../components/XpBar'
 import { db, type GameRecord, type Profile } from '../lib/db'
 import { navigate } from '../lib/router'
 
@@ -28,22 +30,33 @@ function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: nu
   return `M ${sx.toFixed(2)} ${sy.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${ex.toFixed(2)} ${ey.toFixed(2)}`
 }
 
-function Gauge({ rating }: { rating: number }) {
+function Gauge({ rating, rd, games }: { rating: number; rd: number; games: number }) {
   const frac = Math.min(1, Math.max(0, rating / MAX_ELO))
   const start = 150
   const sweep = 240
   const end = start + sweep * frac
   const band = bandFor(rating)
+  const lo = Math.max(0, rating - rd) / MAX_ELO
+  const hi = Math.min(MAX_ELO, rating + rd) / MAX_ELO
+  const provisional = rd > PROVISIONAL_RD
+  const unrated = games === 0
   return (
-    <svg className="gauge" viewBox="0 0 200 150" role="img" aria-label={`Rating ${rating}, ${band.name}`}>
+    <svg className="gauge" viewBox="0 0 200 150" role="img" aria-label={unrated ? 'Unrated' : `Rating ${rating} plus or minus ${rd}, ${band.name}`}>
       <path d={arcPath(100, 90, 78, start, start + sweep)} className="gauge-track" />
-      {frac > 0.005 && <path d={arcPath(100, 90, 78, start, end)} className="gauge-fill" />}
+      {!unrated && hi > lo && <path d={arcPath(100, 90, 78, start + sweep * lo, start + sweep * hi)} className="gauge-band" />}
+      {!unrated && frac > 0.005 && <path d={arcPath(100, 90, 78, start, end)} className="gauge-fill" />}
       <text x="100" y="98" className="gauge-num" textAnchor="middle">
-        {rating}
+        {unrated ? '–' : rating}
       </text>
-      <text x="100" y="122" className="gauge-band" textAnchor="middle">
-        {band.glyph} {band.name}
+      <text x="100" y="122" className="gauge-band-label" textAnchor="middle">
+        {unrated ? 'Unrated · play a game' : `${band.glyph} ${band.name}`}
       </text>
+      {!unrated && (
+        <text x="100" y="138" className="gauge-sub" textAnchor="middle">
+          ±{rd}
+          {provisional ? ' · provisional' : ''}
+        </text>
+      )}
     </svg>
   )
 }
@@ -87,8 +100,9 @@ export default function HomeScreen({ profile }: Props) {
   return (
     <div className="screen home">
       <section className="hero">
-        <Gauge rating={profile.rating} />
+        <Gauge rating={profile.rating} rd={profile.rd ?? START_RD} games={profile.gamesPlayed} />
         <Sparkline games={recent} />
+        <XpBar />
         <div className="stats">
           <div className="stat">
             <Icon name="history" size={18} />
